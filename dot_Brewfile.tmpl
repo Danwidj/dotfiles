@@ -1,0 +1,92 @@
+# Brewfile - managed by chezmoi
+# machine_type: {{ .machine_type }}
+
+tap "nikitabobko/tap"
+
+# ---------------------------------------------------------------------------
+# Core
+# ---------------------------------------------------------------------------
+brew "git"
+brew "chezmoi"
+brew "direnv"
+brew "age"
+brew "sops"
+{{ if eq .machine_type "personal" -}}
+brew "gh"
+{{ end -}}
+
+# ---------------------------------------------------------------------------
+# Shell
+# ---------------------------------------------------------------------------
+brew "starship"
+brew "zsh-autosuggestions"
+brew "zoxide"
+brew "atuin"
+brew "fzf"
+
+# ---------------------------------------------------------------------------
+# Editor / Terminal / Multiplexer
+# ---------------------------------------------------------------------------
+brew "neovim"
+brew "tmux"
+brew "herdr"
+brew "lazygit"
+
+# LazyVim deps
+brew "ripgrep"
+brew "fd"
+brew "node"
+
+# ---------------------------------------------------------------------------
+# Dev tools
+# ---------------------------------------------------------------------------
+brew "mise"
+brew "uv"
+brew "just"
+brew "jq"
+brew "yq"
+brew "delta"
+brew "serpl"
+
+# ---------------------------------------------------------------------------
+# Container
+# ---------------------------------------------------------------------------
+brew "colima"
+brew "docker"
+brew "docker-compose"
+
+# ---------------------------------------------------------------------------
+# Services
+# ---------------------------------------------------------------------------
+brew "nginx"
+brew "redis"
+brew "sqlite"
+brew "openssl@3"
+
+# ---------------------------------------------------------------------------
+# CLI utilities
+# ---------------------------------------------------------------------------
+brew "bat"
+brew "eza"
+brew "btop"
+brew "tlrc"
+brew "ffmpeg"
+brew "sevenzip"
+brew "cliclick"
+brew "sleepwatcher"
+
+# ---------------------------------------------------------------------------
+# GUI apps
+# ---------------------------------------------------------------------------
+cask "ghostty"
+cask "raycast"
+cask "obsidian"
+cask "reminders-menubar"
+cask "tailscale-app"
+cask "visual-studio-code"
+cask "google-chrome"
+cask "claude"
+cask "claude-code"
+cask "ngrok"
+cask "vorssaint"
+cask "nikitabobko/tap/aerospace"

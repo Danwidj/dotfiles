@@ -1,0 +1,101 @@
+{
+  // --- Theme ---
+  "workbench.colorTheme": "Visual Studio Dark",
+  "window.autoDetectColorScheme": true,
+  "workbench.preferredDarkColorTheme": "Visual Studio Dark",
+  "workbench.preferredLightColorTheme": "Visual Studio Light",
+
+  // --- Files & Auto Save ---
+  "files.autoSave": "onFocusChange",
+  "files.insertFinalNewline": true,
+  "files.trimTrailingWhitespace": true,
+  "files.exclude": {
+    "**/.git": true,
+    "**/node_modules": true,
+    "**/.venv": true
+  },
+
+  // --- Editor: Core ---
+  "editor.formatOnSave": true,
+  "editor.formatOnPaste": true,
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
+  "editor.detectIndentation": false,
+  "editor.autoIndent": "full",
+  "editor.tabSize": 2,
+  "editor.insertSpaces": true,
+  "editor.linkedEditing": true,
+  "editor.mouseWheelZoom": true,
+  "editor.copyWithSyntaxHighlighting": false,
+
+  // --- Editor: Display ---
+  "editor.minimap.enabled": false,
+  "editor.stickyScroll.enabled": true,
+  "editor.showFoldingControls": "always",
+  "editor.renderControlCharacters": true,
+  "editor.renderWhitespace": "trailing",
+  "editor.cursorBlinking": "smooth",
+  "editor.cursorSmoothCaretAnimation": "on",
+  "editor.accessibilitySupport": "off",
+
+  // --- Editor: IntelliSense & Navigation ---
+  "editor.suggestSelection": "first",
+  "editor.find.seedSearchStringFromSelection": "selection",
+  "editor.matchBrackets": "always",
+  "editor.bracketPairColorization.enabled": true,
+  "editor.guides.bracketPairs": true,
+  "editor.inlineSuggest.enabled": true,
+
+  // --- Editor: Code Actions ---
+  "editor.codeActionsOnSave": {
+    "source.organizeImports": "explicit"
+  },
+
+  // --- Workbench ---
+  "workbench.startupEditor": "none",
+  "workbench.editor.enablePreview": false,
+  "workbench.editor.enablePreviewFromQuickOpen": false,
+  "workbench.editor.untitled.hint": "hidden",
+  "workbench.editorAssociations": {
+    "*.md": "vscode.markdown.preview.editor"
+  },
+  "workbench.secondarySideBar.defaultVisibility": "hidden",
+  "workbench.tree.indent": 20,
+  "extensions.ignoreRecommendations": true,
+
+  // --- Title Bar ---
+  "window.commandCenter": false,
+  "workbench.navigationControl.enabled": false,
+  "workbench.layoutControl.enabled": false,
+  "workbench.browser.showInTitleBar": false,
+
+  // --- Terminal ---
+  "terminal.integrated.initialHint": false,
+  "terminal.integrated.fontFamily": "monospace",
+
+  // --- Git ---
+  "git.autofetch": true,
+  "git.autoStash": true,
+  "git.ignoreRebaseWarning": true,
+  "git.blame.editorDecoration.enabled": true,
+
+  // --- Markdown ---
+  "markdown.preview.doubleClickToSwitchToEditor": true,
+  "markdown.preview.markEditorSelection": true,
+
+  // --- Copilot (disabled) ---
+  "github.copilot.enable": {
+    "*": false,
+    "plaintext": false,
+    "markdown": false,
+    "scminput": false
+  },
+  "github.copilot.editor.enableAutoCompletions": false,
+
+  // --- Prettier ---
+  "prettier.singleQuote": true,
+  "prettier.trailingComma": "all",
+
+  // --- Misc ---
+  "update.showReleaseNotes": false,
+  "chat.titleBar.openInAgentsWindow.enabled": false
+}

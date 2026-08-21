@@ -1,0 +1,94 @@
+# ---------------------------------------------------------------------------
+# Runtime version manager (early - other tools may need managed runtimes)
+# ---------------------------------------------------------------------------
+if command -v mise &>/dev/null; then
+    eval "$(mise activate zsh)"
+fi
+
+# ---------------------------------------------------------------------------
+# Shell enhancements
+# ---------------------------------------------------------------------------
+# Autosuggestions
+[[ -f $(brew --prefix 2>/dev/null)/share/zsh-autosuggestions/zsh-autosuggestions.zsh ]] && \
+    source "$(brew --prefix)/share/zsh-autosuggestions/zsh-autosuggestions.zsh"
+
+# Smarter cd
+if command -v zoxide &>/dev/null; then
+    eval "$(zoxide init zsh)"
+fi
+
+# Shell history
+if command -v atuin &>/dev/null; then
+    eval "$(atuin init zsh)"
+fi
+
+# fzf keybindings + completions (brew install path)
+if command -v fzf &>/dev/null; then
+    eval "$(fzf --zsh)"
+fi
+
+# ---------------------------------------------------------------------------
+# Tool hooks
+# ---------------------------------------------------------------------------
+eval "$(direnv hook zsh)"
+
+# ---------------------------------------------------------------------------
+# Aliases
+# ---------------------------------------------------------------------------
+alias ls="eza --icons"
+alias ll="eza -lh --icons"
+alias la="eza -lah --icons"
+alias tree="eza --tree --icons"
+alias cat="bat"
+alias cd="z"  # zoxide
+
+# ==============================================================================
+# EDITOR DETECTION: Auto-switch between VS Code and Neovim
+# ==============================================================================
+if [ "$TERM_PROGRAM" = "vscode" ]; then
+    export EDITOR="code --wait"
+else
+    export EDITOR="nvim"
+fi
+
+# ==============================================================================
+# FZF ENGINE: Use fd for file/dir search
+# ==============================================================================
+export FZF_DEFAULT_COMMAND='fd --type f --strip-cwd-prefix --hidden --exclude .git'
+export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"
+export FZF_ALT_C_COMMAND='fd --type d --strip-cwd-prefix --hidden --exclude .git'
+
+# ==============================================================================
+# FUNCTIONS
+# ==============================================================================
+
+# Interactive text search - search inside files with live preview
+fif() {
+    RG_PREFIX="rg --column --line-number --no-heading --color=always --smart-case "
+    INITIAL_QUERY="${*:-}"
+
+    if [ "$TERM_PROGRAM" = "vscode" ]; then
+        ENTER_ACTION="become(code -g {1}:{2})"
+    else
+        ENTER_ACTION="become(nvim {1} +{2})"
+    fi
+
+    : | fzf --ansi --disabled --query "$INITIAL_QUERY" \
+        --bind "change:reload:sleep 0.1; $RG_PREFIX {q} || true" \
+        --preview "bat --color=always --style=numbers --highlight-line {2} {1} 2>/dev/null || cat {1}" \
+        --bind "enter:$ENTER_ACTION"
+}
+
+# Interactive file locator - find a file by name and open it
+fifile() {
+    if [ "$TERM_PROGRAM" = "vscode" ]; then
+        fd --type f --hidden --exclude .git | fzf --preview "bat --color=always --style=numbers {} 2>/dev/null || cat {}" | xargs -r code
+    else
+        fd --type f --hidden --exclude .git | fzf --preview "bat --color=always --style=numbers {} 2>/dev/null || cat {}" | xargs -r nvim
+    fi
+}
+
+# ---------------------------------------------------------------------------
+# Prompt (last - overrides anything above)
+# ---------------------------------------------------------------------------
+eval "$(starship init zsh)"
