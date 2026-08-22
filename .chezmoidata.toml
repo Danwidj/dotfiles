@@ -1,9 +1,0 @@
-# Default template data - shared across all machines.
-# Override per machine in ~/.config/chezmoi/chezmoi.toml under [data].
-#
-# Example for work machine:
-#   [data]
-#     machine_type = "work"
-
-[data]
-  machine_type = "personal"  # "personal" or "work"

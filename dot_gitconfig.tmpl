@@ -1,7 +1,6 @@
-{{- if eq .machine_type "personal" -}}
 [user]
     name = Daniel
-    email = daniel.widjaja18@gmail.com
+    email = {{ .email }}
 
 [core]
     editor = nvim
@@ -29,7 +28,3 @@
     co = checkout
     br = branch
     lg = log --oneline --graph --decorate --all
-{{- else -}}
-# Work machine: no git config managed here.
-# Run: git config --global user.name "Your Name" && git config --global user.email "you@work.com"
-{{- end }}

@@ -1,0 +1,6 @@
+{{- $machineType := promptStringOnce . "machine_type" "Machine type (personal/work)" -}}
+{{- $email := promptStringOnce . "email" "Git email" -}}
+
+[data]
+    machine_type = {{ $machineType | quote }}
+    email = {{ $email | quote }}
