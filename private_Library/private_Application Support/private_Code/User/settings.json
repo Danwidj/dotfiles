@@ -52,9 +52,7 @@
 
   // --- Workbench ---
   "workbench.startupEditor": "none",
-  "workbench.editor.enablePreview": false,
   "workbench.editor.enablePreviewFromQuickOpen": false,
-  "workbench.editor.untitled.hint": "hidden",
   "workbench.editorAssociations": {
     "*.md": "vscode.markdown.preview.editor"
   },
@@ -82,20 +80,13 @@
   "markdown.preview.doubleClickToSwitchToEditor": true,
   "markdown.preview.markEditorSelection": true,
 
-  // --- Copilot (disabled) ---
-  "github.copilot.enable": {
-    "*": false,
-    "plaintext": false,
-    "markdown": false,
-    "scminput": false
-  },
-  "github.copilot.editor.enableAutoCompletions": false,
-
   // --- Prettier ---
   "prettier.singleQuote": true,
   "prettier.trailingComma": "all",
 
   // --- Misc ---
   "update.showReleaseNotes": false,
-  "chat.titleBar.openInAgentsWindow.enabled": false
+  "chat.titleBar.openInAgentsWindow.enabled": false,
+  "security.workspace.trust.untrustedFiles": "open",
+  "chat.disableAIFeatures": true
 }
