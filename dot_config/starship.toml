@@ -1,4 +1,5 @@
 "$schema" = 'https://starship.rs/config-schema.json'
+
 format = """
 $username\
 $hostname\
@@ -26,12 +27,12 @@ style = "bright-black"
 [git_status]
 format = "[[(*$conflicted$untracked$modified$staged$renamed$deleted)](218) ($ahead_behind$stashed)]($style)"
 style = "cyan"
-conflicted = "<200b>"
-untracked = "<200b>"
-modified = "<200b>"
-staged = "<200b>"
-renamed = "<200b>"
-deleted = "<200b>"
+conflicted = "​"
+untracked = "​"
+modified = "​"
+staged = "​"
+renamed = "​"
+deleted = "​"
 stashed = "≡"
 
 [git_state]

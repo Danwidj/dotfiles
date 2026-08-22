@@ -1,0 +1,18 @@
+# Theme follows system light/dark mode
+theme = dark:TokyoNight,light:TokyoNight Day
+
+# keybinds
+keybind = cmd+s=text:\x01\x73  # tmux: session switcher (C-a + s)
+keybind = cmd+b=text:\x01\x7a  # tmux: toggle zoom on current pane (C-a + z)
+
+# aesthetics
+macos-option-as-alt = true
+macos-titlebar-style = hidden
+window-padding-x = 5
+window-padding-y = 10
+
+# typography
+font-size = 12
+font-thicken = true
+font-thicken-strength = 1
+adjust-cell-height = 1
