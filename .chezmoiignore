@@ -1,2 +1,4 @@
 **/.DS_Store
 .config/nvim/.git
+.config/zsh/.zsh_sessions
+.config/zsh/.zsh_history
