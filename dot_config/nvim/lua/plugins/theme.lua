@@ -5,12 +5,12 @@ return {
     priority = 1000,
     opts = {
       set_dark_mode = function()
-        vim.cmd.colorscheme("tokyonight-night")
+        vim.cmd.colorscheme("catppuccin-mocha")
       end,
       set_light_mode = function()
-        vim.cmd.colorscheme("tokyonight-day")
+        vim.cmd.colorscheme("catppuccin-latte")
       end,
-      update_interval = 3000, -- check system appearance every 3 seconds
+      update_interval = 3000,
     },
   },
 }
