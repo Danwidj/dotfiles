@@ -11,6 +11,7 @@ export XDG_STATE_HOME="$HOME/.local/state"
 export GRADLE_USER_HOME="$XDG_DATA_HOME/gradle"
 export MAVEN_OPTS="-Dmaven.repo.local=$XDG_DATA_HOME/maven/repository $MAVEN_OPTS"
 export npm_config_userconfig="$XDG_CONFIG_HOME/npm/npmrc"
+export npm_config_cache="$XDG_CACHE_HOME/npm"
 export TREEHOUSE_DIR="$XDG_DATA_HOME/treehouse"
 
 export GOPATH="$XDG_DATA_HOME/go"
