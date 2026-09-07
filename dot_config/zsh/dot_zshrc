@@ -4,5 +4,19 @@ eval "$(starship init zsh)"
 eval "$(direnv hook zsh)"
 
 export XDG_CONFIG_HOME="$HOME/.config"
+export XDG_DATA_HOME="$HOME/.local/share"
+export XDG_CACHE_HOME="$HOME/.cache"
+export XDG_STATE_HOME="$HOME/.local/state"
+
+export GRADLE_USER_HOME="$XDG_DATA_HOME/gradle"
+export MAVEN_OPTS="-Dmaven.repo.local=$XDG_DATA_HOME/maven/repository $MAVEN_OPTS"
+export npm_config_userconfig="$XDG_CONFIG_HOME/npm/npmrc"
+export TREEHOUSE_DIR="$XDG_DATA_HOME/treehouse"
+
+export GOPATH="$XDG_DATA_HOME/go"
+export GOMODCACHE="$GOPATH/pkg/mod"
+export GOCACHE="$XDG_CACHE_HOME/go-build"
 
 alias vim="nvim"
+
+eval "$(mise activate zsh)"
