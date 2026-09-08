@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # run_once_packages.sh
-# Installs all packages from ~/.Brewfile via brew bundle.
-# Runs after chezmoi applies files (so ~/.Brewfile is already in place).
+# Installs all packages from $HOMEBREW_BUNDLE_FILE_GLOBAL (~/.config/homebrew/Brewfile) via brew bundle.
+# Runs after chezmoi applies files (so the Brewfile is already in place).
 
 set -euo pipefail
 
@@ -17,6 +17,6 @@ if ! command -v brew &>/dev/null; then
     exit 1
 fi
 
-echo "Installing packages from ~/.Brewfile..."
+echo "Installing packages from \$HOMEBREW_BUNDLE_FILE_GLOBAL..."
 brew bundle --global
 echo "Done."
