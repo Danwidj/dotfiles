@@ -36,7 +36,8 @@ Printed and paused on during `run_once_zzz-manual-steps.sh` above; listed here t
 - **Finder sidebar** - binary `.sfl3` files, not scriptable via `defaults`. Settings > Sidebar (Cmd+,): Recents ON, Shared OFF, Favourites Desktop-only, Locations (iCloud Drive/Cloud Storage/home/External Disks) ON, Bin ON. Drag `~/workspace` into the sidebar below Desktop.
 - **Finder Recents view** - Cmd+J in Recents, set to List.
 - **Raycast extensions/plugins** - no CLI install path exists, must be added manually.
-- **Ghostty** - not auto-launched by chezmoi; open and set as default terminal manually if desired.
+
+Ghostty is auto-launched (`open -a Ghostty`) at the end of `run_once_zzz-manual-steps.sh` — it does not close your original terminal, since a process can't cleanly close its own parent shell.
 
 ## Day-to-day
 

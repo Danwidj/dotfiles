@@ -23,11 +23,13 @@ Finder:
 Raycast:
   - Install extensions/plugins manually (no CLI install path exists)
 
-Ghostty:
-  - Open it once manually and set as default terminal if desired
-    (chezmoi does not launch apps or close your current terminal)
-
 ===============================================================================
 EOF
 
 read -r -p "Press Enter once done (or to skip): " _
+
+# Auto-launch Ghostty as the new default terminal. This does NOT close the
+# current terminal — that process can't cleanly close its own parent shell.
+if [ -d "/Applications/Ghostty.app" ]; then
+    open -a Ghostty
+fi
