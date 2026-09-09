@@ -154,6 +154,26 @@ defaults write com.apple.finder calculateAllSizes -bool true
 # Bin: remove items after 30 days [default: off]
 defaults write com.apple.finder FXRemoveOldTrashItems -bool true
 
+# Column view everywhere + sort by Date Added, for every view type (so it
+# still applies if a folder's saved view ever switches away from column).
+# These are nested keys inside com.apple.finder's StandardViewSettings dict
+# (the default applied to any folder without its own per-folder .DS_Store
+# view override) - PlistBuddy is used instead of `defaults write -dict-add`
+# because the latter replaces the whole sub-dict, wiping sibling keys like
+# icon size / grid spacing instead of merging.
+FINDER_PLIST="$HOME/Library/Preferences/com.apple.finder.plist"
+for path in \
+  ":StandardViewSettings:IconViewSettings:arrangeBy dateAdded" \
+  ":StandardViewSettings:ExtendedListViewSettingsV2:sortColumn dateAdded" \
+  ":StandardViewSettings:ListViewSettings:sortColumn dateAdded" \
+  ":StandardViewSettings:GalleryViewSettings:arrangeBy dateAdded" \
+  ":StandardViewSettings:ColumnViewSettings:arrangeBy dateAdded"; do
+    key="${path%% *}"
+    value="${path##* }"
+    /usr/libexec/PlistBuddy -c "Set $key $value" "$FINDER_PLIST" 2>/dev/null \
+      || /usr/libexec/PlistBuddy -c "Add $key string $value" "$FINDER_PLIST" 2>/dev/null
+done
+
 # Sidebar items live in binary .sfl3 files — not scriptable via defaults.
 # See README.md "Manual setup" / run_once_zzz-manual-steps.sh for the sidebar
 # and Recents-view steps.
@@ -188,6 +208,10 @@ defaults write com.apple.driver.AppleBluetoothMultitouch.trackpad TrackpadTwoFin
 
 # No margins between tiled windows [default: on]
 defaults write com.apple.WindowManager EnableTiledWindowMargins -bool false
+
+# No Desktop widgets at all [default: off/hidden already, but explicit]
+defaults write com.apple.WindowManager StandardHideWidgets -bool true
+defaults write com.apple.WindowManager StageManagerHideWidgets -bool true
 
 ###############################################################################
 # Calendar
