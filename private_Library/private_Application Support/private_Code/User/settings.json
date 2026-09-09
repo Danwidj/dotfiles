@@ -12,7 +12,7 @@
   "files.exclude": {
     "**/.git": true,
     "**/node_modules": true,
-    "**/.venv": true
+    "**/.venv": true,
   },
 
   // --- Editor: Core ---
@@ -47,14 +47,14 @@
 
   // --- Editor: Code Actions ---
   "editor.codeActionsOnSave": {
-    "source.organizeImports": "explicit"
+    "source.organizeImports": "explicit",
   },
 
   // --- Workbench ---
   "workbench.startupEditor": "none",
   "workbench.editor.enablePreviewFromQuickOpen": false,
   "workbench.editorAssociations": {
-    "*.md": "vscode.markdown.preview.editor"
+    "*.md": "vscode.markdown.preview.editor",
   },
   "workbench.secondarySideBar.defaultVisibility": "hidden",
   "workbench.tree.indent": 20,
@@ -87,6 +87,13 @@
   // --- Misc ---
   "update.showReleaseNotes": false,
   "chat.titleBar.openInAgentsWindow.enabled": false,
+  "chat.disableAIFeatures": true,
   "security.workspace.trust.untrustedFiles": "open",
-  "chat.disableAIFeatures": true
+  "git.enableSmartCommit": true,
+  "terminal.external.osxExec": "Ghostty.app",
+  "terminal.integrated.allowMnemonics": true,
+  "git.confirmSync": false,
+  "explorer.confirmDelete": false,
+  "remote-explorer.foldersSortOrder": "alphabetical",
+  "window.confirmSaveUntitledWorkspace": false,
 }
