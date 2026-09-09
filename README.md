@@ -5,7 +5,7 @@ Personal macOS dotfiles managed with [chezmoi](https://www.chezmoi.io/).
 ## What's managed
 
 - **zsh** - `~/.config/zsh` shell config (`ZDOTDIR`-relocated), plus `.zshrc`
-- **nvim** - LazyVim-based Neovim config (`~/.config/nvim`) - only customizations are tracked, not the LazyVim starter boilerplate (see "nvim setup" below)
+- **nvim** - LazyVim-based Neovim config (`~/.config/nvim`), fully tracked
 - **tmux** - config and themes (`~/.config/tmux`)
 - **ghostty** - terminal config (`~/.config/ghostty`)
 - **starship** - prompt config (`~/.config/starship.toml`)
@@ -28,20 +28,6 @@ First apply will prompt for `machine_type` (personal/work) and git email, then r
 4. `run_onchange_install-vscode-extensions.sh` - installs VSCode extensions (reruns when the extension list changes)
 5. `run_once_zzz-manual-steps.sh` - prints manual (non-scriptable) setup steps and pauses for confirmation before continuing
 6. `run_once_after_vorssaint-restore.sh` - restores Vorssaint preferences from the managed plist (runs after all other `run_once_` scripts, per chezmoi's `run_once_after_` ordering)
-
-## nvim setup
-
-Only the actual customizations under `~/.config/nvim` are chezmoi-managed (`lazyvim.json`, `lazy-lock.json`, `lua/config/{options,keymaps,autocmds}.lua`, `lua/plugins/*.lua`). The stock LazyVim starter boilerplate (`init.lua`, `lua/config/lazy.lua`, `.gitignore`, `README.md`, `LICENSE`, `stylua.toml`, `lua/plugins/example.lua`) is intentionally untracked, since it's identical to a fresh `LazyVim/starter` checkout and would just be dead weight in this repo.
-
-On a new machine, get the starter base in place *before* `chezmoi apply` overlays the customizations:
-
-```sh
-git clone https://github.com/LazyVim/starter ~/.config/nvim
-rm -rf ~/.config/nvim/.git
-chezmoi apply
-```
-
-(`chezmoi init --apply` runs the full bootstrap already, but nvim's dotfiles only overlay on top of an existing starter checkout - if `~/.config/nvim` doesn't exist yet, clone the starter first, then re-run `chezmoi apply` to lay the customizations on top.)
 
 ## Manual setup (not scriptable)
 
@@ -67,5 +53,5 @@ chezmoi apply            # apply them
 
 - Most files are `private_*` (mode 0600) since they can contain machine-specific paths or personal info.
 - `.chezmoi.toml.tmpl` prompts once per machine and caches answers in `~/.config/chezmoi/chezmoi.toml` - delete that file to re-prompt.
-- `nvim/` no longer carries LazyVim's upstream `README.md`/`LICENSE`/boilerplate (untracked as pure starter boilerplate); this file is the top-level dotfiles README only. See "nvim setup" above for new-machine bootstrap.
+- `nvim/` carries its own upstream `README.md`/`LICENSE` from LazyVim; this file is the top-level dotfiles README only.
 - **Local-overlay pattern** - `custom.zsh`, `Brewfile.local`, and `extensions.local` are untracked, machine-specific overlays (gitignored via `.chezmoiignore`). `run_once_`/`run_onchange_` scripts re-trigger by hashing their own *tracked* source file, not these untracked overlay files, so editing an overlay alone won't retrigger its script via `chezmoi apply`. Either re-run the script manually after editing the overlay, or touch/edit the tracked script itself so `chezmoi apply` picks it up.
