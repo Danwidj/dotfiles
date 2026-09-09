@@ -34,17 +34,3 @@ for ext in $extensions; do
     "$CODE_BIN" --install-extension "$ext" --force >/dev/null
 done
 echo "VSCode extensions installed."
-
-# Optional machine-local overlay, untracked/gitignored (see README Gotchas
-# for the local-overlay pattern). One extension ID per line, blank lines and
-# #-comments allowed. May not exist yet — skip silently if so.
-LOCAL_EXTENSIONS="$HOME/.config/vscode/extensions.local"
-if [ -f "$LOCAL_EXTENSIONS" ]; then
-    while IFS= read -r ext || [ -n "$ext" ]; do
-        case "$ext" in
-            ''|'#'*) continue ;;
-        esac
-        "$CODE_BIN" --install-extension "$ext" --force >/dev/null
-    done < "$LOCAL_EXTENSIONS"
-    echo "Local overlay VSCode extensions installed."
-fi

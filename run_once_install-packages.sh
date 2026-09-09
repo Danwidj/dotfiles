@@ -47,14 +47,6 @@ run_bundle_quiet() {
 echo "Installing packages from $HOMEBREW_BUNDLE_FILE_GLOBAL..."
 run_bundle_quiet --global
 
-# Optional machine-local overlay, untracked/gitignored (see README Gotchas
-# for the local-overlay pattern). Skip silently if it doesn't exist.
-LOCAL_BREWFILE="$HOME/.config/homebrew/Brewfile.local"
-if [[ -f "$LOCAL_BREWFILE" ]]; then
-    echo "Installing packages from $LOCAL_BREWFILE..."
-    run_bundle_quiet --file="$LOCAL_BREWFILE"
-fi
-
 # Configure weekly auto-update (domt4/autoupdate tap, installed above):
 # brew update + upgrade formulae/casks + cleanup, skipped while on battery,
 # notifications only on failure. `start` errors if already configured, so
