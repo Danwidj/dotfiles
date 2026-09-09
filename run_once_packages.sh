@@ -17,6 +17,10 @@ if ! command -v brew &>/dev/null; then
     exit 1
 fi
 
-echo "Installing packages from \$HOMEBREW_BUNDLE_FILE_GLOBAL..."
+# This script runs standalone via chezmoi (not sourced from zshrc), so the
+# env var zshrc normally exports isn't set here — export it explicitly.
+export HOMEBREW_BUNDLE_FILE_GLOBAL="$HOME/.config/homebrew/Brewfile"
+
+echo "Installing packages from $HOMEBREW_BUNDLE_FILE_GLOBAL..."
 brew bundle --global
 echo "Done."
