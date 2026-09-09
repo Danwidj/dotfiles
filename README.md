@@ -10,7 +10,7 @@ Personal macOS dotfiles managed with [chezmoi](https://www.chezmoi.io/).
 - **ghostty** - terminal config (`~/.config/ghostty`)
 - **starship** - prompt config (`~/.config/starship.toml`)
 - **git** - `~/.gitconfig` (templated with per-machine email)
-- **Homebrew** - packages tracked in `~/.Brewfile`, installed via `brew bundle`
+- **Homebrew** - packages tracked in `~/.Brewfile`, installed via `brew bundle`; weekly auto-update (`brew autoupdate`, AC-power only, notify on failure only) configured automatically
 - **VSCode** - extension list, installed on change
 - **macOS defaults** - system preference tweaks, including default app handlers (browser/PDF/mail/image/text/calendar/video/archive) via `duti`
 - **Raycast** - encrypted settings export (`~/.config/raycast/raycast-export.rayconfig`), covers window management + productivity workflows (replaces Rectangle and Vorssaint, both removed) - import is manual, see below

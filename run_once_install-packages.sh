@@ -51,3 +51,15 @@ if [[ -f "$LOCAL_BREWFILE" ]]; then
     echo "Installing packages from $LOCAL_BREWFILE..."
     run_bundle_quiet --file="$LOCAL_BREWFILE"
 fi
+
+# Configure weekly auto-update (domt4/autoupdate tap, installed above):
+# brew update + upgrade formulae/casks + cleanup, skipped while on battery,
+# notifications only on failure. `start` errors if already configured, so
+# guard on the launchd plist it installs.
+AUTOUPDATE_PLIST="$HOME/Library/LaunchAgents/com.github.domt4.homebrew-autoupdate.plist"
+if [[ ! -f "$AUTOUPDATE_PLIST" ]]; then
+    brew autoupdate start 1w --upgrade --cleanup --ac-only --notify-on-error
+    echo "brew autoupdate configured (weekly, AC-only, notify on failure only)."
+else
+    echo "brew autoupdate already configured. Skipping."
+fi
