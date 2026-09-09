@@ -235,6 +235,63 @@ defaults -currentHost write com.apple.controlcenter BatteryShowPercentage -bool 
 defaults write com.apple.screencapture video -bool true
 
 ###############################################################################
+# Default apps (via duti — installed from the Brewfile)
+###############################################################################
+
+# Sets macOS default application handlers to match this machine's actual
+# defaults at the time this section was written.
+#
+# Behavior when a target app isn't installed: `duti -s` looks up the bundle
+# ID via Launch Services. If it's not registered, duti exits non-zero for
+# that line only — tolerated below with a warning, not fatal.
+#
+# NOTE: macOS has no concept of a "default terminal app" - Terminal.app (or
+# whatever's pinned/opened) launches independently of other terminal apps
+# installed, so there's nothing to set here for that category.
+
+if ! command -v duti &>/dev/null; then
+    echo "duti not found on PATH - it should have been installed via the Brewfile"
+    echo "(see run_once_install-packages.sh). Skipping default-app assignment."
+else
+    set_default() {
+        local bundle_id="$1" uti_or_ext="$2" role="${3:-all}"
+        if duti -s "$bundle_id" "$uti_or_ext" "$role" 2>/dev/null; then
+            echo "Set $bundle_id as handler for $uti_or_ext ($role)"
+        else
+            echo "Warning: could not set $bundle_id as handler for $uti_or_ext (app likely not installed) - skipping"
+        fi
+    }
+
+    # Web browser (http/https URL schemes + HTML documents)
+    set_default com.apple.Safari http
+    set_default com.apple.Safari https
+    set_default com.apple.Safari public.html
+
+    # PDF viewer
+    set_default com.apple.Preview com.adobe.pdf
+
+    # Mail client (mailto: URL scheme)
+    set_default com.apple.mail mailto
+
+    # Image viewer (PNG / JPEG)
+    set_default com.apple.Preview public.png
+    set_default com.apple.Preview public.jpeg
+
+    # Plain text editor
+    set_default com.microsoft.VSCode public.plain-text
+
+    # Calendar (webcal: URL scheme + .ics files)
+    set_default com.apple.ical webcal
+    set_default com.apple.calendarfilehandler com.apple.ical.ics
+
+    # Video player (.mp4 / public.movie)
+    set_default com.apple.QuickTimePlayerX public.movie
+
+    # Archive/zip handler
+    set_default com.apple.archiveutility public.zip-archive
+fi
+
+###############################################################################
 # Apply
 ###############################################################################
 

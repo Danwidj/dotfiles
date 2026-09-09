@@ -12,8 +12,7 @@ Personal macOS dotfiles managed with [chezmoi](https://www.chezmoi.io/).
 - **git** - `~/.gitconfig` (templated with per-machine email)
 - **Homebrew** - packages tracked in `~/.Brewfile`, installed via `brew bundle`
 - **VSCode** - extension list, installed on change
-- **macOS defaults** - system preference tweaks
-- **Default app handlers** - browser/PDF/mail/image/text/calendar/video/archive defaults, set via `duti`
+- **macOS defaults** - system preference tweaks, including default app handlers (browser/PDF/mail/image/text/calendar/video/archive) via `duti`
 
 ## Install on a new machine
 
@@ -24,12 +23,11 @@ chezmoi init --apply Danwidj/dotfiles
 First apply will prompt for `machine_type` (personal/work) and git email, then run, in order:
 
 1. `run_once_install-packages.sh` - installs Homebrew + Xcode CLT if missing, then `brew bundle` from `~/.Brewfile`
-2. `run_once_macos.sh` - applies macOS system defaults
+2. `run_once_macos.sh` - applies macOS system defaults, then sets default app handlers (browser, PDF, mail, images, text, calendar, video, archive) via `duti`
 3. `run_once_zshenv.sh` - points `/etc/zshenv` at `ZDOTDIR`
 4. `run_onchange_install-vscode-extensions.sh` - installs VSCode extensions (reruns when the extension list changes)
-5. `run_once_zz-set-default-apps.sh` - sets default app handlers (browser, PDF, mail, images, text, calendar, video, archive) via `duti`, after packages/casks are installed
-6. `run_once_zzz-manual-steps.sh` - prints manual (non-scriptable) setup steps and pauses for confirmation before continuing
-7. `run_once_after_vorssaint-restore.sh` - restores Vorssaint preferences from the managed plist (runs after all other `run_once_` scripts, per chezmoi's `run_once_after_` ordering)
+5. `run_once_zzz-manual-steps.sh` - prints manual (non-scriptable) setup steps and pauses for confirmation before continuing
+6. `run_once_after_vorssaint-restore.sh` - restores Vorssaint preferences from the managed plist (runs after all other `run_once_` scripts, per chezmoi's `run_once_after_` ordering)
 
 ## Manual setup (not scriptable)
 
