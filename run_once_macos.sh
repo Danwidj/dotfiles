@@ -71,8 +71,9 @@ defaults write -globalDomain shouldShowRSVPDataDetectors -bool false
 # Dock
 ###############################################################################
 
-# No pinned apps
+# No pinned apps or pinned folders/stacks (e.g. the default Downloads pin)
 defaults write com.apple.dock persistent-apps -array
+defaults write com.apple.dock persistent-others -array
 
 # Tile size [default: 48]
 defaults write com.apple.dock tilesize -float 46
