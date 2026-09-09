@@ -99,14 +99,13 @@ defaults write com.apple.dock autohide-time-modifier -float 0.3
 ###############################################################################
 
 defaults write com.apple.dock wvous-tl-corner -int 1          # off
-defaults write com.apple.dock wvous-tr-corner -int 1          # off
+defaults write com.apple.dock wvous-tr-corner -int 4          # Desktop
 defaults write com.apple.dock wvous-bl-corner -int 10         # Sleep Display
 defaults write com.apple.dock wvous-br-corner -int 1          # off
 defaults write com.apple.dock wvous-tl-modifier -int 0
-defaults write com.apple.dock wvous-tr-modifier -int 0
+defaults write com.apple.dock wvous-tr-modifier -int 1048576  # Command required
 defaults write com.apple.dock wvous-bl-modifier -int 1048576  # Command required
 defaults write com.apple.dock wvous-br-modifier -int 0
-# Desktop: triggered via Raycast hotkey (right-side hot corners unreachable with vertical monitor)
 
 ###############################################################################
 # Finder
@@ -379,6 +378,83 @@ else
 
     echo "Default app handlers set."
 fi
+
+###############################################################################
+# Keyboard Shortcuts
+# Policy: everything is OFF, then only specific things are explicitly turned
+# back ON below with their real keybindings. To add a new shortcut in future,
+# just append another block/call after "Turn specific things ON" - no need to
+# touch the blanket-off logic above it.
+###############################################################################
+
+HOTKEYS_PLIST="$HOME/Library/Preferences/com.apple.symbolichotkeys.plist"
+SERVICES_PLIST="$HOME/Library/Preferences/pbs.plist"
+
+# --- Turn ALL keyboard shortcuts OFF ---
+# Dynamically disables every id currently present in the plist, instead of a
+# hardcoded id list, so this doesn't go stale as new defaults get touched over
+# time. Note macOS only ever writes an id here once it's been touched at least
+# once via System Settings - an id that's never been touched simply isn't
+# present and silently stays at its factory default (this is how Screenshots
+# behaved before being explicitly turned on below).
+# Delete-then-Add (not Set): macOS stores `enabled` as an integer for some ids
+# (e.g. 64) and a real boolean for others (e.g. 65) - Set fails with
+# "Unrecognized Integer Format" against the integer-typed ones since it tries
+# to preserve the existing type. Deleting first sidesteps the type entirely.
+for id in $(/usr/bin/python3 -c "
+import plistlib
+try:
+    with open('$HOTKEYS_PLIST', 'rb') as f:
+        d = plistlib.load(f)
+    print('\n'.join(d.get('AppleSymbolicHotKeys', {}).keys()))
+except FileNotFoundError:
+    pass
+"); do
+    /usr/libexec/PlistBuddy -c "Delete :AppleSymbolicHotKeys:$id" "$HOTKEYS_PLIST" 2>/dev/null
+    /usr/libexec/PlistBuddy -c "Add :AppleSymbolicHotKeys:$id:enabled bool false" "$HOTKEYS_PLIST"
+done
+
+# Services (right-click / Services menu items): same dynamic approach, except
+# skip "New Ghostty Window Here" entirely - manually configured, left as-is.
+KEEP_SERVICE="com.mitchellh.ghostty - New Ghostty Window Here - openWindow"
+while IFS= read -r svc; do
+    [ -z "$svc" ] && continue
+    [ "$svc" = "$KEEP_SERVICE" ] && continue
+    /usr/libexec/PlistBuddy -c "Set :NSServicesStatus:\"$svc\":enabled_services_menu false" "$SERVICES_PLIST" 2>/dev/null \
+      || /usr/libexec/PlistBuddy -c "Add :NSServicesStatus:\"$svc\":enabled_services_menu bool false" "$SERVICES_PLIST"
+    /usr/libexec/PlistBuddy -c "Set :NSServicesStatus:\"$svc\":enabled_context_menu false" "$SERVICES_PLIST" 2>/dev/null \
+      || /usr/libexec/PlistBuddy -c "Add :NSServicesStatus:\"$svc\":enabled_context_menu bool false" "$SERVICES_PLIST"
+done < <(/usr/bin/python3 -c "
+import plistlib
+try:
+    with open('$SERVICES_PLIST', 'rb') as f:
+        d = plistlib.load(f)
+    for k in d.get('NSServicesStatus', {}):
+        print(k)
+except FileNotFoundError:
+    pass
+")
+
+# --- Turn specific things back ON, with explicit keybindings ---
+# Add new shortcuts here as needed. Each call is independent - it doesn't
+# require touching the blanket-off logic above.
+set_hotkey() {  # id ascii keycode modifiers
+    /usr/libexec/PlistBuddy -c "Delete :AppleSymbolicHotKeys:$1" "$HOTKEYS_PLIST" 2>/dev/null
+    /usr/libexec/PlistBuddy -c "Add :AppleSymbolicHotKeys:$1:enabled bool true" "$HOTKEYS_PLIST"
+    /usr/libexec/PlistBuddy -c "Add :AppleSymbolicHotKeys:$1:value:type string standard" "$HOTKEYS_PLIST"
+    /usr/libexec/PlistBuddy -c "Add :AppleSymbolicHotKeys:$1:value:parameters array" "$HOTKEYS_PLIST"
+    /usr/libexec/PlistBuddy -c "Add :AppleSymbolicHotKeys:$1:value:parameters:0 integer $2" "$HOTKEYS_PLIST"
+    /usr/libexec/PlistBuddy -c "Add :AppleSymbolicHotKeys:$1:value:parameters:1 integer $3" "$HOTKEYS_PLIST"
+    /usr/libexec/PlistBuddy -c "Add :AppleSymbolicHotKeys:$1:value:parameters:2 integer $4" "$HOTKEYS_PLIST"
+}
+
+# Screenshots (values captured live from System Settings - real verified
+# parameters, not computed from a keycode table)
+set_hotkey 28  51 20 1179648   # Save picture of screen as a file           - Shift+Cmd+3
+set_hotkey 29  51 20 1441792   # Copy picture of screen to clipboard        - Ctrl+Shift+Cmd+3
+set_hotkey 30  52 21 1179648   # Save picture of selected area as a file    - Shift+Cmd+4
+set_hotkey 31  52 21 1441792   # Copy picture of selected area to clipboard - Ctrl+Shift+Cmd+4
+set_hotkey 184 53 23 1179648   # Screenshot and recording options           - Shift+Cmd+5
 
 ###############################################################################
 # Apply
