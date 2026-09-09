@@ -25,9 +25,12 @@ if ! command -v brew &>/dev/null; then
     exit 1
 fi
 
-# This script runs standalone via chezmoi (not sourced from zshrc), so the
-# env var zshrc normally exports isn't set here — export it explicitly.
-export HOMEBREW_BUNDLE_FILE_GLOBAL="$HOME/.config/homebrew/Brewfile"
+# This script runs standalone via chezmoi (not sourced from zshrc), so env
+# vars zshrc normally exports aren't set here — export them explicitly.
+# Missing XDG_CONFIG_HOME specifically makes `brew trust`/`brew` fall back
+# to ~/.homebrew/trust.json instead of ~/.config/homebrew/trust.json.
+export XDG_CONFIG_HOME="$HOME/.config"
+export HOMEBREW_BUNDLE_FILE_GLOBAL="$XDG_CONFIG_HOME/homebrew/Brewfile"
 
 # Run quietly; on failure, dump the captured output before exiting so the
 # real error is still visible (not just "brew bundle failed").
