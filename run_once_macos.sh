@@ -286,6 +286,7 @@ if ! command -v duti &>/dev/null; then
     echo "duti not found on PATH - it should have been installed via the Brewfile"
     echo "(see run_once_install-packages.sh). Skipping default-app assignment."
 else
+    # `duti -s <bundle_id> <uti|extension|MIME> <role>` (3 args) for UTIs.
     set_default() {
         local bundle_id="$1" uti_or_ext="$2" role="${3:-all}"
         if duti -s "$bundle_id" "$uti_or_ext" "$role" 2>/dev/null; then
@@ -295,16 +296,28 @@ else
         fi
     }
 
+    # `duti -s <bundle_id> <url_scheme>` (2 args, NO role) for URL schemes.
+    # Passing a 3rd arg here makes duti misinterpret the scheme as a UTI
+    # string instead (resolves to a bogus dyn.* UTI and fails with -50).
+    set_default_scheme() {
+        local bundle_id="$1" scheme="$2"
+        if duti -s "$bundle_id" "$scheme" 2>/dev/null; then
+            echo "Set $bundle_id as handler for $scheme: URLs"
+        else
+            echo "Warning: could not set $bundle_id as handler for $scheme: URLs (app likely not installed) - skipping"
+        fi
+    }
+
     # Web browser (http/https URL schemes + HTML documents)
-    set_default com.apple.Safari http
-    set_default com.apple.Safari https
+    set_default_scheme com.apple.Safari http
+    set_default_scheme com.apple.Safari https
     set_default com.apple.Safari public.html
 
     # PDF viewer
     set_default com.apple.Preview com.adobe.pdf
 
     # Mail client (mailto: URL scheme)
-    set_default com.apple.mail mailto
+    set_default_scheme com.apple.mail mailto
 
     # Image viewer (PNG / JPEG)
     set_default com.apple.Preview public.png
@@ -314,7 +327,7 @@ else
     set_default com.microsoft.VSCode public.plain-text
 
     # Calendar (webcal: URL scheme + .ics files)
-    set_default com.apple.ical webcal
+    set_default_scheme com.apple.ical webcal
     set_default com.apple.calendarfilehandler com.apple.ical.ics
 
     # Video player (.mp4 / public.movie)
