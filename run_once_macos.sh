@@ -329,11 +329,10 @@ if ! command -v duti &>/dev/null; then
     echo "(see run_once_install-packages.sh). Skipping default-app assignment."
 else
     # `duti -s <bundle_id> <uti|extension|MIME> <role>` (3 args) for UTIs.
+    # Silent on success; only warns (real signal, not noise) on failure.
     set_default() {
         local bundle_id="$1" uti_or_ext="$2" role="${3:-all}"
-        if duti -s "$bundle_id" "$uti_or_ext" "$role" 2>/dev/null; then
-            echo "Set $bundle_id as handler for $uti_or_ext ($role)"
-        else
+        if ! duti -s "$bundle_id" "$uti_or_ext" "$role" 2>/dev/null; then
             echo "Warning: could not set $bundle_id as handler for $uti_or_ext (app likely not installed) - skipping"
         fi
     }
@@ -343,9 +342,7 @@ else
     # string instead (resolves to a bogus dyn.* UTI and fails with -50).
     set_default_scheme() {
         local bundle_id="$1" scheme="$2"
-        if duti -s "$bundle_id" "$scheme" 2>/dev/null; then
-            echo "Set $bundle_id as handler for $scheme: URLs"
-        else
+        if ! duti -s "$bundle_id" "$scheme" 2>/dev/null; then
             echo "Warning: could not set $bundle_id as handler for $scheme: URLs (app likely not installed) - skipping"
         fi
     }
@@ -379,6 +376,8 @@ else
 
     # Archive/zip handler
     set_default com.apple.archiveutility public.zip-archive
+
+    echo "Default app handlers set."
 fi
 
 ###############################################################################
