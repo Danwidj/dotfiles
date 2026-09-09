@@ -308,9 +308,11 @@ else
         fi
     }
 
-    # Web browser (http/https URL schemes + HTML documents)
+    # Web browser (http URL scheme + HTML documents). https is deliberately
+    # not scripted here - macOS blocks programmatic changes to the default
+    # web browser for that scheme specifically (anti-hijacking measure);
+    # it already falls back to Safari (factory default) with no override.
     set_default_scheme com.apple.Safari http
-    set_default_scheme com.apple.Safari https
     set_default com.apple.Safari public.html
 
     # PDF viewer
