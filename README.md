@@ -13,6 +13,7 @@ Personal macOS dotfiles managed with [chezmoi](https://www.chezmoi.io/).
 - **Homebrew** - packages tracked in `~/.Brewfile`, installed via `brew bundle`
 - **VSCode** - extension list, installed on change
 - **macOS defaults** - system preference tweaks, including default app handlers (browser/PDF/mail/image/text/calendar/video/archive) via `duti`
+- **Raycast** - encrypted settings export (`~/.config/raycast/raycast-export.rayconfig`), covers window management + productivity workflows (replaces Rectangle and Vorssaint, both removed) - import is manual, see below
 
 ## Install on a new machine
 
@@ -27,7 +28,6 @@ First apply will prompt for `machine_type` (personal/work) and git email, then r
 3. `run_once_zshenv.sh` - points `/etc/zshenv` at `ZDOTDIR`
 4. `run_onchange_install-vscode-extensions.sh` - installs VSCode extensions (reruns when the extension list changes)
 5. `run_once_zzz-manual-steps.sh` - prints manual (non-scriptable) setup steps and pauses for confirmation before continuing
-6. `run_once_after_vorssaint-restore.sh` - restores Vorssaint preferences from the managed plist (runs after all other `run_once_` scripts, per chezmoi's `run_once_after_` ordering)
 
 ## Manual setup (not scriptable)
 
@@ -36,6 +36,7 @@ Printed and paused on during `run_once_zzz-manual-steps.sh` above; listed here t
 - **Finder sidebar** - binary `.sfl3` files, not scriptable via `defaults`. Settings > Sidebar (Cmd+,): Recents ON, Shared OFF, Favourites Desktop-only, Locations (iCloud Drive/Cloud Storage/home/External Disks) ON, Bin ON. Drag `~/workspace` into the sidebar below Desktop.
 - **Finder Recents view** - Cmd+J in Recents, set to List.
 - **Raycast extensions/plugins** - no CLI install path exists, must be added manually.
+- **Raycast settings import** - Raycast → Settings → Advanced → Import → select the tracked `~/.config/raycast/raycast-export.rayconfig` → enter the export passphrase (kept in password manager, never tracked). This is a point-in-time snapshot, not live-synced - re-export and re-add to chezmoi after changing hotkeys/extensions/config.
 
 Ghostty is auto-launched (`open -a Ghostty`) at the end of `run_once_zzz-manual-steps.sh` — it does not close your original terminal, since a process can't cleanly close its own parent shell.
 

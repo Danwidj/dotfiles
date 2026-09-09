@@ -22,6 +22,11 @@ Finder:
 
 Raycast:
   - Install extensions/plugins manually (no CLI install path exists)
+  - Import settings: Settings > Advanced > Import > select
+    ~/.config/raycast/raycast-export.rayconfig > enter the export
+    passphrase (in password manager, never tracked in this repo).
+    Raycast now covers window management (was Rectangle) and
+    keep-awake/menu-bar utilities (was Vorssaint) - both removed.
 
 ===============================================================================
 EOF
