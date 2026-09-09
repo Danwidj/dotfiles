@@ -58,6 +58,9 @@ fi
 # guard on the launchd plist it installs.
 AUTOUPDATE_PLIST="$HOME/Library/LaunchAgents/com.github.domt4.homebrew-autoupdate.plist"
 if [[ ! -f "$AUTOUPDATE_PLIST" ]]; then
+    # Newer Homebrew refuses to load external-command taps until trusted;
+    # non-interactive and idempotent (no-ops if already trusted).
+    brew trust --tap domt4/autoupdate
     brew autoupdate start 1w --upgrade --cleanup --ac-only --notify-on-error
     echo "brew autoupdate configured (weekly, AC-only, notify on failure only)."
 else
