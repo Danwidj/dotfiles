@@ -217,15 +217,23 @@ defaults write com.apple.Spotlight PasteboardHistoryTimeout -int 604800
 ###############################################################################
 
 # NOTE: com.apple.controlcenter menu-bar item toggles (battery %, Spotlight,
-# VoiceControl, WiFi, Sound icon visibility, etc.) live in a ByHost plist
+# VoiceControl, etc.) live in a ByHost plist
 # (~/Library/Preferences/ByHost/com.apple.controlcenter.<hw-uuid>.plist), not
 # the regular ~/Library/Preferences/com.apple.controlcenter.plist. A plain
 # `defaults read com.apple.controlcenter` misses them entirely — this is why
 # the original macprefs export (2026-08-21) didn't capture battery percentage.
-# Other ByHost-only CC toggles are likely also missing; audit manually if needed.
+# Audited 2026-09-09: WiFi/Sound/Clock/NowPlaying visibility ("NSStatusItem
+# VisibleCC <name>") turned out to live in the REGULAR (non-ByHost) domain
+# plist instead, at their macOS defaults, so nothing to script for those.
 
 # Show battery percentage in menu bar [default: off]
 defaults -currentHost write com.apple.controlcenter BatteryShowPercentage -bool true
+
+# Spotlight / Voice Control menu-bar item visibility mode (per-item dropdown:
+# Always Show / Show When Active / Don't Show) [default: differs per item;
+# value 8 reproduces this machine's current choice for both]
+defaults -currentHost write com.apple.controlcenter Spotlight -int 8
+defaults -currentHost write com.apple.controlcenter VoiceControl -int 8
 
 ###############################################################################
 # Screenshot
