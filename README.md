@@ -42,13 +42,39 @@ Ghostty is auto-launched (`open -a Ghostty`) at the end of `run_once_zzz-manual-
 
 ## Day-to-day
 
+There are two separate "copies" of every tracked file: the **source** (this repo, under `~/.local/share/chezmoi`) and the **target** (the real, live file chezmoi writes to, e.g. `~/.config/starship.toml`). Which direction you sync in depends on which one you just changed.
+
+**Live file has new changes you want to keep** (you edited a config directly, or an app/exporter overwrote it):
+
 ```sh
-chezmoi edit <file>     # edit the source, not the target directly
-chezmoi diff             # preview pending changes
-chezmoi apply            # apply them
+chezmoi re-add ~/.config/starship.toml   # pull the live file's content into the source
 ```
 
-`git.autoCommit` and `git.autoPush` are on (see `.chezmoi.toml.tmpl`), so `chezmoi apply` commits and pushes source changes automatically.
+**You want to change a config and have it flow to the live file:**
+
+```sh
+chezmoi edit ~/.config/starship.toml     # opens the SOURCE file in $EDITOR
+chezmoi apply                            # writes it out to the live target
+```
+
+Editing the live file directly also works (most day-to-day edits happen that way) — just remember to `re-add` afterward, otherwise the source stays stale.
+
+**Preview before applying:**
+
+```sh
+chezmoi diff              # everything pending
+chezmoi diff <target>     # just one file
+```
+
+**Adding a new file to tracking, or removing one:** see the "How to add/remove tracked config" note two sections up — same `add`/`forget` commands.
+
+### About autoCommit/autoPush — what actually triggers them
+
+`git.autoCommit` and `git.autoPush` are on (see `.chezmoi.toml.tmpl`), but they only fire on commands that touch the **source** state: `chezmoi add`, `chezmoi re-add`, `chezmoi edit`, `chezmoi chattr`, `chezmoi forget`, etc. Each one creates and pushes its own commit immediately — no separate `git commit`/`git push` needed for these.
+
+**`chezmoi apply` does NOT auto-commit anything** — it only writes source → target (the live files), and doesn't touch git at all. If you only ran `chezmoi apply`, nothing new is pushed, because nothing about the source changed.
+
+Common confusion this causes: if you replace a live file directly (e.g. re-exporting Raycast settings over the old file) and then check `git log` expecting a new commit, you won't see one until you `chezmoi re-add` it — `apply` alone won't pick it up, since apply only goes source → target, never the other direction.
 
 ## Gotchas
 
