@@ -137,11 +137,11 @@
 	<key>keepAwakeAllowDisplaySleep</key>
 	<false/>
 	<key>keepAwakeAutoStart</key>
-	<true/>
+	<false/>
 	<key>keepAwakeIconTint</key>
 	<string>orange</string>
 	<key>keepAwakeMouseJiggleEnabled</key>
-	<true/>
+	<false/>
 	<key>keepAwakeMouseJiggleIntervalMinutes</key>
 	<integer>2</integer>
 	<key>launchAtLoginWanted</key>
