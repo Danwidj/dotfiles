@@ -27,6 +27,16 @@ First apply will prompt for `machine_type` (personal/work) and git email, then r
 3. `run_once_packages.sh` - `brew bundle` from `~/.Brewfile`
 4. `run_once_zshenv.sh` - points `/etc/zshenv` at `ZDOTDIR`
 5. `run_onchange_install-vscode-extensions.sh` - installs VSCode extensions (reruns when the extension list changes)
+6. `run_once_zzz-manual-steps.sh` - prints manual (non-scriptable) setup steps and pauses for confirmation before continuing
+
+## Manual setup (not scriptable)
+
+Printed and paused on during `run_once_zzz-manual-steps.sh` above; listed here too for reference:
+
+- **Finder sidebar** - binary `.sfl3` files, not scriptable via `defaults`. Settings > Sidebar (Cmd+,): Recents ON, Shared OFF, Favourites Desktop-only, Locations (iCloud Drive/Cloud Storage/home/External Disks) ON, Bin ON. Drag `~/workspace` into the sidebar below Desktop.
+- **Finder Recents view** - Cmd+J in Recents, set to List.
+- **Raycast extensions/plugins** - no CLI install path exists, must be added manually.
+- **Ghostty** - not auto-launched by chezmoi; open and set as default terminal manually if desired.
 
 ## Day-to-day
 

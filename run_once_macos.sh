@@ -154,20 +154,9 @@ defaults write com.apple.finder calculateAllSizes -bool true
 # Bin: remove items after 30 days [default: off]
 defaults write com.apple.finder FXRemoveOldTrashItems -bool true
 
-# NOTE (manual): Recents view → set to List (Cmd+J in Recents)
-# NOTE (manual): Add ~/workspace to sidebar Favourites by dragging it in
-#
 # Sidebar items live in binary .sfl3 files — not scriptable via defaults.
-# Configure manually: Finder > Settings > Sidebar (Cmd+,)
-#   Recents:      ON
-#   Shared:       OFF
-#   Favourites:   Desktop ON only (all others OFF)
-#                 then drag ~/workspace into sidebar below Desktop
-#   Locations:    iCloud Drive ON, Cloud Storage ON,
-#                 [home folder] ON, External Disks ON
-#                 everything else OFF
-#   Bin:          ON
-#   Recent Tags:  OFF (scripted above)
+# See README.md "Manual setup" / run_once_zzz-manual-steps.sh for the sidebar
+# and Recents-view steps.
 
 ###############################################################################
 # Trackpad
