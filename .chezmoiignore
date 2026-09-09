@@ -3,3 +3,6 @@
 .config/zsh/.zsh_sessions
 .config/zsh/.zsh_history
 .config/zsh/custom.zsh
+.config/homebrew/Brewfile.local
+.config/vscode/extensions.local
+README.md

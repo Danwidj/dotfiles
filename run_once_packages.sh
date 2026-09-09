@@ -24,3 +24,22 @@ export HOMEBREW_BUNDLE_FILE_GLOBAL="$HOME/.config/homebrew/Brewfile"
 echo "Installing packages from $HOMEBREW_BUNDLE_FILE_GLOBAL..."
 brew bundle --global
 echo "Done."
+
+# Optional machine-local overlay for casks/formulae not tracked in the public
+# dotfiles repo (mirrors the ~/.config/zsh/custom.zsh pattern). This file is
+# untracked and ignored by chezmoi (see .chezmoiignore), so it may not exist
+# yet on a fresh machine — skip silently if so.
+#
+# NOTE: this script is run_once, so it will NOT re-run after this point on
+# this machine. And because Brewfile.local is untracked/unhashed by chezmoi,
+# a run_onchange_ script wouldn't re-trigger on edits to it either. So: after
+# adding entries to Brewfile.local, run this by hand to pick them up:
+#   brew bundle --file="$HOME/.config/homebrew/Brewfile.local"
+LOCAL_BREWFILE="$HOME/.config/homebrew/Brewfile.local"
+if [[ -f "$LOCAL_BREWFILE" ]]; then
+    echo "Installing packages from $LOCAL_BREWFILE..."
+    brew bundle --file="$LOCAL_BREWFILE"
+    echo "Done."
+else
+    echo "No local Brewfile found at $LOCAL_BREWFILE, skipping."
+fi
