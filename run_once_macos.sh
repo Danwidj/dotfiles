@@ -86,6 +86,11 @@ defaults write com.apple.dock show-process-indicators -bool false
 # Group windows by app in Mission Control [default: off]
 defaults write com.apple.dock expose-group-apps -bool true
 
+# Auto-hide, minimal delay [default: off]
+defaults write com.apple.dock autohide -bool true
+defaults write com.apple.dock autohide-delay -float 0
+defaults write com.apple.dock autohide-time-modifier -float 0.3
+
 ###############################################################################
 # Hot Corners
 # Values: 1=off, 4=Desktop, 10=Sleep Display, 13=Lock Screen, 14=Quick Note
