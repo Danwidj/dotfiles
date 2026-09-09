@@ -268,6 +268,48 @@ defaults -currentHost write com.apple.controlcenter VoiceControl -int 8
 defaults write com.apple.screencapture video -bool true
 
 ###############################################################################
+# Power / Lock Screen
+###############################################################################
+
+# Sleep (display + system) after 5 min on both power sources [default: varies]
+sudo pmset -a displaysleep 5 sleep 5
+
+# Require password 5 min after sleep/screensaver starts [default: immediately]
+defaults write com.apple.screensaver askForPassword -bool true
+defaults write com.apple.screensaver askForPasswordDelay -int 300
+
+###############################################################################
+# Siri / Apple Intelligence — disabled entirely
+###############################################################################
+
+defaults write com.apple.assistant.support "Assistant Enabled" -bool false
+defaults write com.apple.Siri StatusMenuVisible -bool false
+
+###############################################################################
+# Tips — disabled entirely (Notification Center tips + in-app hint bubbles,
+# both driven by the same com.apple.tipsd/TipKit daemon)
+###############################################################################
+
+# `bootout` of the currently-running instance is SIP-blocked (expected for a
+# system agent) - `disable` still persists and takes effect from next login.
+launchctl disable "gui/$(id -u)/com.apple.tipsd" 2>/dev/null || true
+
+###############################################################################
+# Login Items
+###############################################################################
+
+osascript <<'EOF'
+tell application "System Events"
+    set loginItemNames to name of every login item
+    repeat with appName in {"Raycast", "Calendar", "Reminders"}
+        if loginItemNames does not contain appName then
+            make login item at end with properties {path:"/Applications/" & appName & ".app", hidden:false}
+        end if
+    end repeat
+end tell
+EOF
+
+###############################################################################
 # Default apps (via duti — installed from the Brewfile)
 ###############################################################################
 
