@@ -29,15 +29,25 @@ fi
 # env var zshrc normally exports isn't set here — export it explicitly.
 export HOMEBREW_BUNDLE_FILE_GLOBAL="$HOME/.config/homebrew/Brewfile"
 
+# Run quietly; on failure, dump the captured output before exiting so the
+# real error is still visible (not just "brew bundle failed").
+run_bundle_quiet() {
+    local out
+    if out=$(brew bundle "$@" 2>&1); then
+        echo "$out" | tail -1
+    else
+        echo "$out"
+        return 1
+    fi
+}
+
 echo "Installing packages from $HOMEBREW_BUNDLE_FILE_GLOBAL..."
-brew bundle --global
-echo "Done."
+run_bundle_quiet --global
 
 # Optional machine-local overlay, untracked/gitignored (see README Gotchas
 # for the local-overlay pattern). Skip silently if it doesn't exist.
 LOCAL_BREWFILE="$HOME/.config/homebrew/Brewfile.local"
 if [[ -f "$LOCAL_BREWFILE" ]]; then
     echo "Installing packages from $LOCAL_BREWFILE..."
-    brew bundle --file="$LOCAL_BREWFILE"
-    echo "Done."
+    run_bundle_quiet --file="$LOCAL_BREWFILE"
 fi
