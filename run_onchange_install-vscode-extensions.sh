@@ -13,6 +13,10 @@ else
     exit 0
 fi
 
+# Suppress Node's url.parse() deprecation warning noise from the CLI itself
+# (comes from VSCode's own code, not this script — nothing to fix upstream).
+export NODE_NO_WARNINGS=1
+
 extensions="
 aaron-bond.better-comments
 oderwat.indent-rainbow

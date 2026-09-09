@@ -40,6 +40,4 @@ if [[ -f "$LOCAL_BREWFILE" ]]; then
     echo "Installing packages from $LOCAL_BREWFILE..."
     brew bundle --file="$LOCAL_BREWFILE"
     echo "Done."
-else
-    echo "No local Brewfile found at $LOCAL_BREWFILE, skipping."
 fi
