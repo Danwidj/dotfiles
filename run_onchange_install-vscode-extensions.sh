@@ -9,6 +9,9 @@ shd101wyy.markdown-preview-enhanced
 bierner.markdown-mermaid
 pkief.material-icon-theme
 esbenp.prettier-vscode
+mechatroner.rainbow-csv
+redhat.vscode-yaml
+typescriptteam.native-preview
 "
 
 for ext in $extensions; do
