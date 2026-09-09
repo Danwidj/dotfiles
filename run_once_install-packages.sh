@@ -1,9 +1,17 @@
 #!/usr/bin/env bash
-# run_once_packages.sh
-# Installs all packages from $HOMEBREW_BUNDLE_FILE_GLOBAL (~/.config/homebrew/Brewfile) via brew bundle.
+# run_once_install-packages.sh
+# Installs Homebrew + Xcode CLT if missing, then installs all packages from
+# $HOMEBREW_BUNDLE_FILE_GLOBAL (~/.config/homebrew/Brewfile) via brew bundle.
 # Runs after chezmoi applies files (so the Brewfile is already in place).
 
 set -euo pipefail
+
+if ! command -v brew &>/dev/null; then
+    echo "Installing Homebrew..."
+    /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+else
+    echo "Homebrew already installed. Skipping."
+fi
 
 # Ensure brew is on PATH (Apple Silicon; falls back to Intel)
 if [[ -f /opt/homebrew/bin/brew ]]; then
@@ -25,16 +33,8 @@ echo "Installing packages from $HOMEBREW_BUNDLE_FILE_GLOBAL..."
 brew bundle --global
 echo "Done."
 
-# Optional machine-local overlay for casks/formulae not tracked in the public
-# dotfiles repo (mirrors the ~/.config/zsh/custom.zsh pattern). This file is
-# untracked and ignored by chezmoi (see .chezmoiignore), so it may not exist
-# yet on a fresh machine — skip silently if so.
-#
-# NOTE: this script is run_once, so it will NOT re-run after this point on
-# this machine. And because Brewfile.local is untracked/unhashed by chezmoi,
-# a run_onchange_ script wouldn't re-trigger on edits to it either. So: after
-# adding entries to Brewfile.local, run this by hand to pick them up:
-#   brew bundle --file="$HOME/.config/homebrew/Brewfile.local"
+# Optional machine-local overlay, untracked/gitignored (see README Gotchas
+# for the local-overlay pattern). Skip silently if it doesn't exist.
 LOCAL_BREWFILE="$HOME/.config/homebrew/Brewfile.local"
 if [[ -f "$LOCAL_BREWFILE" ]]; then
     echo "Installing packages from $LOCAL_BREWFILE..."
