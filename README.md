@@ -13,6 +13,7 @@ Personal macOS dotfiles managed with [chezmoi](https://www.chezmoi.io/).
 - **Homebrew** - packages tracked in `~/.Brewfile`, installed via `brew bundle`
 - **VSCode** - extension list, installed on change
 - **macOS defaults** - system preference tweaks
+- **Default app handlers** - browser/PDF/mail/image/text/calendar/video/archive defaults, set via `duti`
 
 ## Install on a new machine
 
@@ -26,8 +27,9 @@ First apply will prompt for `machine_type` (personal/work) and git email, then r
 2. `run_once_macos.sh` - applies macOS system defaults
 3. `run_once_zshenv.sh` - points `/etc/zshenv` at `ZDOTDIR`
 4. `run_onchange_install-vscode-extensions.sh` - installs VSCode extensions (reruns when the extension list changes)
-5. `run_once_zzz-manual-steps.sh` - prints manual (non-scriptable) setup steps and pauses for confirmation before continuing
-6. `run_once_after_vorssaint-restore.sh` - restores Vorssaint preferences from the managed plist (runs after all other `run_once_` scripts, per chezmoi's `run_once_after_` ordering)
+5. `run_once_zz-set-default-apps.sh` - sets default app handlers (browser, PDF, mail, images, text, calendar, video, archive) via `duti`, after packages/casks are installed
+6. `run_once_zzz-manual-steps.sh` - prints manual (non-scriptable) setup steps and pauses for confirmation before continuing
+7. `run_once_after_vorssaint-restore.sh` - restores Vorssaint preferences from the managed plist (runs after all other `run_once_` scripts, per chezmoi's `run_once_after_` ordering)
 
 ## Manual setup (not scriptable)
 
