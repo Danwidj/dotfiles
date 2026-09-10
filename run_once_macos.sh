@@ -456,6 +456,10 @@ set_hotkey 30  52 21 1179648   # Save picture of selected area as a file    - Sh
 set_hotkey 31  52 21 1441792   # Copy picture of selected area to clipboard - Ctrl+Shift+Cmd+4
 set_hotkey 184 53 23 1179648   # Screenshot and recording options           - Shift+Cmd+5
 
+# Windows: cycle through windows of the front app (values from this
+# machine's original, pre-sweep configuration)
+set_hotkey 27 96 50 1048576    # Move focus to next window in application   - Cmd+`
+
 ###############################################################################
 # Apply
 ###############################################################################
@@ -463,5 +467,11 @@ set_hotkey 184 53 23 1179648   # Screenshot and recording options           - Sh
 killall Dock
 killall Finder
 killall cfprefsd
+
+# Writing com.apple.symbolichotkeys directly (not through System Settings'
+# own UI) doesn't make the OS rebind the actual key handlers - this private
+# tool forces an immediate rebind so the Keyboard Shortcuts changes above
+# take effect now instead of at next login.
+/System/Library/PrivateFrameworks/SystemAdministration.framework/Resources/activateSettings -u
 
 echo "Done. Some changes may need a logout/restart to take effect."
