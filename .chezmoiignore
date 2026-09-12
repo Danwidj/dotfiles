@@ -3,4 +3,5 @@
 .config/zsh/.zsh_sessions
 .config/zsh/.zsh_history
 .config/zsh/custom.zsh
+.config/zsh/.zshrc
 README.md

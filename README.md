@@ -4,7 +4,7 @@ Personal macOS dotfiles managed with [chezmoi](https://www.chezmoi.io/).
 
 ## What's managed
 
-- **zsh** - `~/.config/zsh` shell config (`ZDOTDIR`-relocated), plus `.zshrc`
+- **zsh** - `~/.config/zsh` shell config (`ZDOTDIR`-relocated): tracked `managed.zsh` plus an untracked, installer-writable `.zshrc` shim (one line sourcing `managed.zsh`)
 - **nvim** - LazyVim-based Neovim config (`~/.config/nvim`), fully tracked
 - **tmux** - config and themes (`~/.config/tmux`)
 - **ghostty** - terminal config (`~/.config/ghostty`)
@@ -81,4 +81,4 @@ Common confusion this causes: if you replace a live file directly (e.g. re-expor
 - Most files are `private_*` (mode 0600) since they can contain machine-specific paths or personal info.
 - `.chezmoi.toml.tmpl` prompts once per machine and caches answers in `~/.config/chezmoi/chezmoi.toml` - delete that file to re-prompt.
 - `nvim/` carries its own upstream `README.md`/`LICENSE` from LazyVim; this file is the top-level dotfiles README only.
-- **Local-overlay pattern** - `custom.zsh` is an untracked, machine-specific overlay (gitignored via `.chezmoiignore`), sourced conditionally from the tracked zshrc. The equivalent overlays for Homebrew (`Brewfile.local`) and VSCode (`extensions.local`) were removed - never used, and everything installed on either machine so far has been fine to track publicly.
+- **Local-overlay pattern** - `custom.zsh` is an untracked, machine-specific overlay (gitignored via `.chezmoiignore`), sourced conditionally from the tracked `managed.zsh`. `~/.config/zsh/.zshrc` itself is also untracked (a one-line shim sourcing `managed.zsh`, created on fresh machines by `run_once_zshrc.sh` only when missing) so installer-injected lines never collide with chezmoi. The equivalent overlays for Homebrew (`Brewfile.local`) and VSCode (`extensions.local`) were removed - never used, and everything installed on either machine so far has been fine to track publicly.
