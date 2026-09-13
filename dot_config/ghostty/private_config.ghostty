@@ -16,3 +16,6 @@ font-size = 12
 font-thicken = true
 font-thicken-strength = 1
 adjust-cell-height = 1
+
+# Stop pop up when quit application
+confirm-close-surface = false
