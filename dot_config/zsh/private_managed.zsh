@@ -28,6 +28,18 @@ eval "$(direnv hook zsh)"
 eval "$(mise activate zsh)"
 eval "$(zoxide init zsh)"
 alias vim="nvim"
+alias ls='eza --icons --git'
+alias cd='z'
+alias top='btop'
+alias find='fd'
+alias cat='bat'
+alias grep='rg'
+
+if command -v fzf >/dev/null 2>&1; then
+  eval "$(fzf --zsh)"
+  export FZF_DEFAULT_OPTS="--preview 'bat --style=numbers --color=always --line-range :500 {}'"
+  export FZF_CTRL_T_OPTS="--preview 'bat --style=numbers --color=always --line-range :500 {}'"
+fi
 
 # ==============================================================================
 # Local/machine-specific overrides (not tracked by chezmoi)
