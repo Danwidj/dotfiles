@@ -5,3 +5,6 @@
 .config/zsh/custom.zsh
 .config/zsh/.zshrc
 README.md
+{{- if eq .machine_type "work" }}
+.config/gh
+{{- end }}
