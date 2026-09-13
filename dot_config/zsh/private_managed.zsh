@@ -12,6 +12,7 @@ export XDG_STATE_HOME="$HOME/.local/state"
 export HOMEBREW_BUNDLE_FILE_GLOBAL="$XDG_CONFIG_HOME/homebrew/Brewfile"
 export GRADLE_USER_HOME="$XDG_DATA_HOME/gradle"
 export MAVEN_OPTS="-Dmaven.repo.local=$XDG_DATA_HOME/maven/repository $MAVEN_OPTS"
+export npm_config_userconfig="$XDG_CONFIG_HOME/npm/npmrc"
 export npm_config_cache="$XDG_CACHE_HOME/npm"
 export npm_config_logs_dir="$XDG_CACHE_HOME/npm/_logs"
 export STREAMLIT_BROWSER_GATHER_USAGE_STATS=false
