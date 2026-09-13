@@ -26,7 +26,7 @@ export GOCACHE="$XDG_CACHE_HOME/go-build"
 eval "$(starship init zsh)"
 eval "$(direnv hook zsh)"
 eval "$(mise activate zsh)"
-
+eval "$(zoxide init zsh)"
 alias vim="nvim"
 
 # ==============================================================================
