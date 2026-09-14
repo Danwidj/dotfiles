@@ -12,7 +12,6 @@ window-padding-x = 5
 window-padding-y = 10
 
 # typography
-font-family = "FiraCode Nerd Font Mono"
 font-size = 12
 font-thicken = true
 font-thicken-strength = 1
