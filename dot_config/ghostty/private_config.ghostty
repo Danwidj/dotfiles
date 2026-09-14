@@ -12,6 +12,7 @@ window-padding-x = 5
 window-padding-y = 10
 
 # typography
+font-family = "FiraCode Nerd Font Mono"
 font-size = 12
 font-thicken = true
 font-thicken-strength = 1
@@ -19,3 +20,27 @@ adjust-cell-height = 1
 
 # Stop pop up when quit application
 confirm-close-surface = false
+
+# SSH quality-of-life: correct TERM handling + auto terminfo install on remote hosts
+shell-integration-features = ssh-env,ssh-terminfo
+
+# Restore window position/size across restarts (macOS only)
+window-save-state = always
+
+# Raise scrollback for long agent sessions (was Ghostty's 10M default)
+scrollback-limit = 100000000
+
+# Longer undo window for accidental terminal text edits
+undo-timeout = 30s
+
+# Keep padding balanced/centered when the grid doesn't fill the window exactly
+window-padding-balance = true
+
+# Hide mouse cursor while typing
+mouse-hide-while-typing = true
+
+# Match split-divider color to the TokyoNight accent
+split-divider-color = #7aa2f7
+
+# Check for updates but don't auto-install
+auto-update = check
