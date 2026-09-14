@@ -24,7 +24,7 @@ export GOCACHE="$XDG_CACHE_HOME/go-build"
 # ==============================================================================
 # PATH
 # ==============================================================================
-export PATH="/opt/homebrew/bin:$HOME/.local/bin:$PATH"
+export PATH="$HOME/.local/bin:/opt/homebrew/bin:$PATH"
 
 # ==============================================================================
 # Shell tools
