@@ -9,3 +9,15 @@ agent_panel_sort = "spaces"
 show_agent_labels_on_pane_borders = true
 [ui.toast]
 delivery = "herdr"
+
+[session]
+resume_agents_on_restore = true
+
+[server]
+headless_cols = 200
+headless_rows = 60
+
+[[keys.command]]
+key = "prefix+shift+n"
+type = "shell"
+command = "herdr workspace create --cwd ~"
