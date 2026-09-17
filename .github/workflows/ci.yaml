@@ -29,16 +29,16 @@ jobs:
               email = "ci@example.com"
           EOF
 
-      - name: Run chezmoi init (verify templates render, no apply)
+      - name: Run chezmoi init (verify templates parse, no apply)
         run: |
           chezmoi init --source=.
 
-      - name: Verify cross-platform configs rendered
+      - name: Verify cross-platform configs exist in source
         run: |
-          echo "Checking cross-platform configs rendered..."
-          test -f "$HOME/.local/share/chezmoi/dot_config/zsh/managed.zsh" && echo "✓ zsh config rendered"
-          test -f "$HOME/.local/share/chezmoi/dot_config/nvim/init.lua" && echo "✓ nvim config rendered"
-          test -f "$HOME/.local/share/chezmoi/dot_config/tmux/tmux.conf" && echo "✓ tmux config rendered"
-          test -f "$HOME/.local/share/chezmoi/dot_config/ghostty/config" && echo "✓ ghostty config rendered"
-          test -f "$HOME/.local/share/chezmoi/dot_config/starship.toml" && echo "✓ starship config rendered"
-          test -f "$HOME/.local/share/chezmoi/dot_gitconfig" && echo "✓ git config rendered"
+          echo "Checking cross-platform configs in source..."
+          test -f "dot_config/zsh/managed.zsh" && echo "✓ zsh config exists"
+          test -f "dot_config/nvim/init.lua" && echo "✓ nvim config exists"
+          test -f "dot_config/tmux/tmux.conf" && echo "✓ tmux config exists"
+          test -f "dot_config/ghostty/config" && echo "✓ ghostty config exists"
+          test -f "dot_config/starship.toml" && echo "✓ starship config exists"
+          test -f "dot_gitconfig" && echo "✓ git config exists"
