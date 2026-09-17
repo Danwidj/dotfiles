@@ -31,6 +31,7 @@ jobs:
 
       - name: Create Linux-compatible Brewfile
         run: |
+          mkdir -p ~/.config/homebrew
           # Filter out macOS-only packages for Linux CI
           cat > ~/.config/homebrew/Brewfile <<'EOF'
           # Brewfile - Linux CI smoke test (cross-platform packages only)
