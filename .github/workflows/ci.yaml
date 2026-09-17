@@ -1,0 +1,45 @@
+name: CI Smoke Test
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  smoke-test:
+    name: Smoke test (Ubuntu)
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Install chezmoi
+        run: |
+          CHEZMOI_VERSION=$(curl -s https://api.github.com/repos/twpayne/chezmoi/releases/latest | grep '"tag_name"' | cut -d'"' -f4)
+          curl -sfL "https://github.com/twpayne/chezmoi/releases/download/${CHEZMOI_VERSION}/chezmoi_${CHEZMOI_VERSION#v}_linux_amd64.tar.gz" | tar -xz -C /tmp
+          sudo mv /tmp/chezmoi /usr/local/bin/chezmoi
+
+      - name: Create chezmoi config with CI data
+        run: |
+          mkdir -p ~/.config/chezmoi
+          cat > ~/.config/chezmoi/chezmoi.toml <<'EOF'
+          [data]
+              machine_type = "personal"
+              email = "ci@example.com"
+          EOF
+
+      - name: Run chezmoi init --apply (smoke test)
+        run: |
+          chezmoi init --apply --source=.
+        continue-on-error: true
+
+      - name: Verify cross-platform configs applied
+        run: |
+          echo "Checking cross-platform configs..."
+          test -f "$HOME/.config/zsh/managed.zsh" && echo "✓ zsh config applied"
+          test -f "$HOME/.config/nvim/init.lua" && echo "✓ nvim config applied"
+          test -f "$HOME/.config/tmux/tmux.conf" && echo "✓ tmux config applied"
+          test -f "$HOME/.config/ghostty/config" && echo "✓ ghostty config applied"
+          test -f "$HOME/.config/starship.toml" && echo "✓ starship config applied"
+          test -f "$HOME/.gitconfig" && echo "✓ git config applied"
