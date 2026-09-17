@@ -21,6 +21,9 @@ jobs:
           tar -xzf /tmp/chezmoi.tar.gz -C /tmp
           sudo mv /tmp/chezmoi /usr/local/bin/chezmoi
 
+      - name: Install bats-core
+        run: brew install bats-core
+
       - name: Create chezmoi config with CI data
         run: |
           mkdir -p ~/.config/chezmoi
@@ -34,12 +37,6 @@ jobs:
         run: |
           chezmoi init --apply --source=.
 
-      - name: Verify configs applied
+      - name: Run Bats tests (all)
         run: |
-          echo "Checking configs applied..."
-          test -f "$HOME/.config/zsh/managed.zsh" && echo "✓ zsh config applied"
-          test -f "$HOME/.config/nvim/init.lua" && echo "✓ nvim config applied"
-          test -f "$HOME/.config/tmux/tmux.conf" && echo "✓ tmux config applied"
-          test -f "$HOME/.config/ghostty/config" && echo "✓ ghostty config applied"
-          test -f "$HOME/.config/starship.toml" && echo "✓ starship config applied"
-          test -f "$HOME/.gitconfig" && echo "✓ git config applied"
+          bats --print-output-on-failure tests/files/*.bats
