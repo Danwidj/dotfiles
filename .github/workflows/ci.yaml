@@ -36,9 +36,9 @@ jobs:
       - name: Verify cross-platform configs exist in source
         run: |
           echo "Checking cross-platform configs in source..."
-          test -f "dot_config/zsh/managed.zsh" && echo "✓ zsh config exists"
-          test -f "dot_config/nvim/init.lua" && echo "✓ nvim config exists"
-          test -f "dot_config/tmux/tmux.conf" && echo "✓ tmux config exists"
-          test -f "dot_config/ghostty/config" && echo "✓ ghostty config exists"
-          test -f "dot_config/starship.toml" && echo "✓ starship config exists"
-          test -f "dot_gitconfig" && echo "✓ git config exists"
+          test -f "dot_config/zsh/private_managed.zsh" && echo "✓ zsh config exists"
+          test -f "dot_config/nvim/private_init.lua" && echo "✓ nvim config exists"
+          test -f "dot_config/tmux/private_tmux.conf" && echo "✓ tmux config exists"
+          test -f "dot_config/ghostty/private_config.ghostty" && echo "✓ ghostty config exists"
+          test -f "dot_config/private_starship.toml" && echo "✓ starship config exists"
+          test -f "dot_config/git/private_config.tmpl" && echo "✓ git config exists"
