@@ -1,0 +1,10 @@
+#!/bin/sh
+# Delta theme wrapper: auto-detect macOS light/dark mode and invoke delta with the appropriate feature.
+# Mirrors the detection logic used in tmux config:
+#   if-shell "defaults read -g AppleInterfaceStyle 2>/dev/null | grep -q Dark" ...
+
+if defaults read -g AppleInterfaceStyle 2>/dev/null | grep -q Dark; then
+    exec delta --features=dark "$@"
+else
+    exec delta --features=light "$@"
+fi
