@@ -1,0 +1,44 @@
+name: CI Smoke Test
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  smoke-test:
+    name: Smoke test (Ubuntu)
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Install chezmoi
+        run: |
+          CHEZMOI_VERSION=$(curl -s https://api.github.com/repos/twpayne/chezmoi/releases/latest | grep '"tag_name"' | cut -d'"' -f4)
+          curl -sfL "https://github.com/twpayne/chezmoi/releases/download/${CHEZMOI_VERSION}/chezmoi_${CHEZMOI_VERSION#v}_linux_amd64.tar.gz" | tar -xz -C /tmp
+          sudo mv /tmp/chezmoi /usr/local/bin/chezmoi
+
+      - name: Create chezmoi config with CI data
+        run: |
+          mkdir -p ~/.config/chezmoi
+          cat > ~/.config/chezmoi/chezmoi.toml <<'EOF'
+          [data]
+              machine_type = "personal"
+              email = "ci@example.com"
+          EOF
+
+      - name: Run chezmoi init (verify templates parse, no apply)
+        run: |
+          chezmoi init --source=.
+
+      - name: Verify cross-platform configs exist in source
+        run: |
+          echo "Checking cross-platform configs in source..."
+          test -f "dot_config/zsh/private_managed.zsh" && echo "✓ zsh config exists"
+          test -f "dot_config/nvim/private_init.lua" && echo "✓ nvim config exists"
+          test -f "dot_config/tmux/private_tmux.conf" && echo "✓ tmux config exists"
+          test -f "dot_config/ghostty/private_config.ghostty" && echo "✓ ghostty config exists"
+          test -f "dot_config/private_starship.toml" && echo "✓ starship config exists"
+          test -f "dot_config/git/private_config.tmpl" && echo "✓ git config exists"
