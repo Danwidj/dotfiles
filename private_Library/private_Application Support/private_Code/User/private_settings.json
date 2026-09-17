@@ -68,7 +68,8 @@
 
   // --- Terminal ---
   "terminal.integrated.initialHint": false,
-  "terminal.integrated.fontFamily": "monospace",
+  "terminal.integrated.fontFamily": "'JetBrainsMono Nerd Font Mono', monospace",
+  "editor.fontFamily": "'JetBrainsMono Nerd Font Mono', monospace",
 
   // --- Git ---
   "git.autofetch": true,
