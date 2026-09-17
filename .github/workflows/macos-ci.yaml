@@ -17,8 +17,9 @@ jobs:
       - name: Install chezmoi
         run: |
           CHEZMOI_VERSION=$(curl -s https://api.github.com/repos/twpayne/chezmoi/releases/latest | grep '"tag_name"' | cut -d'"' -f4)
-          curl -sfL "https://github.com/twpayne/chezmoi/releases/download/${CHEZMOI_VERSION}/chezmoi_${CHEZMOI_VERSION#v}_darwin_arm64.tar.gz" | tar -xz -C /tmp
-          sudo mv /tmp/chezmoi /usr/local/bin/chezmoi || sudo mv /tmp/chezmoi_${CHEZMOI_VERSION#v}_darwin_arm64/chezmoi /usr/local/bin/chezmoi
+          curl -sfL "https://github.com/twpayne/chezmoi/releases/download/${CHEZMOI_VERSION}/chezmoi_${CHEZMOI_VERSION#v}_darwin_arm64.tar.gz" -o /tmp/chezmoi.tar.gz
+          tar -xzf /tmp/chezmoi.tar.gz -C /tmp
+          sudo mv /tmp/chezmoi /usr/local/bin/chezmoi
 
       - name: Create chezmoi config with CI data
         run: |
