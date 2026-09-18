@@ -12,6 +12,8 @@ $line_break\
 $python\
 $character"""
 
+right_format = "$status$aws$time"
+
 [directory]
 style = "blue"
 
@@ -48,3 +50,8 @@ format = "[$virtualenv]($style) "
 style = "bright-black"
 detect_extensions = []
 detect_files = []
+
+[aws]
+format = '[$symbol$profile( \($region\))]($style) '
+style = "bold yellow"
+symbol = "☁️ "
