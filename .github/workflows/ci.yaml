@@ -6,6 +6,9 @@ on:
   pull_request:
     branches: [main]
 
+permissions:
+  contents: read
+
 jobs:
   smoke-test:
     name: Smoke test (Ubuntu)
@@ -16,7 +19,7 @@ jobs:
 
       - name: Install chezmoi
         run: |
-          CHEZMOI_VERSION=$(curl -s https://api.github.com/repos/twpayne/chezmoi/releases/latest | grep '"tag_name"' | cut -d'"' -f4)
+          CHEZMOI_VERSION="v2.72.2"
           curl -sfL "https://github.com/twpayne/chezmoi/releases/download/${CHEZMOI_VERSION}/chezmoi_${CHEZMOI_VERSION#v}_linux_amd64.tar.gz" | tar -xz -C /tmp
           sudo mv /tmp/chezmoi /usr/local/bin/chezmoi
 

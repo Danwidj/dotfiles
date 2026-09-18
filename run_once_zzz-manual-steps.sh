@@ -2,7 +2,11 @@
 # Manual setup steps that can't be scripted (binary plists, GUI-only settings).
 # Runs last (zzz- prefix) so it appears after every other run_once script.
 
-cat <<'EOF'
+# Detect non-interactive/CI environments and skip interactive prompts.
+if [ ! -t 0 ] || [ -n "${CI:-}" ] || [ -n "${GITHUB_ACTIONS:-}" ]; then
+    echo "non-interactive environment detected, skipping manual-steps prompt"
+else
+    cat <<'EOF'
 
 ===============================================================================
 MANUAL SETUP REQUIRED
@@ -31,10 +35,12 @@ Raycast:
 ===============================================================================
 EOF
 
-read -r -p "Press Enter once done (or to skip): " _
+    read -r -p "Press Enter once done (or to skip): " _
+fi
 
 # Auto-launch Ghostty as the new default terminal. This does NOT close the
 # current terminal — that process can't cleanly close its own parent shell.
-if [ -d "/Applications/Ghostty.app" ]; then
+# Skip in non-interactive/CI environments where `open -a` would fail.
+if [ -t 0 ] && [ -z "${CI:-}" ] && [ -z "${GITHUB_ACTIONS:-}" ] && [ -d "/Applications/Ghostty.app" ]; then
     open -a Ghostty
 fi
