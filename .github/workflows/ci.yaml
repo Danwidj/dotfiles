@@ -23,6 +23,9 @@ jobs:
           curl -sfL "https://github.com/twpayne/chezmoi/releases/download/${CHEZMOI_VERSION}/chezmoi_${CHEZMOI_VERSION#v}_linux_amd64.tar.gz" | tar -xz -C /tmp
           sudo mv /tmp/chezmoi /usr/local/bin/chezmoi
 
+      - name: Install bats-core
+        run: sudo apt-get update && sudo apt-get install -y bats
+
       - name: Create chezmoi config with CI data
         run: |
           mkdir -p ~/.config/chezmoi
@@ -32,16 +35,10 @@ jobs:
               email = "ci@example.com"
           EOF
 
-      - name: Run chezmoi init (verify templates parse, no apply)
+      - name: Run chezmoi init --apply (verify templates parse and apply)
         run: |
-          chezmoi init --source=.
+          chezmoi init --apply --source=.
 
-      - name: Verify cross-platform configs exist in source
+      - name: Run Bats tests (common + data)
         run: |
-          echo "Checking cross-platform configs in source..."
-          test -f "dot_config/zsh/private_managed.zsh" && echo "✓ zsh config exists"
-          test -f "dot_config/nvim/private_init.lua" && echo "✓ nvim config exists"
-          test -f "dot_config/tmux/private_tmux.conf" && echo "✓ tmux config exists"
-          test -f "dot_config/ghostty/private_config.ghostty" && echo "✓ ghostty config exists"
-          test -f "dot_config/private_starship.toml" && echo "✓ starship config exists"
-          test -f "dot_config/git/private_config.tmpl" && echo "✓ git config exists"
+          bats --print-output-on-failure tests/files/common.bats tests/files/data.bats
