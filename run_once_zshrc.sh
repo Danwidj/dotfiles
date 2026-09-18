@@ -18,9 +18,13 @@ set -euo pipefail
 ZSHRC="$HOME/.config/zsh/.zshrc"
 
 if [ ! -f "$ZSHRC" ]; then
+    # shellcheck disable=SC2016  # literal string with variable ref intended for file
     printf '%s\n' 'source "$ZDOTDIR/managed.zsh"' > "$ZSHRC"
     echo "Created $ZSHRC (shim sourcing managed.zsh)."
-elif ! grep -qF 'source "$ZDOTDIR/managed.zsh"' "$ZSHRC"; then
+elif
+    # shellcheck disable=SC2016  # literal string with variable ref intended for file
+    ! grep -qF 'source "$ZDOTDIR/managed.zsh"' "$ZSHRC"; then
+    # shellcheck disable=SC2016  # literal string with variable ref intended for file
     printf '%s\n' 'source "$ZDOTDIR/managed.zsh"' >> "$ZSHRC"
     echo "Appended source line to $ZSHRC."
 fi
