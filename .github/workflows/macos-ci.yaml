@@ -19,10 +19,8 @@ jobs:
 
       - name: Install chezmoi
         run: |
-          CHEZMOI_VERSION="v2.72.2"
-          curl -sfL "https://github.com/twpayne/chezmoi/releases/download/${CHEZMOI_VERSION}/chezmoi_${CHEZMOI_VERSION#v}_darwin_arm64.tar.gz" -o /tmp/chezmoi.tar.gz
-          tar -xzf /tmp/chezmoi.tar.gz -C /tmp
-          sudo mv /tmp/chezmoi /usr/local/bin/chezmoi
+          brew update
+          brew install chezmoi
 
       - name: Create chezmoi config with CI data
         run: |
