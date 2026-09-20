@@ -7,7 +7,7 @@ return {
     opts = {
       servers = {
         bashls = {
-          filetypes = { "sh", "bash", "zsh" },
+          filetypes = { "sh", "bash" },
         },
       },
     },
