@@ -8,7 +8,11 @@ This directory represents the XDG base directory (`$XDG_CONFIG_HOME`, typically 
 
 ### Subdirectories
 
-Subdirectories under `dot_config/` hold configurations for individual tools (AeroSpace, GitHub CLI, Ghostty, Git, herdr, Homebrew, mise, Neovim, Raycast, tmux, and Zsh). Each has its own dedicated directory and README.
+Subdirectories under `dot_config/` hold configurations for individual tools (AeroSpace, GitHub CLI, Ghostty, Git, herdr, Homebrew, mise, Neovim, Raycast, tmux, UV, and Zsh). Each has its own dedicated directory and README.
 
 The `fzf/` directory contains fzf appearance and picker options sourced by the
 Zsh configuration.
+
+The `uv/` directory contains the tracked manifest for globally installed Python
+CLI tools. `run_onchange_install-uv-tools.sh` installs these tools whenever the
+manifest changes.

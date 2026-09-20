@@ -134,3 +134,9 @@ teardown() {
     run grep -F -e "--style=full" "${MANAGED}"
     assert_success
 }
+
+@test "uv tool manifest tracks Pyrefly" {
+    TOOLS="${BATS_TEST_DIRNAME}/../../home/dot_config/uv/private_tools.txt"
+    run grep -Fx "pyrefly" "${TOOLS}"
+    assert_success
+}
