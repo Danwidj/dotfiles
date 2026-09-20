@@ -11,8 +11,15 @@ setup() {
     email = "test@example.com"
 EOF
 
-    # Apply chezmoi configs for tests that need them
-    chezmoi init --apply --source="${BATS_TEST_DIRNAME}/../.." --destination="${TEST_HOME}" --config="${TEST_HOME}/.config/chezmoi/chezmoi.toml" >/dev/null 2>&1
+    # Apply chezmoi configs for tests that need them. --exclude=scripts skips
+    # run_once_*/run_onchange_* scripts: this file's tests only assert on
+    # applied file state, and unconditionally running scripts here would
+    # execute macOS-only commands (Homebrew, `defaults`, `osascript`, ...)
+    # for real, on whichever OS this bats file runs on (Ubuntu via ci.yaml,
+    # macOS via macos-ci.yaml). Script behavior itself is exercised directly
+    # below (e.g. the run_once_zshrc.sh tests) and, end-to-end on the
+    # correct OS, by macos-ci.yaml's own top-level chezmoi apply step.
+    chezmoi init --apply --source="${BATS_TEST_DIRNAME}/../.." --destination="${TEST_HOME}" --config="${TEST_HOME}/.config/chezmoi/chezmoi.toml" --exclude=scripts >/dev/null 2>&1
 }
 
 teardown() {

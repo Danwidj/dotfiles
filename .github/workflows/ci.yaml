@@ -41,9 +41,14 @@ jobs:
               email = "ci@example.com"
           EOF
 
-      - name: Run chezmoi init --apply (verify templates parse and apply)
+      - name: Run chezmoi init --apply (verify templates parse and apply, no scripts)
         run: |
-          chezmoi init --apply --source=.
+          # --exclude=scripts renders and applies every file but never executes
+          # run_once_*/run_onchange_* scripts. This repo is macOS-only (see
+          # macos-ci.yaml for the real full-apply-with-scripts test on the
+          # correct OS); running scripts here would execute macOS-only
+          # commands (Homebrew, `defaults`, `osascript`, ...) on Linux.
+          chezmoi init --apply --source=. --exclude=scripts
 
       - name: Run Bats tests (common + data)
         run: |
