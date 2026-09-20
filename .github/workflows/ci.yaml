@@ -3,8 +3,22 @@ name: CI Smoke Test
 on:
   push:
     branches: [main]
+    paths-ignore:
+      - '.github/workflows/macos-ci.yaml'
+      - 'dot_config/aerospace/**'
+      - 'dot_config/raycast/**'
+      - 'private_Library/**'
+      - 'run_once_macos.sh'
+      - 'tests/files/macos.bats'
   pull_request:
     branches: [main]
+    paths-ignore:
+      - '.github/workflows/macos-ci.yaml'
+      - 'dot_config/aerospace/**'
+      - 'dot_config/raycast/**'
+      - 'private_Library/**'
+      - 'run_once_macos.sh'
+      - 'tests/files/macos.bats'
 
 permissions:
   contents: read
