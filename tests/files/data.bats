@@ -14,7 +14,7 @@ setup() {
     email = "test@example.com"
 EOF
 
-    run chezmoi execute-template -f "${BATS_TEST_DIRNAME}/../../dot_config/git/private_config.tmpl" --config="${TEST_HOME}/.config/chezmoi/chezmoi.toml"
+    run chezmoi execute-template -f "${BATS_TEST_DIRNAME}/../../home/dot_config/git/private_config.tmpl" --config="${TEST_HOME}/.config/chezmoi/chezmoi.toml"
     assert_success
     assert_output_partial "email = test@example.com"
 }
@@ -26,7 +26,7 @@ EOF
     email = "another@domain.org"
 EOF
 
-    run chezmoi execute-template -f "${BATS_TEST_DIRNAME}/../../dot_config/git/private_config.tmpl" --config="${TEST_HOME}/.config/chezmoi/chezmoi.toml"
+    run chezmoi execute-template -f "${BATS_TEST_DIRNAME}/../../home/dot_config/git/private_config.tmpl" --config="${TEST_HOME}/.config/chezmoi/chezmoi.toml"
     assert_success
     assert_output_partial "email = another@domain.org"
 }
@@ -38,7 +38,7 @@ EOF
     email = "test@example.com"
 EOF
 
-    run chezmoi execute-template -f "${BATS_TEST_DIRNAME}/../../dot_config/homebrew/private_Brewfile.tmpl" --config="${TEST_HOME}/.config/chezmoi/chezmoi.toml"
+    run chezmoi execute-template -f "${BATS_TEST_DIRNAME}/../../home/dot_config/homebrew/private_Brewfile.tmpl" --config="${TEST_HOME}/.config/chezmoi/chezmoi.toml"
     assert_success
     assert_output_partial 'brew "gh"'
 }
@@ -50,7 +50,7 @@ EOF
     email = "test@example.com"
 EOF
 
-    run chezmoi execute-template -f "${BATS_TEST_DIRNAME}/../../dot_config/homebrew/private_Brewfile.tmpl" --config="${TEST_HOME}/.config/chezmoi/chezmoi.toml"
+    run chezmoi execute-template -f "${BATS_TEST_DIRNAME}/../../home/dot_config/homebrew/private_Brewfile.tmpl" --config="${TEST_HOME}/.config/chezmoi/chezmoi.toml"
     assert_success
     refute_output_partial 'brew "gh"'
 }
@@ -62,7 +62,7 @@ EOF
     email = "test@example.com"
 EOF
 
-    run chezmoi execute-template -f "${BATS_TEST_DIRNAME}/../../dot_config/homebrew/private_Brewfile.tmpl" --config="${TEST_HOME}/.config/chezmoi/chezmoi.toml"
+    run chezmoi execute-template -f "${BATS_TEST_DIRNAME}/../../home/dot_config/homebrew/private_Brewfile.tmpl" --config="${TEST_HOME}/.config/chezmoi/chezmoi.toml"
     assert_success
     assert_output_partial 'brew "git"'
     assert_output_partial 'brew "chezmoi"'
@@ -77,7 +77,7 @@ EOF
     email = "test@example.com"
 EOF
 
-    run chezmoi execute-template -f "${BATS_TEST_DIRNAME}/../../dot_config/homebrew/private_Brewfile.tmpl" --config="${TEST_HOME}/.config/chezmoi/chezmoi.toml"
+    run chezmoi execute-template -f "${BATS_TEST_DIRNAME}/../../home/dot_config/homebrew/private_Brewfile.tmpl" --config="${TEST_HOME}/.config/chezmoi/chezmoi.toml"
     assert_success
     assert_output_partial 'brew "git"'
     assert_output_partial 'brew "chezmoi"'
