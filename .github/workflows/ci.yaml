@@ -24,7 +24,7 @@ jobs:
           sudo mv /tmp/chezmoi /usr/local/bin/chezmoi
 
       - name: Install bats-core
-        run: sudo apt-get update && sudo apt-get install -y bats
+        run: sudo apt-get update && sudo apt-get install -y bats zsh
 
       - name: Install Homebrew
         run: |
