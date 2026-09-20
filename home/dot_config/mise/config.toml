@@ -1,0 +1,5 @@
+[tools]
+node = "22"
+uv = "latest"
+go = "1"
+java = "21"
