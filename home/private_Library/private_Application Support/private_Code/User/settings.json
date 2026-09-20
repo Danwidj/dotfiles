@@ -36,6 +36,7 @@
   "editor.cursorBlinking": "smooth",
   "editor.cursorSmoothCaretAnimation": "on",
   "editor.accessibilitySupport": "off",
+  "editor.defaultColorDecorators": "always",
 
   // --- Editor: IntelliSense & Navigation ---
   "editor.suggestSelection": "first",
@@ -58,13 +59,26 @@
   },
   "workbench.secondarySideBar.defaultVisibility": "hidden",
   "workbench.tree.indent": 20,
-  "extensions.ignoreRecommendations": true,
+  "workbench.tree.renderIndentGuides": "always",
+  "workbench.iconTheme": "material-icon-theme",
+  "workbench.tree.enableStickyScroll": true,
+
+  //--- Explorer ---
+  "explorer.compactFolders": false,
+  "explorer.confirmDelete": false,
 
   // --- Title Bar ---
   "window.commandCenter": false,
   "workbench.navigationControl.enabled": false,
   "workbench.layoutControl.enabled": false,
   "workbench.browser.showInTitleBar": false,
+
+  // --- color customisation ---
+  "workbench.colorCustomizations": {
+    "tree.indentGuidesStroke": "#444444",
+    "tree.tableColumnsBorder": "#007acc",
+    "list.dropBetweenBackground": "#007acc",
+  },
 
   // --- Terminal ---
   "terminal.integrated.initialHint": false,
@@ -81,21 +95,25 @@
   "git.confirmSync": false,
 
   // --- Markdown ---
-  "markdown.preview.doubleClickToSwitchToEditor": true,
+  "markdown.preview.doubleClickToSwitchToEditor": false,
   "markdown.preview.markEditorSelection": true,
 
   // --- Prettier ---
   "prettier.singleQuote": true,
   "prettier.trailingComma": "all",
 
+  // --- Material Icon Theme ---
+  "material-icon-theme.files.color": "#90a4ae",
+  "material-icon-theme.folders.color": "#42a5f5",
+  "material-icon-theme.folders.theme": "classic",
+  "material-icon-theme.hidesExplorerArrows": true,
+
   // --- Misc ---
   "update.showReleaseNotes": false,
   "chat.titleBar.openInAgentsWindow.enabled": false,
   "chat.disableAIFeatures": true,
-  "github.copilot.enable": { "*": false },
   "security.workspace.trust.untrustedFiles": "open",
   "terminal.external.osxExec": "Ghostty.app",
   "terminal.integrated.allowMnemonics": true,
-  "explorer.confirmDelete": false,
   "window.confirmSaveUntitledWorkspace": false,
 }
