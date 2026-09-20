@@ -5,19 +5,19 @@ on:
     branches: [main]
     paths-ignore:
       - '.github/workflows/macos-ci.yaml'
-      - 'dot_config/aerospace/**'
-      - 'dot_config/raycast/**'
-      - 'private_Library/**'
-      - 'run_once_macos.sh'
+      - 'home/dot_config/aerospace/**'
+      - 'home/dot_config/raycast/**'
+      - 'home/private_Library/**'
+      - 'home/run_once_macos.sh'
       - 'tests/files/macos.bats'
   pull_request:
     branches: [main]
     paths-ignore:
       - '.github/workflows/macos-ci.yaml'
-      - 'dot_config/aerospace/**'
-      - 'dot_config/raycast/**'
-      - 'private_Library/**'
-      - 'run_once_macos.sh'
+      - 'home/dot_config/aerospace/**'
+      - 'home/dot_config/raycast/**'
+      - 'home/private_Library/**'
+      - 'home/run_once_macos.sh'
       - 'tests/files/macos.bats'
 
 permissions:

@@ -97,7 +97,7 @@ teardown() {
     MANAGED="${TEST_HOME}/.config/zsh/managed.zsh"
 
     echo "source managed content" > "${MANAGED}"
-    HOME="${TEST_HOME}" run bash "${BATS_TEST_DIRNAME}/../../run_once_zshrc.sh"
+    HOME="${TEST_HOME}" run bash "${BATS_TEST_DIRNAME}/../../home/run_once_zshrc.sh"
     assert_success
 
     assert_file_exist "${ZSHRC}"
@@ -113,7 +113,7 @@ teardown() {
     echo "source managed content" > "${MANAGED}"
     printf '%s\n' 'source "$ZDOTDIR/managed.zsh"' > "${ZSHRC}"
 
-    HOME="${TEST_HOME}" run bash "${BATS_TEST_DIRNAME}/../../run_once_zshrc.sh"
+    HOME="${TEST_HOME}" run bash "${BATS_TEST_DIRNAME}/../../home/run_once_zshrc.sh"
     assert_success
 
     run grep -cF 'source "$ZDOTDIR/managed.zsh"' "${ZSHRC}"
@@ -122,7 +122,7 @@ teardown() {
 }
 
 @test "managed.zsh configures Catppuccin Mocha and Latte fzf themes" {
-    MANAGED="${BATS_TEST_DIRNAME}/../../dot_config/zsh/private_managed.zsh"
+    MANAGED="${BATS_TEST_DIRNAME}/../../home/dot_config/zsh/private_managed.zsh"
     run grep -F "Catppuccin Mocha" "${MANAGED}"
     assert_success
     run grep -F "Catppuccin Latte" "${MANAGED}"

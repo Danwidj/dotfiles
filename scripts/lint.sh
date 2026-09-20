@@ -4,7 +4,7 @@
 set -euo pipefail
 
 # Find all run_*.sh scripts tracked by git
-scripts=$(git ls-files 'run_*.sh')
+scripts=$(git ls-files 'home/run_*.sh')
 
 if [ -z "$scripts" ]; then
     echo "No run_*.sh scripts found"
