@@ -121,8 +121,8 @@ teardown() {
     assert_output "1"
 }
 
-@test "managed.zsh configures Catppuccin Mocha and Latte fzf themes" {
-    MANAGED="${BATS_TEST_DIRNAME}/../../home/dot_config/zsh/private_managed.zsh"
+@test "fzf configures Catppuccin Mocha and Latte themes" {
+    MANAGED="${BATS_TEST_DIRNAME}/../../home/dot_config/fzf/private_config.zsh"
     run grep -F "Catppuccin Mocha" "${MANAGED}"
     assert_success
     run grep -F "Catppuccin Latte" "${MANAGED}"
