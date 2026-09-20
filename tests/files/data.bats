@@ -68,6 +68,8 @@ EOF
     assert_output_partial 'brew "chezmoi"'
     assert_output_partial 'brew "neovim"'
     assert_output_partial 'brew "tmux"'
+    assert_output_partial 'brew "fzf-tab"'
+    assert_output_partial 'brew "zsh-syntax-highlighting"'
 
     cat > "${TEST_HOME}/.config/chezmoi/chezmoi.toml" <<'EOF'
 [data]
@@ -81,4 +83,6 @@ EOF
     assert_output_partial 'brew "chezmoi"'
     assert_output_partial 'brew "neovim"'
     assert_output_partial 'brew "tmux"'
+    assert_output_partial 'brew "fzf-tab"'
+    assert_output_partial 'brew "zsh-syntax-highlighting"'
 }

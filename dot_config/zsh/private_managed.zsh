@@ -27,6 +27,30 @@ export GOCACHE="$XDG_CACHE_HOME/go-build"
 export PATH="$HOME/.local/bin:/opt/homebrew/bin:$PATH"
 
 # ==============================================================================
+# Options
+# ==============================================================================
+# History
+setopt HIST_IGNORE_DUPS
+setopt HIST_IGNORE_ALL_DUPS
+setopt HIST_REDUCE_BLANKS
+setopt SHARE_HISTORY
+setopt HIST_VERIFY
+
+# Globbing
+setopt EXTENDED_GLOB
+setopt GLOB_DOTS
+setopt NUMERIC_GLOB_SORT
+
+# Navigation
+setopt AUTO_CD
+setopt AUTO_PUSHD
+setopt PUSHD_IGNORE_DUPS
+
+# Correction
+setopt CORRECT
+setopt NO_CLOBBER
+
+# ==============================================================================
 # Shell tools
 # ==============================================================================
 command -v starship &>/dev/null && eval "$(starship init zsh)"
@@ -41,6 +65,12 @@ alias top='btop'
 alias find='fd'
 alias cat='bat'
 alias grep='rg'
+
+# ==============================================================================
+# Completion & Plugins
+# ==============================================================================
+autoload -Uz compinit
+compinit
 
 if command -v fzf >/dev/null 2>&1; then
   eval "$(fzf --zsh)"
@@ -98,6 +128,11 @@ if command -v fzf >/dev/null 2>&1; then
   export FZF_CTRL_T_OPTS="--preview 'bat --style=numbers --color=always --line-range :500 {}'"
 fi
 
+# fzf-tab
+if [[ -f "$(brew --prefix)/share/fzf-tab/fzf-tab.zsh" ]]; then
+  source "$(brew --prefix)/share/fzf-tab/fzf-tab.zsh"
+fi
+
 # zsh-autosuggestions
 if [[ -f "$(brew --prefix)/share/zsh-autosuggestions/zsh-autosuggestions.zsh" ]]; then
   source "$(brew --prefix)/share/zsh-autosuggestions/zsh-autosuggestions.zsh"
@@ -112,3 +147,10 @@ fi
 # Local/machine-specific overrides (not tracked by chezmoi)
 # ==============================================================================
 [[ -f "$ZDOTDIR/custom.zsh" ]] && source "$ZDOTDIR/custom.zsh"
+
+# ==============================================================================
+# Syntax highlighting (must be sourced last)
+# ==============================================================================
+if [[ -f "$(brew --prefix)/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh" ]]; then
+  source "$(brew --prefix)/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh"
+fi

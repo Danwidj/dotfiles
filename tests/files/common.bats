@@ -35,6 +35,38 @@ teardown() {
     assert_file_exist "${TEST_HOME}/.config/zsh/managed.zsh"
 }
 
+@test "~/.config/zsh/managed.zsh is zsh parse-clean" {
+    run zsh -n "${TEST_HOME}/.config/zsh/managed.zsh"
+    assert_success
+}
+
+@test "~/.config/zsh/managed.zsh sets expected quality-of-life setopts" {
+    MANAGED="${TEST_HOME}/.config/zsh/managed.zsh"
+    for opt in HIST_IGNORE_DUPS HIST_IGNORE_ALL_DUPS HIST_REDUCE_BLANKS SHARE_HISTORY HIST_VERIFY \
+               EXTENDED_GLOB GLOB_DOTS NUMERIC_GLOB_SORT AUTO_CD AUTO_PUSHD PUSHD_IGNORE_DUPS \
+               CORRECT NO_CLOBBER; do
+        run grep -E "^setopt[[:space:]]+$opt" "${MANAGED}"
+        assert_success
+    done
+}
+
+@test "~/.config/zsh/managed.zsh enforces plugin load order: compinit -> fzf-tab -> autosuggestions -> syntax-highlighting" {
+    MANAGED="${TEST_HOME}/.config/zsh/managed.zsh"
+    compinit_line=$(grep -n "compinit" "${MANAGED}" | head -n 1 | cut -d: -f1)
+    fzftab_line=$(grep -n "fzf-tab.zsh" "${MANAGED}" | head -n 1 | cut -d: -f1)
+    autosuggest_line=$(grep -n "zsh-autosuggestions.zsh" "${MANAGED}" | head -n 1 | cut -d: -f1)
+    syntax_line=$(grep -n "zsh-syntax-highlighting.zsh" "${MANAGED}" | head -n 1 | cut -d: -f1)
+
+    [ -n "$compinit_line" ]
+    [ -n "$fzftab_line" ]
+    [ -n "$autosuggest_line" ]
+    [ -n "$syntax_line" ]
+
+    [ "$compinit_line" -lt "$fzftab_line" ]
+    [ "$fzftab_line" -lt "$autosuggest_line" ]
+    [ "$autosuggest_line" -lt "$syntax_line" ]
+}
+
 @test "~/.config/nvim/init.lua exists after apply" {
     assert_file_exist "${TEST_HOME}/.config/nvim/init.lua"
 }
