@@ -1,5 +1,8 @@
 "$schema" = 'https://starship.rs/config-schema.json'
 
+add_newline = true
+command_timeout = 1000
+
 format = """
 $username\
 $hostname\
@@ -7,12 +10,22 @@ $directory\
 $git_branch\
 $git_state\
 $git_status\
+$package\
+$nodejs\
+$python\
+$rust\
+$golang\
+$mise\
+$docker_context\
+$direnv\
 $cmd_duration\
 $line_break\
-$python\
 $character"""
 
-right_format = "$status$aws$time"
+right_format = """
+$status\
+$cmd_duration\
+$time"""
 
 [directory]
 style = "blue"
@@ -22,6 +35,21 @@ success_symbol = "[❯](purple)"
 error_symbol = "[❯](red)"
 vimcmd_symbol = "[❮](green)"
 
+[cmd_duration]
+format = "[$duration]($style) "
+style = "yellow"
+
+[status]
+disabled = false
+format = "[$status]($style) "
+style = "red"
+
+[time]
+disabled = false
+time_format = "%R"
+format = "[$time](bright-black) "
+style = "bright-black"
+
 [git_branch]
 format = "[$branch]($style)"
 style = "bright-black"
@@ -29,24 +57,54 @@ style = "bright-black"
 [git_status]
 format = "[[(*$conflicted$untracked$modified$staged$renamed$deleted)](218) ($ahead_behind$stashed)]($style)"
 style = "cyan"
-conflicted = "​"
-untracked = "​"
-modified = "​"
-staged = "​"
-renamed = "​"
-deleted = "​"
-stashed = "≡"
+conflicted = "=$count "
+untracked = "?$count "
+modified = "!$count "
+staged = "+$count "
+renamed = "»$count "
+deleted = "✘$count "
+ahead = "⇡$count"
+behind = "⇣$count"
+diverged = "⇕⇡${ahead_count}⇣${behind_count}"
+stashed = "≡$count"
 
 [git_state]
 format = '\([$state( $progress_current/$progress_total)]($style)\) '
 style = "bright-black"
 
-[cmd_duration]
-format = "[$duration]($style) "
-style = "yellow"
+[package]
+format = "[$symbol$version]($style) "
+style = "bright-black"
+
+[nodejs]
+format = "[$symbol($version )]($style)"
+style = "bright-black"
 
 [python]
-format = "[$virtualenv]($style) "
+format = "[$symbol$pyenv_prefix($version )(\\($virtualenv\\) )]($style)"
+style = "bright-black"
+
+[rust]
+format = "[$symbol($version )]($style)"
+style = "bright-black"
+
+[golang]
+format = "[$symbol($version )]($style)"
+style = "bright-black"
+
+[mise]
+disabled = false
+format = "[$symbol$health]($style) "
+style = "bright-black"
+
+[docker_context]
+format = "[$symbol$context]($style) "
+style = "bright-black"
+only_with_files = true
+
+[direnv]
+disabled = false
+format = "[$symbol$loaded/$allowed]($style) "
 style = "bright-black"
 detect_extensions = []
 detect_files = []
