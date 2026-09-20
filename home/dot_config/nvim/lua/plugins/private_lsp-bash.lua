@@ -6,7 +6,9 @@ return {
     "neovim/nvim-lspconfig",
     opts = {
       servers = {
-        bashls = {},
+        bashls = {
+          filetypes = { "sh", "bash", "zsh" },
+        },
       },
     },
   },

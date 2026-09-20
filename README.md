@@ -1,84 +1,207 @@
-# dotfiles
+# ⚙️ dotfiles
 
-Personal macOS dotfiles managed with [chezmoi](https://www.chezmoi.io/).
+[![CI](https://github.com/Danwidj/dotfiles/actions/workflows/ci.yaml/badge.svg)](https://github.com/Danwidj/dotfiles/actions/workflows/ci.yaml)
+[![macOS CI](https://github.com/Danwidj/dotfiles/actions/workflows/macos-ci.yaml/badge.svg)](https://github.com/Danwidj/dotfiles/actions/workflows/macos-ci.yaml)
+[![Lint](https://github.com/Danwidj/dotfiles/actions/workflows/lint.yaml/badge.svg)](https://github.com/Danwidj/dotfiles/actions/workflows/lint.yaml)
+[![Managed by chezmoi](https://img.shields.io/badge/managed%20by-chezmoi-blue.svg?logo=chezmoi&color=4c4f69)](https://chezmoi.io/)
+[![Platform](https://img.shields.io/badge/platform-macOS%20%7C%20OS--agnostic%20ready-333333.svg?logo=apple)](README.md)
+[![Theme: Catppuccin](https://img.shields.io/badge/theme-Catppuccin%20Mocha%20%2F%20Latte-b4befe.svg)](https://github.com/catppuccin/catppuccin)
 
-## What's managed
+> Declarative, reproducible, and keyboard-driven developer environment managed with [chezmoi](https://www.chezmoi.io/).
 
-- **zsh** - `~/.config/zsh` shell config (`ZDOTDIR`-relocated): tracked `managed.zsh` plus an untracked, installer-writable `.zshrc` shim (one line sourcing `managed.zsh`)
-- **nvim** - LazyVim-based Neovim config (`~/.config/nvim`), fully tracked
-- **tmux** - config and themes (`~/.config/tmux`)
-- **ghostty** - terminal config (`~/.config/ghostty`)
-- **starship** - prompt config (`~/.config/starship.toml`)
-- **git** - `~/.gitconfig` (templated with per-machine email)
-- **Homebrew** - packages tracked in `~/.Brewfile`, installed via `brew bundle`; weekly auto-update (`brew autoupdate`, AC-power only, notify on failure only) configured automatically
-- **VSCode** - extension list, installed on change
-- **macOS defaults** - system preference tweaks, including default app handlers (browser/PDF/mail/image/text/calendar/video/archive) via `duti`
-- **Raycast** - encrypted settings export (`~/.config/raycast/raycast-export.rayconfig`), covers window management + productivity workflows (replaces Rectangle and Vorssaint, both removed) - import is manual, see below
+---
 
-## Install on a new machine
+## 📑 Table of Contents
+
+- [Overview & Philosophy](#-overview--philosophy)
+- [Why chezmoi?](#-why-chezmoi)
+- [Tooling & Ecosystem](#-tooling--ecosystem)
+- [Repository Structure](#-repository-structure)
+- [Installation & Bootstrap](#-installation--bootstrap)
+- [Post-Installation Setup](#-post-installation-setup-macOS)
+- [Day-to-Day Workflow](#-day-to-day-workflow)
+- [Testing & Quality Assurance](#-testing--quality-assurance)
+
+---
+
+## 💡 Overview & Philosophy
+
+This repository contains my personal dotfiles and machine provisioning state. The setup is built around a few core tenets:
+
+- **Declarative & Reproducible**: A fresh machine should reach an identical, ready-to-code state with a single bootstrap command.
+- **Fast & Minimal Friction**: Relocated `$ZDOTDIR` to keep `$HOME` clean, strict plugin load ordering for instant shell startup, and zero visual lag.
+- **Work vs. Personal Coexistence**: Seamless configuration parameterization (different git emails, scoped packages, and excluded configs) without maintaining separate branches.
+- **Keyboard-Centric Navigation**: Consistent keybindings across AeroSpace tiling window management, tmux session multiplexing, Neovim, and terminal workflows.
+- **OS-Agnostic Vision**: While these dotfiles are **currently tailored and tested daily for macOS (Apple Silicon)**, the repository is actively designed to become fully OS-agnostic (supporting Linux and containerized dev environments). The cross-platform CI suite already tests non-macOS application on Ubuntu runners.
+
+---
+
+## 🧰 Why chezmoi?
+
+Managing dotfiles with plain Git symlink trees or GNU Stow quickly runs into limitations when moving across machines or dealing with sensitive configurations. This setup relies on [chezmoi](https://www.chezmoi.io/) for several distinct advantages:
+
+1. **Declarative State Management**: chezmoi manages files, permissions, and directory structures directly, eliminating broken symlinks and ambiguous sync states.
+2. **Single Static Binary**: chezmoi is a self-contained Go binary. Bootstrapping requires zero external runtimes (no Python, Ruby, or Node dependencies needed upfront).
+3. **Powerful Templating (Go Templates)**: A single codebase adapts dynamically to personal vs. work machines, different git author emails, and conditional package manifests via `.chezmoi.toml.tmpl`.
+4. **Security & Secret Handling**: Sensitive configuration files are managed with restricted permissions (`0600` via `private_`), encrypted state exports are supported natively, and secrets stay out of plaintext version control.
+5. **Granular Lifecycle Tracking**: Automated execution scripts (`run_once_*`, `run_onchange_*`, `run_after_*`) only fire when needed—such as installing VS Code extensions only when the extension manifest changes, or running package provisioning once per machine.
+6. **Seamless Git Integration & Diffing**: Built-in diffing allows full inspection of changes between your source state and live target state before applying anything to disk.
+
+---
+
+## ✨ Tooling & Ecosystem
+
+| Category | Tool | Description | Config Path |
+|---|---|---|---|
+| **Terminal** | [Ghostty](https://ghostty.org/) | GPU-accelerated, native terminal emulator | `~/.config/ghostty/config.ghostty` |
+| **Multiplexer** | [tmux](https://github.com/tmux/tmux) | Terminal multiplexer with Catppuccin Mocha/Latte themes | `~/.config/tmux/tmux.conf` |
+| **Shell** | [Zsh](https://www.zsh.org/) | Relocated `$ZDOTDIR`, optimized plugin order, clean `$HOME` | `~/.config/zsh/managed.zsh` |
+| **Prompt** | [Starship](https://starship.rs/) | Minimalist, fast, and customizable cross-shell prompt | `~/.config/starship.toml` |
+| **History & Search** | [Atuin](https://atuin.sh/) & [fzf](https://github.com/junegunn/fzf) | SQLite-backed shell history search + interactive fuzzy completion | `~/.config/zsh/managed.zsh` |
+| **Editor** | [Neovim](https://neovim.io/) | [LazyVim](https://lazyvim.github.io/)-based IDE configuration with Python/Bash LSPs, Oil, and Snacks | `~/.config/nvim/` |
+| **GUI Editor** | [VS Code](https://code.visualstudio.com/) | Synchronized user settings, keybindings, and declarative extension bundle | `~/Library/Application Support/Code/User/` |
+| **Window Manager** | [AeroSpace](https://github.com/nikitabobko/AeroSpace) | i3-like tiling window manager for macOS | `~/.config/aerospace/aerospace.toml` |
+| **Launcher** | [Raycast](https://www.raycast.com/) | Extensible launcher & productivity platform (replaces Spotlight) | `~/.config/raycast/` |
+| **Package Manager** | [Homebrew](https://brew.sh/) | Declarative `Brewfile` bundle, weekly automated updates | `~/.Brewfile` |
+| **Runtime Manager** | [mise](https://mise.jdx.dev/) | Polyglot runtime version manager (Node, Python, Go, etc.) | `~/.config/mise/config.toml` |
+| **Agent Sessions** | [herdr](https://github.com/Danwidj/dotfiles) | Workspace agent orchestrator & session restorer | `~/.config/herdr/config.toml` |
+| **VCS & Diffing** | [Git](https://git-scm.com/) & [delta](https://github.com/dandavison/delta) | Templated git identity, global ignores, and syntax-highlighted diffs | `~/.config/git/` |
+
+---
+
+## 📁 Repository Structure
+
+The repository maintains a strict separation between chezmoi-managed configurations and repository tooling:
+
+```text
+Danwidj/dotfiles/
+├── .github/          # CI/CD workflows (multi-platform tests, ShellCheck linting)
+├── home/             # chezmoi managed source root (defined by .chezmoiroot)
+├── scripts/          # Standalone CI and repository tooling scripts
+├── tests/            # Automated Bats test suite
+├── .chezmoiroot      # Instructs chezmoi that 'home/' is the target source root
+├── AGENTS.md         # Durable project memory and instructions for AI agents
+├── Makefile          # Convenient command shortcuts (lint, test, apply, diff)
+└── README.md         # Repository documentation
+```
+
+### High-Level Directories
+
+- **[`.github/`](.github/workflows/README.md)**: GitHub Actions workflows validating linting (ShellCheck), Ubuntu cross-platform provisioning, and macOS end-to-end applications.
+- **[`home/`](home/README.md)**: The chezmoi managed source root (configured via `.chezmoiroot`). Everything in this directory targets `$HOME` (e.g. `dot_config/` maps to `~/.config/`, `private_Library/` maps to `~/Library/`). Lifecycle scripts (`run_once_*`, `run_onchange_*`, `run_after_*`) and templates also reside here.
+- **[`scripts/`](scripts/README.md)**: Helper scripts for CI runner installation, test configuration generation, and script linting. Kept outside `home/` so they are never copied to `$HOME`.
+- **[`tests/`](tests/README.md)**: Integration test suite built with Bats (`bats-core`), asserting on template substitution, file generation, idempotency, and script syntax.
+
+> ℹ️ *Each subfolder contains its own localized `README.md` detailing its specific files and purpose.*
+
+---
+
+## 🚀 Installation & Bootstrap
+
+To bootstrap a new machine from scratch:
 
 ```sh
 chezmoi init --apply Danwidj/dotfiles
 ```
 
-First apply will prompt for `machine_type` (personal/work) and git email, then run, in order:
+### What Happens During First Apply
 
-1. `run_once_install-packages.sh` - installs Homebrew + Xcode CLT if missing, then `brew bundle` from `~/.Brewfile`
-2. `run_once_macos.sh` - applies macOS system defaults, then sets default app handlers (browser, PDF, mail, images, text, calendar, video, archive) via `duti`
-3. `run_once_zshenv.sh` - points `/etc/zshenv` at `ZDOTDIR`
-4. `run_onchange_install-vscode-extensions.sh` - installs VSCode extensions (reruns when the extension list changes)
-5. `run_once_zzz-manual-steps.sh` - prints manual (non-scriptable) setup steps and pauses for confirmation before continuing
+1. **Interactive Prompt**: Prompts for machine context (`machine_type`: `personal` or `work`) and Git email address. Responses are cached in `~/.config/chezmoi/chezmoi.toml`.
+2. **`run_once_install-packages.sh`**: Installs Xcode Command Line Tools and Homebrew if missing, then provisions formulae and casks via `brew bundle --global`.
+3. **`run_once_macos.sh`**: Configures curated macOS system preferences, turns off non-essential shortcuts, configures screenshot keybindings, and registers default application handlers (browser, PDF, mail, images, text, archives) using `duti`.
+4. **`run_once_zshenv.sh`**: Configures `/etc/zshenv` to point `ZDOTDIR` to `~/.config/zsh`, keeping `$HOME` clean of `.zshrc` and history files.
+5. **`run_onchange_install-vscode-extensions.sh`**: Declaratively installs VS Code extensions (runs on initial setup and whenever the extension manifest is updated).
+6. **`run_after_install-herdr-integrations.sh`**: Verifies and updates herdr agent integrations (Claude, Pi).
+7. **`run_once_zzz-manual-steps.sh`**: Prompts the user through non-scriptable macOS settings and launches Ghostty.
 
-## Manual setup (not scriptable)
+---
 
-Printed and paused on during `run_once_zzz-manual-steps.sh` above; listed here too for reference:
+## ⚙️ Post-Installation Setup (macOS)
 
-- **Finder sidebar** - binary `.sfl3` files, not scriptable via `defaults`. Settings > Sidebar (Cmd+,): Recents ON, Shared OFF, Favourites Desktop-only, Locations (iCloud Drive/Cloud Storage/home/External Disks) ON, Bin ON. Drag `~/workspace` into the sidebar below Desktop.
-- **Finder Recents view** - Cmd+J in Recents, set to List.
-- **Raycast extensions/plugins** - no CLI install path exists, must be added manually.
-- **Raycast settings import** - Raycast → Settings → Advanced → Import → select the tracked `~/.config/raycast/raycast-export.rayconfig` → enter the export passphrase (kept in password manager, never tracked). This is a point-in-time snapshot, not live-synced - re-export and re-add to chezmoi after changing hotkeys/extensions/config.
+Certain macOS settings cannot be automated via `defaults` because of sandboxing or binary plist formats. The setup script pauses on these during initial bootstrap:
 
-Ghostty is auto-launched (`open -a Ghostty`) at the end of `run_once_zzz-manual-steps.sh` — it does not close your original terminal, since a process can't cleanly close its own parent shell.
+- **Finder Sidebar**:
+  - Open **Finder Settings (Cmd + ,) → Sidebar**.
+  - Enable: *Recents*, *Locations* (iCloud Drive, Cloud Storage, Home, External Disks), *Bin*.
+  - Disable: *Shared*.
+  - Set *Favourites* to Desktop only, then drag `~/workspace` into the sidebar below Desktop.
+- **Finder Recents View**:
+  - Press `Cmd + J` in the Recents folder and change default view to **List**.
+- **Raycast Settings Import**:
+  - Open **Raycast → Settings → Advanced → Import**.
+  - Select the tracked snapshot file: `~/.config/raycast/raycast-export.rayconfig`.
+  - Enter the export passphrase (stored securely in your password manager).
+- **Ghostty**:
+  - Launched automatically at the conclusion of the setup script.
 
-## Day-to-day
+---
 
-There are two separate "copies" of every tracked file: the **source** (this repo, under `~/.local/share/chezmoi`) and the **target** (the real, live file chezmoi writes to, e.g. `~/.config/starship.toml`). Which direction you sync in depends on which one you just changed.
+## 🔄 Day-to-Day Workflow
 
-**Live file has new changes you want to keep** (you edited a config directly, or an app/exporter overwrote it):
+chezmoi maintains two separate states:
+- **Source state**: This Git repository (`~/.local/share/chezmoi/home`)
+- **Target state**: The actual destination files in `$HOME` (e.g. `~/.config/starship.toml`)
 
+### Common Operations
+
+#### Preview Pending Changes
 ```sh
-chezmoi re-add ~/.config/starship.toml   # pull the live file's content into the source
+# Inspect differences across all managed files
+chezmoi diff
+
+# Inspect differences for a specific target
+chezmoi diff ~/.config/starship.toml
 ```
 
-**You want to change a config and have it flow to the live file:**
-
+#### Modifying Tracked Configurations
 ```sh
-chezmoi edit ~/.config/starship.toml     # opens the SOURCE file in $EDITOR
-chezmoi apply                            # writes it out to the live target
+# Option A: Edit the source file directly, then apply
+chezmoi edit ~/.config/starship.toml
+chezmoi apply
+
+# Option B: Edit the target file directly in $HOME, then pull into source
+$EDITOR ~/.config/starship.toml
+chezmoi re-add ~/.config/starship.toml
 ```
 
-Editing the live file directly also works (most day-to-day edits happen that way) — just remember to `re-add` afterward, otherwise the source stays stale.
-
-**Preview before applying:**
-
+#### Adding or Removing Tracked Files
 ```sh
-chezmoi diff              # everything pending
-chezmoi diff <target>     # just one file
+# Add a new file to tracking
+chezmoi add ~/.config/foo.conf
+
+# Stop tracking a file (preserves target on disk)
+chezmoi forget ~/.config/foo.conf
 ```
 
-**Adding a new file to tracking, or removing one:** see the "How to add/remove tracked config" note two sections up — same `add`/`forget` commands.
+### Understanding `autoCommit` and `autoPush`
 
-### About autoCommit/autoPush — what actually triggers them
+`git.autoCommit` and `git.autoPush` are enabled in this setup. They trigger **only** when commands modify the **source state** (`chezmoi add`, `chezmoi re-add`, `chezmoi edit`, `chezmoi forget`).
 
-`git.autoCommit` and `git.autoPush` are on (see `.chezmoi.toml.tmpl`), but they only fire on commands that touch the **source** state: `chezmoi add`, `chezmoi re-add`, `chezmoi edit`, `chezmoi chattr`, `chezmoi forget`, etc. Each one creates and pushes its own commit immediately — no separate `git commit`/`git push` needed for these.
+> ⚠️ **Important**: Running `chezmoi apply` does **not** create a Git commit. `apply` syncs source &rarr; target (writing to `$HOME`). If you modify a live file on disk, you must run `chezmoi re-add <file>` to pull it into the source state and trigger the automatic commit.
 
-**`chezmoi apply` does NOT auto-commit anything** — it only writes source → target (the live files), and doesn't touch git at all. If you only ran `chezmoi apply`, nothing new is pushed, because nothing about the source changed.
+### Untracked Local Overlays
 
-Common confusion this causes: if you replace a live file directly (e.g. re-exporting Raycast settings over the old file) and then check `git log` expecting a new commit, you won't see one until you `chezmoi re-add` it — `apply` alone won't pick it up, since apply only goes source → target, never the other direction.
+To allow local installer scripts (like `nvm`, `sdkman`, or corporate tooling) to inject shell lines without polluting the tracked dotfiles repository, `~/.config/zsh/.zshrc` is an **untracked shim**. It is created by `run_once_zshrc.sh` on fresh installs and simply sources `managed.zsh`. External tools can append to `.zshrc` without causing Git merge conflicts with chezmoi.
 
-## Gotchas
+---
 
-- Most files are `private_*` (mode 0600) since they can contain machine-specific paths or personal info.
-- `.chezmoi.toml.tmpl` prompts once per machine and caches answers in `~/.config/chezmoi/chezmoi.toml` - delete that file to re-prompt.
-- `nvim/` carries its own upstream `README.md`/`LICENSE` from LazyVim; this file is the top-level dotfiles README only.
-- **Local-overlay pattern** - `custom.zsh` is an untracked, machine-specific overlay (gitignored via `.chezmoiignore`), sourced conditionally from the tracked `managed.zsh`. `~/.config/zsh/.zshrc` itself is also untracked (a one-line shim sourcing `managed.zsh`, created on fresh machines by `run_once_zshrc.sh` only when missing) so installer-injected lines never collide with chezmoi. The equivalent overlays for Homebrew (`Brewfile.local`) and VSCode (`extensions.local`) were removed - never used, and everything installed on either machine so far has been fine to track publicly.
+## 🧪 Testing & Quality Assurance
+
+This repository includes a comprehensive local test harness and CI pipeline:
+
+```sh
+# Run ShellCheck across all scripts
+make lint
+
+# Run the Bats test suite
+make test
+```
+
+- **ShellCheck Linting**: Ensures all provisioning shell scripts adhere to strict POSIX / Bash standards and error-handling best practices.
+- **Bats Test Suite**: Simulates isolated installations in temporary directories, verifies Zsh parse cleanliness, plugin loading orders, and tests dynamic Go template rendering with varied machine types.
+
+---
+
+## 📄 License
+
+Personal dotfiles are licensed under the [MIT License](LICENSE). Feel free to fork, borrow, and adapt for your own setup.
