@@ -73,8 +73,10 @@ brew "btop"
 brew "tlrc"
 brew "ffmpeg"
 brew "sevenzip"
+{{ if eq .chezmoi.os "darwin" -}}
 brew "cliclick"
 brew "duti"
+{{ end -}}
 
 # ---------------------------------------------------------------------------
 # GUI apps
@@ -87,7 +89,9 @@ cask "google-chrome"
 cask "claude"
 cask "claude-code"
 cask "ngrok"
+{{ if eq .chezmoi.os "darwin" -}}
 cask "nikitabobko/tap/aerospace"
+{{ end -}}
 cask "intellij-idea"
 
 # ---------------------------------------------------------------------------
