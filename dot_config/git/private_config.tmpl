@@ -4,15 +4,26 @@
 
 [core]
     editor = nvim
-    pager = delta
+    pager = ~/.config/git/delta-theme-wrapper
 
 [interactive]
-    diffFilter = delta --color-only
+    diffFilter = ~/.config/git/delta-theme-wrapper --color-only
 
 [delta]
     navigate = true
     side-by-side = true
     line-numbers = true
+    true-color = always
+    hyperlinks = true
+    hyperlinks-file-link-format = file://{path}
+    hunk-header-style = line-number syntax
+    hunk-header-decoration-style = blue box
+
+[delta "dark"]
+    syntax-theme = Catppuccin Mocha
+
+[delta "light"]
+    syntax-theme = Catppuccin Latte
 
 [init]
     defaultBranch = main

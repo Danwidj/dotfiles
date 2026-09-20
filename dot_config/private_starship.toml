@@ -106,3 +106,10 @@ only_with_files = true
 disabled = false
 format = "[$symbol$loaded/$allowed]($style) "
 style = "bright-black"
+detect_extensions = []
+detect_files = []
+
+[aws]
+format = '[$symbol$profile( \($region\))]($style) '
+style = "bold yellow"
+symbol = "☁️ "

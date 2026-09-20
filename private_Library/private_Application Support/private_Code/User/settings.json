@@ -68,14 +68,17 @@
 
   // --- Terminal ---
   "terminal.integrated.initialHint": false,
-  "terminal.integrated.fontFamily": "'JetBrainsMono Nerd Font Mono', monospace",
-  "editor.fontFamily": "'JetBrainsMono Nerd Font Mono', monospace",
+  "terminal.integrated.fontFamily": "'JetBrainsMono Nerd Font Mono'",
+  "editor.fontFamily": "'JetBrainsMono Nerd Font Mono'",
 
   // --- Git ---
   "git.autofetch": true,
   "git.autoStash": true,
   "git.ignoreRebaseWarning": true,
   "git.blame.editorDecoration.enabled": true,
+  "git.openRepositoryInParentFolders": "always",
+  "git.enableSmartCommit": false,
+  "git.confirmSync": false,
 
   // --- Markdown ---
   "markdown.preview.doubleClickToSwitchToEditor": true,
@@ -91,11 +94,8 @@
   "chat.disableAIFeatures": true,
   "github.copilot.enable": { "*": false },
   "security.workspace.trust.untrustedFiles": "open",
-  "git.enableSmartCommit": true,
   "terminal.external.osxExec": "Ghostty.app",
   "terminal.integrated.allowMnemonics": true,
-  "git.confirmSync": false,
   "explorer.confirmDelete": false,
-  "remote-explorer.foldersSortOrder": "alphabetical",
   "window.confirmSaveUntitledWorkspace": false,
 }
