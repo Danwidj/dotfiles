@@ -32,31 +32,19 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Install chezmoi
-        run: |
-          CHEZMOI_VERSION="v2.72.2"
-          CHEZMOI_URL="https://github.com/twpayne/chezmoi/releases/download/${CHEZMOI_VERSION}"
-          CHEZMOI_ARCHIVE="chezmoi_${CHEZMOI_VERSION#v}_linux_amd64.tar.gz"
-          curl -sfL "${CHEZMOI_URL}/${CHEZMOI_ARCHIVE}" | tar -xz -C /tmp
-          sudo mv /tmp/chezmoi /usr/local/bin/chezmoi
+        run: ./scripts/ci-install-chezmoi.sh
 
       - name: Install bats-core
         run: sudo apt-get update && sudo apt-get install -y bats zsh
 
       - name: Install Homebrew
         run: |
-          NONINTERACTIVE=1 /bin/bash -c \
-            "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+          ./scripts/ci-install-homebrew.sh
           echo "/home/linuxbrew/.linuxbrew/bin" >> "$GITHUB_PATH"
           echo "/home/linuxbrew/.linuxbrew/sbin" >> "$GITHUB_PATH"
 
       - name: Create chezmoi config with CI data
-        run: |
-          mkdir -p ~/.config/chezmoi
-          cat > ~/.config/chezmoi/chezmoi.toml <<'EOF'
-          [data]
-              machine_type = "personal"
-              email = "ci@example.com"
-          EOF
+        run: ./scripts/ci-write-chezmoi-config.sh
 
       - name: Run chezmoi init --apply (verify templates parse and apply, no scripts)
         run: |
@@ -65,7 +53,7 @@ jobs:
           # macos-ci.yaml for the real full-apply-with-scripts test on the
           # correct OS); running scripts here would execute macOS-only
           # commands (Homebrew, `defaults`, `osascript`, ...) on Linux.
-          chezmoi init --apply --source=. --exclude=scripts
+          ./scripts/ci-chezmoi-apply.sh --exclude=scripts
 
       - name: Run Bats tests (common + data)
         run: |

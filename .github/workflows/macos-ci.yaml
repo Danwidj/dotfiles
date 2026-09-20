@@ -24,25 +24,16 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Install chezmoi
-        run: |
-          brew update
-          brew install chezmoi
+        run: ./scripts/ci-install-chezmoi.sh
 
       - name: Install bats-core
         run: brew install bats-core
 
       - name: Create chezmoi config with CI data
-        run: |
-          mkdir -p ~/.config/chezmoi
-          cat > ~/.config/chezmoi/chezmoi.toml <<'EOF'
-          [data]
-              machine_type = "personal"
-              email = "ci@example.com"
-          EOF
+        run: ./scripts/ci-write-chezmoi-config.sh
 
       - name: Run chezmoi init --apply (full macOS apply)
-        run: |
-          chezmoi init --apply --source=.
+        run: ./scripts/ci-chezmoi-apply.sh
 
       - name: Run Bats tests (all)
         run: |
