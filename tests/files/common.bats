@@ -92,4 +92,6 @@ teardown() {
     assert_success
     run grep -F "bg+:#CCD0DA,bg:#EFF1F5" "${MANAGED}"
     assert_success
+    run grep -F -e "--style=full" "${MANAGED}"
+    assert_success
 }
