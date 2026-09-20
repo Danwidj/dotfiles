@@ -6,13 +6,11 @@ on:
     paths-ignore:
       - '.github/workflows/ci.yaml'
       - '.github/workflows/lint.yaml'
-      - '.yamllint'
   pull_request:
     branches: [main]
     paths-ignore:
       - '.github/workflows/ci.yaml'
       - '.github/workflows/lint.yaml'
-      - '.yamllint'
 
 permissions:
   contents: read
