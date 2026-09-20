@@ -270,12 +270,16 @@ defaults write com.apple.screencapture video -bool true
 # Power / Lock Screen
 ###############################################################################
 
-# Sleep (display + system) after 5 min on both power sources [default: varies]
-sudo pmset -a displaysleep 5 sleep 5
+# Screensaver after 5 min (300 seconds; lives in ByHost domain)
+defaults -currentHost write com.apple.screensaver idleTime -int 300
 
-# Require password 5 min after sleep/screensaver starts [default: immediately]
+# Sleep (display + system) after 15 min on both power sources [default: varies]
+sudo pmset -a displaysleep 15 sleep 15
+
+# Require password immediately when sleep/screensaver starts [default: immediately]
 defaults write com.apple.screensaver askForPassword -bool true
-defaults write com.apple.screensaver askForPasswordDelay -int 300
+defaults write com.apple.screensaver askForPasswordDelay -int 0
+
 
 ###############################################################################
 # Siri / Apple Intelligence — disabled entirely

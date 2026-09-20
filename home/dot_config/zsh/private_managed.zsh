@@ -59,7 +59,7 @@ command -v mise &>/dev/null && eval "$(mise activate zsh)"
 command -v zoxide &>/dev/null && eval "$(zoxide init zsh)"
 
 alias vim="nvim"
-alias ls='eza --icons --git'
+alias ls='eza --icons --git --grid --all'
 alias cd='z'
 alias top='btop'
 alias find='fd'
@@ -143,10 +143,6 @@ if command -v atuin >/dev/null 2>&1; then
   eval "$(atuin init zsh)"
 fi
 
-# ==============================================================================
-# Local/machine-specific overrides (not tracked by chezmoi)
-# ==============================================================================
-[[ -f "$ZDOTDIR/custom.zsh" ]] && source "$ZDOTDIR/custom.zsh"
 
 # ==============================================================================
 # Syntax highlighting (must be sourced last)
