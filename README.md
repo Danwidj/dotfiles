@@ -81,7 +81,7 @@ Danwidj/dotfiles/
 ├── tests/            # Automated Bats test suite
 ├── .chezmoiroot      # Instructs chezmoi that 'home/' is the target source root
 ├── AGENTS.md         # Durable project memory and instructions for AI agents
-├── Makefile          # Convenient command shortcuts (lint, test, apply, diff)
+├── justfile          # Convenient command shortcuts (lint, test, apply, diff)
 └── README.md         # Repository documentation
 ```
 
@@ -191,10 +191,10 @@ This repository includes a comprehensive local test harness and CI pipeline:
 
 ```sh
 # Run ShellCheck across all scripts
-make lint
+just lint
 
 # Run the Bats test suite
-make test
+just test
 ```
 
 - **ShellCheck Linting**: Ensures all provisioning shell scripts adhere to strict POSIX / Bash standards and error-handling best practices.

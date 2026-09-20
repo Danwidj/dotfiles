@@ -1,2 +1,4 @@
 # Globally available Python CLI tools managed by uv.
 pyrefly
+pre-commit
+ruff

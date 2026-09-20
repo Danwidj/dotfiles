@@ -135,8 +135,12 @@ teardown() {
     assert_success
 }
 
-@test "uv tool manifest tracks Pyrefly" {
+@test "uv tool manifest tracks required tools" {
     TOOLS="${BATS_TEST_DIRNAME}/../../home/dot_config/uv/private_tools.txt"
     run grep -Fx "pyrefly" "${TOOLS}"
+    assert_success
+    run grep -Fx "pre-commit" "${TOOLS}"
+    assert_success
+    run grep -Fx "ruff" "${TOOLS}"
     assert_success
 }

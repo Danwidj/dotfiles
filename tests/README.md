@@ -8,5 +8,5 @@ This directory contains automated integration tests for the dotfiles using [Bats
 Run tests locally with:
 
 ```sh
-make test
+just test
 ```
