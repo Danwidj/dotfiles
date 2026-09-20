@@ -48,6 +48,16 @@ if command -v fzf >/dev/null 2>&1; then
   export FZF_CTRL_T_OPTS="--preview 'bat --style=numbers --color=always --line-range :500 {}'"
 fi
 
+# zsh-autosuggestions
+if [[ -f "$(brew --prefix)/share/zsh-autosuggestions/zsh-autosuggestions.zsh" ]]; then
+  source "$(brew --prefix)/share/zsh-autosuggestions/zsh-autosuggestions.zsh"
+fi
+
+# atuin
+if command -v atuin >/dev/null 2>&1; then
+  eval "$(atuin init zsh)"
+fi
+
 # ==============================================================================
 # Local/machine-specific overrides (not tracked by chezmoi)
 # ==============================================================================
