@@ -1,0 +1,15 @@
+# ~/.config/zsh/.zshenv — sourced by every zsh invocation (interactive or not, login or not)
+# XDG Base Directory exports from https://blog.mislam.dev/new-mac-setup-zenful-developer-experience
+# Set XDG environment variables
+export XDG_CONFIG_HOME="$HOME/.config"
+export XDG_CACHE_HOME="$HOME/.cache"
+export XDG_DATA_HOME="$HOME/.local/share"
+export XDG_STATE_HOME="$HOME/.local/state"
+export XDG_RUNTIME_DIR="$TMPDIR/xdg_runtime"
+
+# Ensure XDG_RUNTIME_DIR exists
+mkdir -p "$XDG_RUNTIME_DIR"
+
+# Colorize ls output
+export CLICOLOR=1
+export LSCOLORS=ExFxBxDxCxegedabagacad
