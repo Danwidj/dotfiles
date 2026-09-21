@@ -18,7 +18,6 @@ $golang\
 $mise\
 $docker_context\
 $direnv\
-$cmd_duration\
 $line_break\
 $character"""
 
@@ -107,7 +106,6 @@ disabled = false
 format = "[$symbol$loaded/$allowed]($style) "
 style = "bright-black"
 detect_extensions = []
-detect_files = []
 
 [aws]
 format = '[$symbol$profile( \($region\))]($style) '
