@@ -15,6 +15,9 @@
 
 set -euo pipefail
 
+# Ensure zsh history directory exists (XDG-compliant)
+mkdir -p "${XDG_DATA_HOME:-$HOME/.local/share}/zsh"
+
 ZSHRC="$HOME/.config/zsh/.zshrc"
 
 if [ ! -f "$ZSHRC" ]; then
