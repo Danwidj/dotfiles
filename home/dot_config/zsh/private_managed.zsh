@@ -31,10 +31,18 @@ export PATH="$HOME/.local/bin:/opt/homebrew/bin:$PATH"
 # Options
 # ==============================================================================
 # History
-setopt HIST_IGNORE_DUPS
-setopt HIST_IGNORE_ALL_DUPS
-setopt HIST_REDUCE_BLANKS
+export HISTFILE="${XDG_DATA_HOME:-$HOME/.local/share}/zsh/history"
+export HISTSIZE=10000
+export SAVEHIST=10000
+export HISTDUP=erase
+setopt APPEND_HISTORY
 setopt SHARE_HISTORY
+setopt HIST_IGNORE_SPACE
+setopt HIST_IGNORE_ALL_DUPS
+setopt HIST_SAVE_NO_DUPS
+setopt HIST_IGNORE_DUPS
+setopt HIST_FIND_NO_DUPS
+setopt HIST_REDUCE_BLANKS
 setopt HIST_VERIFY
 
 # Globbing
@@ -50,6 +58,13 @@ setopt PUSHD_IGNORE_DUPS
 # Correction
 setopt CORRECT
 setopt NO_CLOBBER
+
+# ==============================================================================
+# Key bindings
+# ==============================================================================
+bindkey -e
+bindkey '^[[A' history-search-backward
+bindkey '^[[B' history-search-forward
 
 # ==============================================================================
 # Shell tools
