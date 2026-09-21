@@ -1,0 +1,6 @@
+Include ~/.config/colima/ssh_config
+Include ~/.brev/ssh_config
+
+Host kwanz-ws
+    HostName kwanz-ws.tailf3aa43.ts.net
+    User daniel

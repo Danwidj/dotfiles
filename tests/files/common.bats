@@ -87,6 +87,20 @@ teardown() {
     assert_file_exist "${TEST_HOME}/.config/git/config"
 }
 
+@test "~/.config/ssh/config exists after apply" {
+    assert_file_exist "${TEST_HOME}/.config/ssh/config"
+}
+
+@test "~/.config/zsh/managed.zsh exports XDG redirects for copilot and vscode" {
+    MANAGED="${TEST_HOME}/.config/zsh/managed.zsh"
+    run grep -F 'export COPILOT_HOME="$XDG_DATA_HOME/copilot"' "${MANAGED}"
+    assert_success
+    run grep -F 'export VSCODE_EXTENSIONS="$XDG_DATA_HOME/vscode/extensions"' "${MANAGED}"
+    assert_success
+    run grep -F 'export VSCODE_CLI_DATA_DIR="$XDG_DATA_HOME/vscode/cli"' "${MANAGED}"
+    assert_success
+}
+
 @test "git config --list runs successfully" {
     run git config --list
     assert_success
