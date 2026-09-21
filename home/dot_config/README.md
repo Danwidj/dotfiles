@@ -16,3 +16,12 @@ Zsh configuration.
 The `uv/` directory contains the tracked manifest for globally installed Python
 CLI tools. `run_onchange_install-uv-tools.sh` installs these tools whenever the
 manifest changes.
+
+Common package-manager caches use `~/.cache` through XDG defaults or explicit
+tool settings, including npm, uv, pip, Hugging Face, and Go. Maven and Gradle
+state are stored under `~/.local/share`.
+Matplotlib's user configuration and font cache are stored under
+`~/.config/matplotlib`.
+
+Claude Code and Pi Coding Agent are also configured to keep their global state
+under `~/.config` through `CLAUDE_CONFIG_DIR` and `PI_CODING_AGENT_DIR`.

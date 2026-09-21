@@ -16,16 +16,11 @@ return {
           auto_insert = true,
         },
       },
-      documentation = {
-        auto_show = true,
-        auto_show_delay_ms = 200,
-      },
     },
     signature = {
       enabled = true,
     },
     sources = {
-      default = { "lsp", "path", "snippets", "buffer" },
       min_keyword_length = 3,
       providers = {
         buffer = {

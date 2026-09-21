@@ -1,0 +1,8 @@
+gui:
+  showIcons: true
+  nerdFontsVersion: "3"
+
+git:
+  pagers:
+    - colorArg: always
+      pager: ~/.config/git/delta-theme-wrapper
