@@ -205,6 +205,9 @@ enter_accept = true
 ## Defaults to true. Configures whether to store commands that failed (those with non-zero exit status) or not.
 # store_failed = true
 
+[logs]
+dir = "~/.local/state/atuin/logs"
+
 [stats]
 ## Set commands where we should consider the subcommand for statistics. Eg, kubectl get vs just kubectl
 # common_subcommands = [
