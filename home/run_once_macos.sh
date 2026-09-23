@@ -26,6 +26,7 @@ defaults write -globalDomain AppleInterfaceStyleSwitchesAutomatically -bool true
 
 # 24-hour time [default: 12-hour]
 defaults write -globalDomain AppleICUForce24HourTime -bool true
+defaults write -globalDomain AppleICUForce12HourTime -bool false
 
 # Scroll bars: always visible [default: automatic]
 defaults write -globalDomain AppleShowScrollBars -string Always
@@ -219,14 +220,25 @@ defaults write com.apple.WindowManager StageManagerHideWidgets -bool true
 
 defaults write com.apple.iCal 'TimeZone support enabled' -bool true
 defaults write com.apple.iCal 'last calendar view description' -string 7-day
+defaults write com.apple.iCal 'n days of week' -int 7
+defaults write com.apple.iCal 'scroll by weeks in week view' -int 0        # 0=Day, 1=Week
+defaults write com.apple.iCal 'Default duration in minutes for new event' -int 60
 defaults write com.apple.iCal 'number of hours displayed' -int 16
 defaults write com.apple.iCal 'first minute of work hours' -int 420    # 7am
 defaults write com.apple.iCal 'last minute of work hours' -int 1440    # midnight
 defaults write com.apple.iCal CalendarSidebarShown -bool false
 defaults write com.apple.iCal 'display birthdays calendar' -bool true
+defaults write com.apple.iCal 'add holiday calendar' -bool true
 defaults write com.apple.iCal InviteeDeclineAlerts -bool false
 defaults write com.apple.iCal CalDefaultCalendar -string UseLastSelectedAsDefaultCalendar
 defaults write com.apple.iCal enableTravelAdvisoriesForAutomaticBehavior -bool false
+
+# Advanced pane: defaults off/false already, but explicit
+# (Note: "Show invitee declines" toggle in Advanced pane drives InviteeDeclineAlerts above)
+defaults write com.apple.iCal 'Show heat map in Year View' -bool false
+defaults write com.apple.iCal 'Show Week Numbers' -bool false
+defaults write com.apple.iCal OpenEventsInWindowType -bool false
+defaults write com.apple.iCal WarnBeforeSendingInvitations -bool false
 
 ###############################################################################
 # Spotlight
