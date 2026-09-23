@@ -19,8 +19,6 @@ export MPLCONFIGDIR="$XDG_CONFIG_HOME/matplotlib"
 export STREAMLIT_BROWSER_GATHER_USAGE_STATS=false
 export DOCKER_CONFIG="$XDG_CONFIG_HOME/docker"
 export COPILOT_HOME="$XDG_DATA_HOME/copilot"
-export VSCODE_EXTENSIONS="$XDG_DATA_HOME/vscode/extensions"
-export VSCODE_CLI_DATA_DIR="$XDG_DATA_HOME/vscode/cli"
 
 export GOPATH="$XDG_DATA_HOME/go"
 export GOCACHE="$XDG_CACHE_HOME/go-build"
@@ -84,18 +82,6 @@ alias top='btop'
 alias find='fd'
 alias cat='bat'
 alias grep='rg'
-
-# VS Code CLI / tunnel redirects
-code() {
-  export VSCODE_EXTENSIONS="${XDG_DATA_HOME:-$HOME/.local/share}/vscode/extensions"
-  if [[ "$1" == "tunnel" || "$1" == "serve-web" ]]; then
-    command code "$1" --cli-data-dir "${XDG_DATA_HOME:-$HOME/.local/share}/vscode/cli" "${@:2}"
-  else
-    command code "$@"
-  fi
-}
-
-alias code-tunnel='code-tunnel --cli-data-dir "${XDG_DATA_HOME:-$HOME/.local/share}/vscode/cli"'
 
 # ==============================================================================
 # Completion & Plugins
