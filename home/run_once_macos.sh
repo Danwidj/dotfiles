@@ -204,6 +204,13 @@ defaults write com.apple.AppleMultitouchTrackpad TrackpadTwoFingerFromRightEdgeS
 defaults write com.apple.driver.AppleBluetoothMultitouch.trackpad TrackpadTwoFingerFromRightEdgeSwipeGesture -int 0
 
 ###############################################################################
+# Accessibility
+###############################################################################
+
+# System Settings > Accessibility > Motion > Auto-play animated images: on
+defaults write com.apple.Accessibility ReduceMotionAutoplayAnimatedImagesEnabled -int 1
+
+###############################################################################
 # Window Manager
 ###############################################################################
 
