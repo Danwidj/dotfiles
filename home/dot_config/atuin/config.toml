@@ -359,6 +359,7 @@ name = "autumn"
 # height = "60%"
 
 [ui]
+columns = ["time", "command"]
 ## Columns to display in the interactive search, from left to right.
 ## The selection indicator (" > ") is always shown first implicitly.
 ##
@@ -397,7 +398,7 @@ name = "autumn"
 # columns = ["exit", "duration", "command"]
 ##
 ## Make directory expand instead of command:
-columns = ["duration", "time", { type = "directory", expand = true }, { type = "command", expand = false }]
+# columns = ["duration", "time", { type = "directory", expand = true }, { type = "command", expand = false }]
 
 ## Syntax highlight commands in the search results, using the theme's colors.
 ## Not available on all platforms (e.g. Windows).
