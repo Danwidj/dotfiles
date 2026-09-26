@@ -59,7 +59,7 @@ Managing dotfiles with plain Git symlink trees or GNU Stow quickly runs into lim
 | **Prompt** | [Starship](https://starship.rs/) | Minimalist, fast, and customizable cross-shell prompt | `~/.config/starship.toml` |
 | **History & Search** | [Atuin](https://atuin.sh/) & [fzf](https://github.com/junegunn/fzf) | SQLite-backed shell history search + interactive fuzzy completion | `~/.config/zsh/managed.zshrc` |
 | **Editor** | [Neovim](https://neovim.io/) | [LazyVim](https://lazyvim.github.io/)-based IDE configuration with Python/Bash LSPs, Oil, and Snacks | `~/.config/nvim/` |
-| **GUI Editor** | [VS Code](https://code.visualstudio.com/) | Synchronized user settings, keybindings, and declarative extension bundle | `~/Library/Application Support/Code/User/` |
+| **GUI Editor** | [VS Code](https://code.visualstudio.com/) | Synchronized user settings, keybindings, and declarative extension bundle (portable mode) | `~/.local/share/vscode/user-data/User/` |
 | **Window Manager** | [AeroSpace](https://github.com/nikitabobko/AeroSpace) | i3-like tiling window manager for macOS | `~/.config/aerospace/aerospace.toml` |
 | **Launcher** | [Raycast](https://www.raycast.com/) | Extensible launcher & productivity platform (replaces Spotlight) | `~/.config/raycast/` |
 | **Package Manager** | [Homebrew](https://brew.sh/) | Declarative `Brewfile` bundle, daily automated updates | `~/.Brewfile` |

@@ -37,3 +37,9 @@ export COPILOT_HOME="$XDG_DATA_HOME/copilot"
 
 export GOPATH="$XDG_DATA_HOME/go"
 export GOCACHE="$XDG_CACHE_HOME/go-build"
+
+# ==============================================================================
+# VS Code Portable Mode
+# ==============================================================================
+export VSCODE_PORTABLE="$XDG_DATA_HOME/vscode"
+export VSCODE_CLI_DATA_DIR="$XDG_STATE_HOME/vscode-cli"
