@@ -62,7 +62,7 @@ Managing dotfiles with plain Git symlink trees or GNU Stow quickly runs into lim
 | **GUI Editor** | [VS Code](https://code.visualstudio.com/) | Synchronized user settings, keybindings, and declarative extension bundle | `~/Library/Application Support/Code/User/` |
 | **Window Manager** | [AeroSpace](https://github.com/nikitabobko/AeroSpace) | i3-like tiling window manager for macOS | `~/.config/aerospace/aerospace.toml` |
 | **Launcher** | [Raycast](https://www.raycast.com/) | Extensible launcher & productivity platform (replaces Spotlight) | `~/.config/raycast/` |
-| **Package Manager** | [Homebrew](https://brew.sh/) | Declarative `Brewfile` bundle, weekly automated updates | `~/.Brewfile` |
+| **Package Manager** | [Homebrew](https://brew.sh/) | Declarative `Brewfile` bundle, daily automated updates | `~/.Brewfile` |
 | **Runtime Manager** | [mise](https://mise.jdx.dev/) | Polyglot runtime version manager (Node, Python, Go, etc.) | `~/.config/mise/config.toml` |
 | **Agent Sessions** | [herdr](https://github.com/Danwidj/dotfiles) | Workspace agent orchestrator & session restorer | `~/.config/herdr/config.toml` |
 | **VCS & Diffing** | [Git](https://git-scm.com/) & [delta](https://github.com/dandavison/delta) | Templated git identity, global ignores, and syntax-highlighted diffs | `~/.config/git/` |
