@@ -4,4 +4,4 @@ Houses settings for [mise](https://mise.jdx.dev/) (formerly rtx), the polyglot d
 
 ### Files
 
-- **`config.toml`**: Maps to `~/.config/mise/config.toml`. Defines default runtime versions, tool aliases, and environment variables across languages and development stacks.
+- **`config.toml`**: Maps to `~/.config/mise/config.toml`. Defines default runtime versions (Node 22, UV, Go, Java), tool aliases, and postinstall hooks (e.g. setting global npm cache and logs directories to XDG compliance).

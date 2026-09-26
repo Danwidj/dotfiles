@@ -31,17 +31,26 @@ teardown() {
     assert_success
 }
 
-@test "~/.config/zsh/managed.zsh exists after apply" {
-    assert_file_exist "${TEST_HOME}/.config/zsh/managed.zsh"
+@test "~/.config/zsh/managed.zshrc exists after apply" {
+    assert_file_exist "${TEST_HOME}/.config/zsh/managed.zshrc"
 }
 
-@test "~/.config/zsh/managed.zsh is zsh parse-clean" {
-    run zsh -n "${TEST_HOME}/.config/zsh/managed.zsh"
+@test "~/.config/zsh/managed.zshrc is zsh parse-clean" {
+    run zsh -n "${TEST_HOME}/.config/zsh/managed.zshrc"
     assert_success
 }
 
-@test "~/.config/zsh/managed.zsh sets expected quality-of-life setopts" {
-    MANAGED="${TEST_HOME}/.config/zsh/managed.zsh"
+@test "~/.config/zsh/managed.zshenv exists after apply" {
+    assert_file_exist "${TEST_HOME}/.config/zsh/managed.zshenv"
+}
+
+@test "~/.config/zsh/managed.zshenv is zsh parse-clean" {
+    run zsh -n "${TEST_HOME}/.config/zsh/managed.zshenv"
+    assert_success
+}
+
+@test "~/.config/zsh/managed.zshrc sets expected quality-of-life setopts" {
+    MANAGED="${TEST_HOME}/.config/zsh/managed.zshrc"
     for opt in HIST_IGNORE_DUPS HIST_IGNORE_ALL_DUPS HIST_REDUCE_BLANKS SHARE_HISTORY HIST_VERIFY \
                EXTENDED_GLOB GLOB_DOTS NUMERIC_GLOB_SORT AUTO_CD AUTO_PUSHD PUSHD_IGNORE_DUPS \
                CORRECT NO_CLOBBER; do
@@ -50,8 +59,8 @@ teardown() {
     done
 }
 
-@test "~/.config/zsh/managed.zsh enforces plugin load order: compinit -> fzf-tab -> autosuggestions -> syntax-highlighting" {
-    MANAGED="${TEST_HOME}/.config/zsh/managed.zsh"
+@test "~/.config/zsh/managed.zshrc enforces plugin load order: compinit -> fzf-tab -> autosuggestions -> syntax-highlighting" {
+    MANAGED="${TEST_HOME}/.config/zsh/managed.zshrc"
     compinit_line=$(grep -n "compinit" "${MANAGED}" | head -n 1 | cut -d: -f1)
     fzftab_line=$(grep -n "fzf-tab.zsh" "${MANAGED}" | head -n 1 | cut -d: -f1)
     autosuggest_line=$(grep -n "zsh-autosuggestions.zsh" "${MANAGED}" | head -n 1 | cut -d: -f1)
@@ -91,8 +100,8 @@ teardown() {
     assert_file_exist "${TEST_HOME}/.config/ssh/config"
 }
 
-@test "~/.config/zsh/managed.zsh exports XDG redirect for copilot" {
-    MANAGED="${TEST_HOME}/.config/zsh/managed.zsh"
+@test "~/.config/zsh/managed.zshenv exports XDG redirect for copilot" {
+    MANAGED="${TEST_HOME}/.config/zsh/managed.zshenv"
     run grep -F 'export COPILOT_HOME="$XDG_DATA_HOME/copilot"' "${MANAGED}"
     assert_success
 }
@@ -102,23 +111,38 @@ teardown() {
     assert_success
 }
 
-@test "run_once_zshrc.sh creates .zshrc shim sourcing managed.zsh" {
+@test "run_once_zshrc.sh creates .zshrc shim sourcing managed.zshrc" {
     ZSHRC="${TEST_HOME}/.config/zsh/.zshrc"
-    MANAGED="${TEST_HOME}/.config/zsh/managed.zsh"
+    MANAGED="${TEST_HOME}/.config/zsh/managed.zshrc"
 
     echo "source managed content" > "${MANAGED}"
     HOME="${TEST_HOME}" run bash "${BATS_TEST_DIRNAME}/../../home/run_once_zshrc.sh"
     assert_success
 
     assert_file_exist "${ZSHRC}"
-    run grep -F 'source "$ZDOTDIR/managed.zsh"' "${ZSHRC}"
+    run grep -F 'source "$ZDOTDIR/managed.zshrc"' "${ZSHRC}"
     assert_success
-    assert_output_partial 'source "$ZDOTDIR/managed.zsh"'
+    assert_output_partial 'source "$ZDOTDIR/managed.zshrc"'
 }
 
 @test "run_once_zshrc.sh is idempotent when .zshrc already has source line" {
     ZSHRC="${TEST_HOME}/.config/zsh/.zshrc"
-    MANAGED="${TEST_HOME}/.config/zsh/managed.zsh"
+    MANAGED="${TEST_HOME}/.config/zsh/managed.zshrc"
+
+    echo "source managed content" > "${MANAGED}"
+    printf '%s\n' 'source "$ZDOTDIR/managed.zshrc"' > "${ZSHRC}"
+
+    HOME="${TEST_HOME}" run bash "${BATS_TEST_DIRNAME}/../../home/run_once_zshrc.sh"
+    assert_success
+
+    run grep -cF 'source "$ZDOTDIR/managed.zshrc"' "${ZSHRC}"
+    assert_success
+    assert_output "1"
+}
+
+@test "run_once_zshrc.sh replaces legacy managed.zsh with managed.zshrc" {
+    ZSHRC="${TEST_HOME}/.config/zsh/.zshrc"
+    MANAGED="${TEST_HOME}/.config/zsh/managed.zshrc"
 
     echo "source managed content" > "${MANAGED}"
     printf '%s\n' 'source "$ZDOTDIR/managed.zsh"' > "${ZSHRC}"
@@ -126,7 +150,37 @@ teardown() {
     HOME="${TEST_HOME}" run bash "${BATS_TEST_DIRNAME}/../../home/run_once_zshrc.sh"
     assert_success
 
-    run grep -cF 'source "$ZDOTDIR/managed.zsh"' "${ZSHRC}"
+    run grep -F 'source "$ZDOTDIR/managed.zshrc"' "${ZSHRC}"
+    assert_success
+    run grep -F 'source "$ZDOTDIR/managed.zsh"' "${ZSHRC}"
+    assert_failure
+}
+
+@test "run_once_zshenv-shim.sh creates .zshenv shim sourcing managed.zshenv" {
+    ZSHENV="${TEST_HOME}/.config/zsh/.zshenv"
+    MANAGED="${TEST_HOME}/.config/zsh/managed.zshenv"
+
+    echo "source managed content" > "${MANAGED}"
+    HOME="${TEST_HOME}" run bash "${BATS_TEST_DIRNAME}/../../home/run_once_zshenv-shim.sh"
+    assert_success
+
+    assert_file_exist "${ZSHENV}"
+    run grep -F 'source "$ZDOTDIR/managed.zshenv"' "${ZSHENV}"
+    assert_success
+    assert_output_partial 'source "$ZDOTDIR/managed.zshenv"'
+}
+
+@test "run_once_zshenv-shim.sh is idempotent when .zshenv already has source line" {
+    ZSHENV="${TEST_HOME}/.config/zsh/.zshenv"
+    MANAGED="${TEST_HOME}/.config/zsh/managed.zshenv"
+
+    echo "source managed content" > "${MANAGED}"
+    printf '%s\n' 'source "$ZDOTDIR/managed.zshenv"' > "${ZSHENV}"
+
+    HOME="${TEST_HOME}" run bash "${BATS_TEST_DIRNAME}/../../home/run_once_zshenv-shim.sh"
+    assert_success
+
+    run grep -cF 'source "$ZDOTDIR/managed.zshenv"' "${ZSHENV}"
     assert_success
     assert_output "1"
 }

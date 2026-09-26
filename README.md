@@ -55,9 +55,9 @@ Managing dotfiles with plain Git symlink trees or GNU Stow quickly runs into lim
 |---|---|---|---|
 | **Terminal** | [Ghostty](https://ghostty.org/) | GPU-accelerated, native terminal emulator | `~/.config/ghostty/config.ghostty` |
 | **Multiplexer** | [tmux](https://github.com/tmux/tmux) | Terminal multiplexer with Catppuccin Mocha/Latte themes | `~/.config/tmux/tmux.conf` |
-| **Shell** | [Zsh](https://www.zsh.org/) | Relocated `$ZDOTDIR`, optimized plugin order, clean `$HOME` | `~/.config/zsh/managed.zsh` |
+| **Shell** | [Zsh](https://www.zsh.org/) | Relocated `$ZDOTDIR`, environment separation, optimized plugin order | `~/.config/zsh/` |
 | **Prompt** | [Starship](https://starship.rs/) | Minimalist, fast, and customizable cross-shell prompt | `~/.config/starship.toml` |
-| **History & Search** | [Atuin](https://atuin.sh/) & [fzf](https://github.com/junegunn/fzf) | SQLite-backed shell history search + interactive fuzzy completion | `~/.config/zsh/managed.zsh` |
+| **History & Search** | [Atuin](https://atuin.sh/) & [fzf](https://github.com/junegunn/fzf) | SQLite-backed shell history search + interactive fuzzy completion | `~/.config/zsh/managed.zshrc` |
 | **Editor** | [Neovim](https://neovim.io/) | [LazyVim](https://lazyvim.github.io/)-based IDE configuration with Python/Bash LSPs, Oil, and Snacks | `~/.config/nvim/` |
 | **GUI Editor** | [VS Code](https://code.visualstudio.com/) | Synchronized user settings, keybindings, and declarative extension bundle | `~/Library/Application Support/Code/User/` |
 | **Window Manager** | [AeroSpace](https://github.com/nikitabobko/AeroSpace) | i3-like tiling window manager for macOS | `~/.config/aerospace/aerospace.toml` |
@@ -181,7 +181,9 @@ chezmoi forget ~/.config/foo.conf
 
 ### Untracked Local Overlays
 
-To allow local installer scripts (like `nvm`, `sdkman`, or corporate tooling) to inject shell lines without polluting the tracked dotfiles repository, `~/.config/zsh/.zshrc` is an **untracked shim**. It is created by `run_once_zshrc.sh` on fresh installs and simply sources `managed.zsh`. External tools can append to `.zshrc` without causing Git merge conflicts with chezmoi.
+To allow local installer scripts (like `nvm`, `sdkman`, or corporate tooling) to inject shell lines without polluting the tracked dotfiles repository, `~/.config/zsh/.zshrc` is an **untracked shim**. It is created by `run_once_zshrc.sh` on fresh installs and simply sources `managed.zshrc`. External tools can append to `.zshrc` without causing Git merge conflicts with chezmoi.
+
+Similarly, `~/.config/zsh/.zshenv` is an **untracked shim** created by `run_once_zshenv-shim.sh` that sources `managed.zshenv`, keeping machine-local/agent environment exports outside the tracked repository.
 
 ---
 

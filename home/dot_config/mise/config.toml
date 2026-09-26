@@ -1,5 +1,5 @@
 [tools]
-node = "22"
+node = { version = "22", postinstall = "npm config set --location=global cache ~/.cache/npm && npm config set --location=global logs-dir ~/.cache/npm/_logs" }
 uv = "latest"
 go = "1"
 java = "21"
