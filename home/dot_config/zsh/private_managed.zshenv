@@ -1,5 +1,21 @@
 # ==============================================================================
-# XDG Base Directory (core vars set in .zshenv for all zsh invocations)
+# XDG Base Directory
+# ==============================================================================
+export XDG_CONFIG_HOME="$HOME/.config"
+export XDG_CACHE_HOME="$HOME/.cache"
+export XDG_DATA_HOME="$HOME/.local/share"
+export XDG_STATE_HOME="$HOME/.local/state"
+export XDG_RUNTIME_DIR="${TMPDIR:-/tmp}/xdg_runtime"
+
+# Ensure XDG_RUNTIME_DIR exists
+mkdir -p "$XDG_RUNTIME_DIR"
+
+# Colorize ls output
+export CLICOLOR=1
+export LSCOLORS=ExFxBxDxCxegedabagacad
+
+# ==============================================================================
+# XDG Base Directory tool redirects
 # ==============================================================================
 export CLAUDE_CONFIG_DIR="$XDG_CONFIG_HOME/claude"
 export PI_CODING_AGENT_DIR="$XDG_CONFIG_HOME/pi/agent"
@@ -21,9 +37,3 @@ export COPILOT_HOME="$XDG_DATA_HOME/copilot"
 
 export GOPATH="$XDG_DATA_HOME/go"
 export GOCACHE="$XDG_CACHE_HOME/go-build"
-
-# no-mistakes home / config directory
-export NM_HOME="$XDG_CONFIG_HOME/no-mistakes"
-
-# lavish-axi state directory
-export LAVISH_AXI_STATE_DIR="$XDG_CONFIG_HOME/lavish-axi"

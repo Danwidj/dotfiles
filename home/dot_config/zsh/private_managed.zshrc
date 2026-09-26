@@ -6,7 +6,7 @@ echo
 # ==============================================================================
 # PATH
 # ==============================================================================
-# Kept in managed.zsh: macOS /etc/zprofile path_helper reorders PATH set in .zshenv
+# Kept in managed.zshrc: macOS /etc/zprofile path_helper reorders PATH set in .zshenv
 # Deduplicate PATH entries (drops duplicates added by macOS path_helper via /etc/paths.d)
 typeset -U path PATH
 export PATH="$HOME/.local/bin:/opt/homebrew/bin:$PATH"
