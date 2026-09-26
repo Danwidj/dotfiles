@@ -10,6 +10,9 @@ export XDG_RUNTIME_DIR="$TMPDIR/xdg_runtime"
 # Ensure XDG_RUNTIME_DIR exists
 mkdir -p "$XDG_RUNTIME_DIR"
 
+# no-mistakes home / config directory
+export NM_HOME="$XDG_CONFIG_HOME/no-mistakes"
+
 # Colorize ls output
 export CLICOLOR=1
 export LSCOLORS=ExFxBxDxCxegedabagacad
