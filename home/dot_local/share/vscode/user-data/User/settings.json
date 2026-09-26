@@ -108,6 +108,10 @@
   "material-icon-theme.folders.theme": "classic",
   "material-icon-theme.hidesExplorerArrows": true,
 
+  // --- Telemtry off ---
+  "telemetry.feedback.enabled": false,
+  "telemetry.telemetryLevel": "off",
+
   // --- Misc ---
   "update.showReleaseNotes": false,
   "chat.titleBar.openInAgentsWindow.enabled": false,
