@@ -17,10 +17,10 @@ if ! command -v herdr >/dev/null 2>&1; then
 fi
 
 status="$(herdr integration status 2>/dev/null || true)"
-for agent in claude; do
-    if printf '%s\n' "$status" | grep -q "^$agent: current"; then
-        continue
-    fi
+agent=claude
+if printf '%s\n' "$status" | grep -q "^$agent: current"; then
+    :
+else
     if herdr integration install "$agent"; then
         echo "herdr integration installed: $agent"
     else
@@ -28,4 +28,4 @@ for agent in claude; do
         # launched on a fresh machine). Next apply retries.
         echo "warning: herdr integration install $agent failed; will retry on next apply" >&2
     fi
-done
+fi
