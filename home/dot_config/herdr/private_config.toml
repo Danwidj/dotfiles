@@ -14,8 +14,8 @@ name = "catppuccin"
 # Follow host terminal light/dark appearance and switch Herdr UI themes.
 # Existing manual behavior is unchanged unless this is true.
 auto_switch = true
-# dark_name = "catppuccin"
-# light_name = "catppuccin-latte"
+dark_name = "catppuccin"
+light_name = "catppuccin-latte"
 
 # Override individual color tokens on top of the base theme.
 # Accepts: hex (#rrggbb), named colors, rgb(r,g,b), or panel_bg = "reset"
@@ -23,22 +23,28 @@ auto_switch = true
 # teal, peach, plus .light/.dark variants): all unset by default, see
 # https://raw.githubusercontent.com/herdrdev/herdr/v0.9.0/docs/next/website/src/data/config-reference.json
 # [theme.custom]
-# sidebar_bg = "#181825"
+# sidebar_bg = "#feffff41"
 # active_row_bg = "#1e1e2e"
-# selection_bg = "#313244"
+# selection_bg = "#fbfbff"
 # panel_bg = "reset"
 # accent = "#f5c2e7"
 # red = "#ff6188"
 # green = "#a6e3a1"
 
 # Layer appearance-specific overrides on top when auto_switch is enabled.
-# [theme.custom.light]
-# panel_bg = "#eff1f5"
-# text = "#4c4f69"
-#
-# [theme.custom.dark]
-# panel_bg = "#1e1e2e"
-# text = "#cdd6f4"
+[theme.custom.light]
+panel_bg = "#ffffff"
+sidebar_bg = "#ffffff"
+active_row_bg = "#cacaff"
+selection_bg = "#5a5aff"
+text = "#000000"
+
+[theme.custom.dark]
+panel_bg = "#000000"
+sidebar_bg = "#000000"
+active_row_bg = "#2d2d43"
+selection_bg = "#7575ff"
+text = "#ffffff"
 
 [terminal]
 # Executable used for new interactive panes.
@@ -175,7 +181,7 @@ headless_cols = 200
 headless_rows = 60
 
 [worktrees]
-directory = "~/.herdr/worktrees"
+directory = "~/.local/state/herdr/worktrees"
 
 [ui]
 # Sidebar width (auto-scaled based on workspace names, this sets the default)
@@ -256,7 +262,7 @@ show_agent_labels_on_pane_borders = true
 
 # Hide the tab row when a workspace has exactly one tab.
 # New tabs can still be created with the configured keybinding.
-hide_tab_bar_when_single_tab = false
+hide_tab_bar_when_single_tab = true
 
 # Desktop tab row placement: "top" or "bottom".
 tab_bar_position = "top"
