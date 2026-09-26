@@ -1,10 +1,10 @@
 #!/bin/sh
-# Ensures the herdr agent integrations for pi and claude are installed, so
+# Ensures the herdr agent integration for claude is installed, so
 # native agent session restore works (`[session] resume_agents_on_restore`
-# in .config/herdr). Only these two agents are integrated; the rest stay
-# untouched (see `herdr integration status`).
+# in .config/herdr). Pi was dropped on purpose; re-add to the loop if needed.
+# Only claude is integrated; the rest stay untouched (see `herdr integration status`).
 #
-# Runs on every apply and no-ops quietly when both are already current, so a
+# Runs on every apply and no-ops quietly when already current, so a
 # fresh machine converges as soon as the agent config dirs exist (Claude
 # creates ~/.claude on first run; `herdr integration install` requires them).
 # Installed files are herdr-managed and version-stamped, so they are deliberately
@@ -17,7 +17,7 @@ if ! command -v herdr >/dev/null 2>&1; then
 fi
 
 status="$(herdr integration status 2>/dev/null || true)"
-for agent in pi claude; do
+for agent in claude; do
     if printf '%s\n' "$status" | grep -q "^$agent: current"; then
         continue
     fi

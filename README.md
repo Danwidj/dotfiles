@@ -111,7 +111,7 @@ chezmoi init --apply Danwidj/dotfiles
 3. **`run_once_macos.sh`**: Configures curated macOS system preferences, turns off non-essential shortcuts, configures screenshot keybindings, and registers default application handlers (browser, PDF, mail, images, text, archives) using `duti`.
 4. **`run_once_zshenv.sh`**: Configures `/etc/zshenv` to point `ZDOTDIR` to `~/.config/zsh`, keeping `$HOME` clean of `.zshrc` and history files.
 5. **`run_onchange_install-vscode-extensions.sh`**: Declaratively installs VS Code extensions (runs on initial setup and whenever the extension manifest is updated).
-6. **`run_after_install-herdr-integrations.sh`**: Verifies and updates herdr agent integrations (Claude, Pi).
+6. **`run_after_install-herdr-integrations.sh`**: Verifies and updates herdr agent integration (Claude).
 7. **`run_once_zzz-manual-steps.sh`**: Prompts the user through non-scriptable macOS settings and launches Ghostty.
 
 ---
