@@ -47,17 +47,17 @@ run_bundle_quiet() {
 echo "Installing packages from $HOMEBREW_BUNDLE_FILE_GLOBAL..."
 run_bundle_quiet --global
 
-# Configure weekly auto-update (domt4/autoupdate tap, installed above):
-# brew update + upgrade formulae/casks + cleanup, skipped while on battery,
-# notifications only on failure. `start` errors if already configured, so
-# guard on the launchd plist it installs.
+# Configure daily auto-update (domt4/autoupdate tap, installed above):
+# brew update + upgrade formulae/casks (greedy) + cleanup, skipped while on battery,
+# notifications only on failure. Daily clock schedule (12:00) fires on wake if asleep.
+# `start` errors if already configured, so guard on the launchd plist it installs.
 AUTOUPDATE_PLIST="$HOME/Library/LaunchAgents/com.github.domt4.homebrew-autoupdate.plist"
 if [[ ! -f "$AUTOUPDATE_PLIST" ]]; then
     # Newer Homebrew refuses to load external-command taps until trusted;
     # non-interactive and idempotent (no-ops if already trusted).
     brew trust --tap domt4/autoupdate
-    brew autoupdate start 1w --upgrade --cleanup --ac-only --notify-on-error
-    echo "brew autoupdate configured (weekly, AC-only, notify on failure only)."
+    brew autoupdate start 12:00 --upgrade --greedy --cleanup --ac-only --notify-on-error
+    echo "brew autoupdate configured (daily at 12:00, greedy casks, AC-only, notify on failure only)."
 else
     echo "brew autoupdate already configured. Skipping."
 fi
