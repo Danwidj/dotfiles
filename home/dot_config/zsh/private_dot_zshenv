@@ -10,11 +10,7 @@ export XDG_RUNTIME_DIR="$TMPDIR/xdg_runtime"
 # Ensure XDG_RUNTIME_DIR exists
 mkdir -p "$XDG_RUNTIME_DIR"
 
-# no-mistakes home / config directory
-export NM_HOME="$XDG_CONFIG_HOME/no-mistakes"
-
-# lavish-axi state directory
-export LAVISH_AXI_STATE_DIR="$XDG_CONFIG_HOME/lavish-axi"
+[[ -r "$ZDOTDIR/managed.zshenv" ]] && source "$ZDOTDIR/managed.zshenv"
 
 # Colorize ls output
 export CLICOLOR=1

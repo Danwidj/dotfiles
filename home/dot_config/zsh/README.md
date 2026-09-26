@@ -4,7 +4,10 @@ Houses the interactive Zsh configuration with relocated `$ZDOTDIR`.
 
 ### Files
 
-- **`private_managed.zsh`**: Maps to `~/.config/zsh/managed.zsh`. Fully tracked shell configuration managing:
+- **`private_dot_zshenv`**: Maps to `~/.config/zsh/.zshenv`. Sourced by every Zsh invocation (interactive or not, login or not). Sets core XDG base directories, ensures `$XDG_RUNTIME_DIR` exists, sources `managed.zshenv`, and sets `CLICOLOR`/`LSCOLORS`.
+- **`private_managed.zshenv`**: Maps to `~/.config/zsh/managed.zshenv`. Sourced by `.zshenv` to export environment variables for all shells without running heavy commands, plugins, or interactive shell options (e.g. XDG redirects for tools like Copilot, Claude, Docker, Go, Gradle, etc.).
+- **`private_managed.zsh`**: Maps to `~/.config/zsh/managed.zsh`. Fully tracked interactive shell configuration managing:
+  - `PATH` export (kept here because macOS `/etc/zprofile` `path_helper` reorders `PATH` set in `.zshenv`).
   - Sensible Zsh options (history control, globbing, directory navigation).
   - Strict plugin loading order: `compinit` → `fzf-tab` → `zsh-autosuggestions` → `zsh-syntax-highlighting`.
   - Prompt initialization via [Starship](https://starship.rs/).

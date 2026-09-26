@@ -40,6 +40,15 @@ teardown() {
     assert_success
 }
 
+@test "~/.config/zsh/managed.zshenv exists after apply" {
+    assert_file_exist "${TEST_HOME}/.config/zsh/managed.zshenv"
+}
+
+@test "~/.config/zsh/managed.zshenv is zsh parse-clean" {
+    run zsh -n "${TEST_HOME}/.config/zsh/managed.zshenv"
+    assert_success
+}
+
 @test "~/.config/zsh/managed.zsh sets expected quality-of-life setopts" {
     MANAGED="${TEST_HOME}/.config/zsh/managed.zsh"
     for opt in HIST_IGNORE_DUPS HIST_IGNORE_ALL_DUPS HIST_REDUCE_BLANKS SHARE_HISTORY HIST_VERIFY \
@@ -91,8 +100,8 @@ teardown() {
     assert_file_exist "${TEST_HOME}/.config/ssh/config"
 }
 
-@test "~/.config/zsh/managed.zsh exports XDG redirect for copilot" {
-    MANAGED="${TEST_HOME}/.config/zsh/managed.zsh"
+@test "~/.config/zsh/managed.zshenv exports XDG redirect for copilot" {
+    MANAGED="${TEST_HOME}/.config/zsh/managed.zshenv"
     run grep -F 'export COPILOT_HOME="$XDG_DATA_HOME/copilot"' "${MANAGED}"
     assert_success
 }
