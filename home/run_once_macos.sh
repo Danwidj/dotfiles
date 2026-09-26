@@ -100,11 +100,11 @@ defaults write com.apple.dock autohide-time-modifier -float 0.3
 ###############################################################################
 
 defaults write com.apple.dock wvous-tl-corner -int 1          # off
-defaults write com.apple.dock wvous-tr-corner -int 4          # Desktop
-defaults write com.apple.dock wvous-bl-corner -int 10         # Sleep Display
+defaults write com.apple.dock wvous-tr-corner -int 1          # off
+defaults write com.apple.dock wvous-bl-corner -int 13         # Lock Screen
 defaults write com.apple.dock wvous-br-corner -int 1          # off
 defaults write com.apple.dock wvous-tl-modifier -int 0
-defaults write com.apple.dock wvous-tr-modifier -int 1048576  # Command required
+defaults write com.apple.dock wvous-tr-modifier -int 0
 defaults write com.apple.dock wvous-bl-modifier -int 1048576  # Command required
 defaults write com.apple.dock wvous-br-modifier -int 0
 
