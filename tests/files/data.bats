@@ -44,7 +44,7 @@ EOF
     assert_output_partial 'cask "claude"'
     assert_output_partial 'cask "claude-code@latest"'
     assert_output_partial 'brew "pi-coding-agent"'
-    assert_output_partial 'cask "copilot-cli"'
+    assert_output_partial 'cask "homebrew/cask/copilot-cli"'
 }
 
 @test "dot_config/homebrew/private_Brewfile.tmpl renders without error for machine_type=work" {
@@ -60,7 +60,7 @@ EOF
     refute_output_partial 'cask "claude"'
     refute_output_partial 'cask "claude-code@latest"'
     refute_output_partial 'brew "pi-coding-agent"'
-    refute_output_partial 'cask "copilot-cli"'
+    refute_output_partial 'cask "homebrew/cask/copilot-cli"'
 }
 
 @test "dot_config/homebrew/private_Brewfile.tmpl always includes core packages regardless of machine_type" {
