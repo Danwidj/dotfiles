@@ -493,13 +493,13 @@ EOF
     assert_success
 }
 
-@test "~/.config/agents/AGENTS.md exists with mode 600 and shared comment" {
+@test "~/.config/agents/AGENTS.md exists with mode 600 and personal instructions content" {
     AGENTS_FILE="${TEST_HOME}/.config/agents/AGENTS.md"
     assert_file_exist "${AGENTS_FILE}"
 
-    run cat "${AGENTS_FILE}"
+    run head -n 1 "${AGENTS_FILE}"
     assert_success
-    assert_output '<!-- Shared instructions file read by every agent tool -->'
+    assert_output '# Personal instructions for coding agents'
 
     run python3 -c "import os, stat; print(oct(stat.S_IMODE(os.stat('${AGENTS_FILE}').st_mode)))"
     assert_success
@@ -509,6 +509,10 @@ EOF
 @test "~/.config/claude/CLAUDE.md exists and imports shared AGENTS.md" {
     CLAUDE_FILE="${TEST_HOME}/.config/claude/CLAUDE.md"
     assert_file_exist "${CLAUDE_FILE}"
+
+    run python3 -c "import os, stat; print(oct(stat.S_IMODE(os.stat('${TEST_HOME}/.config/claude').st_mode)))"
+    assert_success
+    assert_output "0o700"
 
     run cat "${CLAUDE_FILE}"
     assert_success
@@ -524,36 +528,39 @@ EOF
     [ -L "${OPENCODE_LINK}" ]
     [ "$(readlink "${OPENCODE_LINK}")" = "../agents/AGENTS.md" ]
     assert_file_exist "${OPENCODE_LINK}"
-    run cat "${OPENCODE_LINK}"
+    run head -n 1 "${OPENCODE_LINK}"
     assert_success
-    assert_output '<!-- Shared instructions file read by every agent tool -->'
+    assert_output '# Personal instructions for coding agents'
 
     # pi
     PI_LINK="${TEST_HOME}/.config/pi/agent/AGENTS.md"
     [ -L "${PI_LINK}" ]
     [ "$(readlink "${PI_LINK}")" = "../../agents/AGENTS.md" ]
     assert_file_exist "${PI_LINK}"
-    run cat "${PI_LINK}"
+    run head -n 1 "${PI_LINK}"
     assert_success
-    assert_output '<!-- Shared instructions file read by every agent tool -->'
+    assert_output '# Personal instructions for coding agents'
 
     # agy (Antigravity CLI)
     AGY_LINK="${TEST_HOME}/.gemini/AGENTS.md"
     [ -L "${AGY_LINK}" ]
     [ "$(readlink "${AGY_LINK}")" = "../.config/agents/AGENTS.md" ]
     assert_file_exist "${AGY_LINK}"
-    run cat "${AGY_LINK}"
+    run head -n 1 "${AGY_LINK}"
     assert_success
-    assert_output '<!-- Shared instructions file read by every agent tool -->'
+    assert_output '# Personal instructions for coding agents'
 
     # GitHub Copilot CLI
     COPILOT_LINK="${TEST_HOME}/.local/share/copilot/copilot-instructions.md"
+    run python3 -c "import os, stat; print(oct(stat.S_IMODE(os.stat('${TEST_HOME}/.local/share/copilot').st_mode)))"
+    assert_success
+    assert_output "0o700"
     [ -L "${COPILOT_LINK}" ]
     [ "$(readlink "${COPILOT_LINK}")" = "../../../.config/agents/AGENTS.md" ]
     assert_file_exist "${COPILOT_LINK}"
-    run cat "${COPILOT_LINK}"
+    run head -n 1 "${COPILOT_LINK}"
     assert_success
-    assert_output '<!-- Shared instructions file read by every agent tool -->'
+    assert_output '# Personal instructions for coding agents'
 
     # Verify canonical path resolution
     run python3 -c "import os; t=os.path.realpath('${TARGET}'); assert all(os.path.realpath(p) == t for p in ['${OPENCODE_LINK}', '${PI_LINK}', '${AGY_LINK}', '${COPILOT_LINK}'])"
@@ -577,7 +584,7 @@ EOF
     assert_output "0"
 
     # Test modify script preserves existing keys
-    MOD_SCRIPT="${BATS_TEST_DIRNAME}/../../home/dot_config/claude/modify_private_settings.json"
+    MOD_SCRIPT="${BATS_TEST_DIRNAME}/../../home/dot_config/private_claude/modify_private_settings.json"
     assert_file_exist "${MOD_SCRIPT}"
     assert_file_executable "${MOD_SCRIPT}"
 
