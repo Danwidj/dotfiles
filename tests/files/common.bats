@@ -166,14 +166,14 @@ EOF
     touch -t 202001010000 "${ZSHRC}"
     touch -t 202001010000 "${ZSHENV}"
 
-    mtime_zshrc_before=$(stat -f "%m" "${ZSHRC}" 2>/dev/null || stat -c "%Y" "${ZSHRC}")
-    mtime_zshenv_before=$(stat -f "%m" "${ZSHENV}" 2>/dev/null || stat -c "%Y" "${ZSHENV}")
+    mtime_zshrc_before=$(stat -c "%Y" "${ZSHRC}" 2>/dev/null || stat -f "%m" "${ZSHRC}")
+    mtime_zshenv_before=$(stat -c "%Y" "${ZSHENV}" 2>/dev/null || stat -f "%m" "${ZSHENV}")
 
     HOME="${TEST_HOME}" ETC_ZSHENV="${TEST_HOME}/etc/zshenv" run bash "${BATS_TEST_DIRNAME}/../../home/.chezmoiscripts/run_zsh-setup.sh"
     assert_success
 
-    mtime_zshrc_after=$(stat -f "%m" "${ZSHRC}" 2>/dev/null || stat -c "%Y" "${ZSHRC}")
-    mtime_zshenv_after=$(stat -f "%m" "${ZSHENV}" 2>/dev/null || stat -c "%Y" "${ZSHENV}")
+    mtime_zshrc_after=$(stat -c "%Y" "${ZSHRC}" 2>/dev/null || stat -f "%m" "${ZSHRC}")
+    mtime_zshenv_after=$(stat -c "%Y" "${ZSHENV}" 2>/dev/null || stat -f "%m" "${ZSHENV}")
 
     [ "${mtime_zshrc_before}" -eq "${mtime_zshrc_after}" ]
     [ "${mtime_zshenv_before}" -eq "${mtime_zshenv_after}" ]
