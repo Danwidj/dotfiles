@@ -1,6 +1,17 @@
 gui:
   showIcons: true
   nerdFontsVersion: "3"
+
+  theme:
+    activeBorderColor:
+      - green
+      - bold
+    inactiveBorderColor:
+      - default
+    optionsTextColor:
+      - default
+    selectedLineBgColor:
+      - default
 git:
   diffRenderers:
     - colorArg: always
