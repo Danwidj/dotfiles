@@ -1,0 +1,26 @@
+#!/usr/bin/env bash
+# run_once_setup-chezmoi-git-identity.sh
+# Configures personal git author identity and disables commit signing inside the
+# chezmoi source repository.
+#
+# Why: on work machines, ~/.config/git is ignored by chezmoi (.chezmoiignore.tmpl)
+# because enterprise configuration manages global git settings. Commits inside
+# the chezmoi source repository (~/.local/share/chezmoi, which auto-commits and
+# auto-pushes) would otherwise inherit work git config (work email and 1Password
+# commit signing prompts). This script sets repository-local git config on the
+# source repo itself on all machines.
+#
+# Idempotent: sets local git config keys via `git -C <CHEZMOI_SOURCE_DIR> config --local`.
+
+set -euo pipefail
+
+if [[ -z "${CHEZMOI_SOURCE_DIR:-}" ]]; then
+    echo "Error: CHEZMOI_SOURCE_DIR environment variable is not set." >&2
+    exit 1
+fi
+
+git -C "$CHEZMOI_SOURCE_DIR" config --local user.name "Daniel"
+git -C "$CHEZMOI_SOURCE_DIR" config --local user.email "daniel.widjaja18@gmail.com"
+git -C "$CHEZMOI_SOURCE_DIR" config --local commit.gpgsign false
+
+echo "Configured personal git identity for chezmoi source repo ($CHEZMOI_SOURCE_DIR)."
