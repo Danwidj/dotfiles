@@ -1,0 +1,9 @@
+#!/bin/sh
+set -eu
+
+input="$(cat)"
+if [ -z "$input" ]; then
+    input="{}"
+fi
+
+printf '%s' "$input" | jq '.statusLine = {"type":"command","command":"~/.config/statusline/statusline.sh","padding":0}'

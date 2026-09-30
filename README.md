@@ -65,6 +65,8 @@ Managing dotfiles with plain Git symlink trees or GNU Stow quickly runs into lim
 | **Package Manager** | [Homebrew](https://brew.sh/) | Declarative `Brewfile` bundle, daily automated updates | `~/.Brewfile` |
 | **Runtime Manager** | [mise](https://mise.jdx.dev/) | Polyglot runtime version manager (Node, Python, Go, etc.) | `~/.config/mise/config.toml` |
 | **Agent Sessions** | [herdr](https://github.com/Danwidj/dotfiles) | Workspace agent orchestrator & session restorer | `~/.config/herdr/config.toml` |
+| **Agent Instructions** | Shared `AGENTS.md` | Canonical instruction file symlinked/imported across AI harnesses (Claude Code, OpenCode, Pi, agy, Copilot) | `~/.config/agents/AGENTS.md` |
+| **Status Line** | `statusline.sh` | Fast, tool-neutral status line showing model, context tokens, and rate limits | `~/.config/statusline/statusline.sh` |
 | **VCS & Diffing** | [Git](https://git-scm.com/) & [delta](https://github.com/dandavison/delta) | Templated git identity, global ignores, and syntax-highlighted diffs | `~/.config/git/` |
 
 ---

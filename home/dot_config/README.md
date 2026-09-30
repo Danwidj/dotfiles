@@ -8,7 +8,7 @@ This directory represents the XDG base directory (`$XDG_CONFIG_HOME`, typically 
 
 ### Subdirectories
 
-Subdirectories under `dot_config/` hold configurations for individual tools (AeroSpace, GitHub CLI, Ghostty, Git, herdr, Homebrew, mise, Neovim, Raycast, tmux, Vim, and Zsh). Each has its own dedicated directory and README.
+Subdirectories under `dot_config/` hold configurations for individual tools (AeroSpace, agents, Claude Code, GitHub CLI, Ghostty, Git, herdr, Homebrew, mise, Neovim, OpenCode, Pi Coding Agent, Raycast, statusline, tmux, Vim, and Zsh). Each has its own dedicated directory and README.
 
 The `fzf/` directory contains fzf appearance and picker options sourced by the
 Zsh configuration.
