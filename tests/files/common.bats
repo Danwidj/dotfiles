@@ -292,14 +292,22 @@ EOF
     assert_success
 }
 
-@test "uv tool manifest tracks required tools" {
-    TOOLS="${BATS_TEST_DIRNAME}/../../home/dot_config/uv/private_tools.txt"
-    run grep -Fx "pyrefly" "${TOOLS}"
-    assert_success
-    run grep -Fx "pre-commit" "${TOOLS}"
-    assert_success
-    run grep -Fx "ruff" "${TOOLS}"
-    assert_success
+@test "mise.toml defines the required repo tasks" {
+    MISE_TOML="${BATS_TEST_DIRNAME}/../../mise.toml"
+    assert_file_exist "${MISE_TOML}"
+    for task in test lint check init apply diff; do
+        run grep -E "^\[tasks\.${task}\]" "${MISE_TOML}"
+        assert_success
+    done
+}
+
+@test "global mise config tracks required python cli tools" {
+    CONFIG="${BATS_TEST_DIRNAME}/../../home/dot_config/mise/config.toml"
+    assert_file_exist "${CONFIG}"
+    for tool in ruff pre-commit pyrefly; do
+        run grep -E "\"(pypi|pipx):${tool}\"[[:space:]]*=" "${CONFIG}"
+        assert_success
+    done
 }
 
 @test "run_once_setup-chezmoi-git-identity.sh exists and is executable" {
