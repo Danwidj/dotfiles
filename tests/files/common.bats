@@ -252,6 +252,70 @@ EOF
     assert_output "${expected_zshrc}"
 }
 
+@test "run_after_setup-ssh.sh exists and is executable" {
+    SCRIPT="${BATS_TEST_DIRNAME}/../../home/.chezmoiscripts/run_after_setup-ssh.sh"
+    assert_file_exist "${SCRIPT}"
+    assert_file_executable "${SCRIPT}"
+}
+
+@test "run_after_setup-ssh.sh is bash parse-clean" {
+    run bash -n "${BATS_TEST_DIRNAME}/../../home/.chezmoiscripts/run_after_setup-ssh.sh"
+    assert_success
+}
+
+@test "run_after_setup-ssh.sh creates ~/.ssh/config with mode 600 and Include directive when missing" {
+    SSH_DIR="${TEST_HOME}/.ssh"
+    SSH_CONFIG="${SSH_DIR}/config"
+    rm -rf "${SSH_DIR}"
+
+    HOME="${TEST_HOME}" run bash "${BATS_TEST_DIRNAME}/../../home/.chezmoiscripts/run_after_setup-ssh.sh"
+    assert_success
+    assert_file_exist "${SSH_CONFIG}"
+
+    run cat "${SSH_CONFIG}"
+    assert_success
+    assert_output "Include ~/.config/ssh/config"
+
+    run python3 -c "import os, stat; print(oct(stat.S_IMODE(os.stat('${SSH_CONFIG}').st_mode)))"
+    assert_success
+    assert_output "0o600"
+}
+
+@test "run_after_setup-ssh.sh appends Include directive without duplicating or overwriting existing config" {
+    SSH_DIR="${TEST_HOME}/.ssh"
+    SSH_CONFIG="${SSH_DIR}/config"
+    mkdir -p "${SSH_DIR}"
+    cat <<'EOF' > "${SSH_CONFIG}"
+Host github.com
+    User git
+EOF
+    chmod 644 "${SSH_CONFIG}"
+
+    HOME="${TEST_HOME}" run bash "${BATS_TEST_DIRNAME}/../../home/.chezmoiscripts/run_after_setup-ssh.sh"
+    assert_success
+
+    run cat "${SSH_CONFIG}"
+    assert_success
+    expected=$(cat <<'EOF'
+Host github.com
+    User git
+Include ~/.config/ssh/config
+EOF
+)
+    assert_output "${expected}"
+
+    run python3 -c "import os, stat; print(oct(stat.S_IMODE(os.stat('${SSH_CONFIG}').st_mode)))"
+    assert_success
+    assert_output "0o600"
+
+    # Re-run to verify idempotency
+    HOME="${TEST_HOME}" run bash "${BATS_TEST_DIRNAME}/../../home/.chezmoiscripts/run_after_setup-ssh.sh"
+    assert_success
+    run cat "${SSH_CONFIG}"
+    assert_success
+    assert_output "${expected}"
+}
+
 @test "run_zsh-setup.sh configures ZDOTDIR in ETC_ZSHENV when missing" {
     TEST_ETC="${TEST_HOME}/etc/zshenv"
     rm -f "${TEST_ETC}"

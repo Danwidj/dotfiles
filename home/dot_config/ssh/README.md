@@ -6,7 +6,7 @@ Houses user-managed SSH host aliases and configurations for OpenSSH.
 
 OpenSSH natively reads configuration from `~/.ssh/config`. To adhere to the XDG Base Directory specification while respecting OpenSSH's upstream security design (keeping keys, `known_hosts`, and `authorized_keys` in `~/.ssh/`), this repository uses a managed-and-shim split pattern:
 
-- **`~/.ssh/config`**: Live, untracked one-line shim:
+- **`~/.ssh/config`**: Live, untracked one-line shim automatically ensured by `run_after_setup-ssh.sh` (mode 0600):
   ```ssh
   Include ~/.config/ssh/config
   ```

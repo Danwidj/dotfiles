@@ -117,7 +117,8 @@ chezmoi init --apply Danwidj/dotfiles
 6. **`run_zsh-setup.sh`**: Configures `/etc/zshenv` to point `ZDOTDIR` to `~/.config/zsh`, keeping `$HOME` clean of `.zshrc` and history files, and ensures untracked `~/.config/zsh/.zshrc` and `~/.config/zsh/.zshenv` shims source managed configurations as their first line.
 7. **`run_onchange_after_install-vscode-extensions.sh`**: Declaratively installs VS Code extensions (runs on initial setup and whenever the extension manifest is updated).
 8. **`run_after_install-herdr-integrations.sh`**: Verifies and updates herdr agent integration (Claude).
-9. **`run_once_after_zzz-manual-steps.sh`**: Prompts the user through non-scriptable macOS settings and launches Ghostty.
+9. **`run_after_setup-ssh.sh`**: Ensures `~/.ssh/config` exists with mode `0600` and includes `~/.config/ssh/config` without overwriting existing host configurations.
+10. **`run_once_after_zzz-manual-steps.sh`**: Prompts the user through non-scriptable macOS settings and launches Ghostty.
 
 ---
 
