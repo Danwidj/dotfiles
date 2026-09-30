@@ -78,5 +78,5 @@ split-divider-color = #7aa2f7
 # Check for updates but don't auto-install
 auto-update = check
 
-# Copy on slect
+# Copy on select
 copy-on-select = clipboard
