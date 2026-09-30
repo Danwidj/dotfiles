@@ -43,6 +43,8 @@ EOF
     assert_output_partial 'brew "gh"'
     assert_output_partial 'cask "claude"'
     assert_output_partial 'cask "claude-code@latest"'
+    assert_output_partial 'brew "pi-coding-agent"'
+    assert_output_partial 'cask "copilot-cli"'
 }
 
 @test "dot_config/homebrew/private_Brewfile.tmpl renders without error for machine_type=work" {
@@ -57,6 +59,8 @@ EOF
     refute_output_partial 'brew "gh"'
     refute_output_partial 'cask "claude"'
     refute_output_partial 'cask "claude-code@latest"'
+    refute_output_partial 'brew "pi-coding-agent"'
+    refute_output_partial 'cask "copilot-cli"'
 }
 
 @test "dot_config/homebrew/private_Brewfile.tmpl always includes core packages regardless of machine_type" {
@@ -74,6 +78,12 @@ EOF
     assert_output_partial 'brew "tmux"'
     assert_output_partial 'brew "fzf-tab"'
     assert_output_partial 'brew "zsh-syntax-highlighting"'
+    assert_output_partial 'brew "kotlin-language-server"'
+    assert_output_partial 'brew "fastfetch"'
+    refute_output_partial 'brew "node"'
+    refute_output_partial 'brew "uv"'
+    refute_output_partial 'brew "nginx"'
+    refute_output_partial 'brew "redis"'
 
     cat > "${TEST_HOME}/.config/chezmoi/chezmoi.toml" <<'EOF'
 [data]
@@ -89,6 +99,12 @@ EOF
     assert_output_partial 'brew "tmux"'
     assert_output_partial 'brew "fzf-tab"'
     assert_output_partial 'brew "zsh-syntax-highlighting"'
+    assert_output_partial 'brew "kotlin-language-server"'
+    assert_output_partial 'brew "fastfetch"'
+    refute_output_partial 'brew "node"'
+    refute_output_partial 'brew "uv"'
+    refute_output_partial 'brew "nginx"'
+    refute_output_partial 'brew "redis"'
 }
 
 @test "run_onchange_after_brew-bundle.sh.tmpl renders without error and contains Brewfile hash" {
