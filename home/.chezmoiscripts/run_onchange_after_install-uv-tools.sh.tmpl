@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 # Installs globally available Python CLI tools listed in ~/.config/uv/tools.txt.
 # Re-runs whenever the tracked tool manifest changes.
+# tools.txt hash: {{ include "dot_config/uv/private_tools.txt" | sha256sum }}
 
 set -euo pipefail
 

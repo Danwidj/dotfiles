@@ -110,13 +110,15 @@ chezmoi init --apply Danwidj/dotfiles
 ### What Happens During First Apply
 
 1. **Interactive Prompt**: Prompts for machine context (`machine_type`: `personal` or `work`) and Git email address. Responses are cached in `~/.config/chezmoi/chezmoi.toml`.
-2. **`run_once_after_install-packages.sh`**: Installs Xcode Command Line Tools and Homebrew if missing, then provisions formulae and casks via `brew bundle --global` after configurations are applied.
-3. **`run_once_after_macos.sh`**: Configures curated macOS system preferences, turns off non-essential shortcuts, configures screenshot keybindings, and registers default application handlers (browser, PDF, mail, images, text, archives) using `duti`.
-4. **`run_once_setup-chezmoi-git-identity.sh`**: Configures personal Git identity (`user.name`, `user.email`) and disables commit signing (`commit.gpgsign = false`) locally in the chezmoi source repository so automatic commits do not inherit enterprise or work Git credentials.
-5. **`run_zsh-setup.sh`**: Configures `/etc/zshenv` to point `ZDOTDIR` to `~/.config/zsh`, keeping `$HOME` clean of `.zshrc` and history files, and ensures untracked `~/.config/zsh/.zshrc` and `~/.config/zsh/.zshenv` shims source managed configurations as their first line.
-6. **`run_onchange_after_install-vscode-extensions.sh`**: Declaratively installs VS Code extensions (runs on initial setup and whenever the extension manifest is updated).
-7. **`run_after_install-herdr-integrations.sh`**: Verifies and updates herdr agent integration (Claude).
-8. **`run_once_after_zzz-manual-steps.sh`**: Prompts the user through non-scriptable macOS settings and launches Ghostty.
+2. **`run_once_before_install-homebrew.sh`**: Installs Xcode Command Line Tools and Homebrew if missing before configurations are applied.
+3. **`run_onchange_after_brew-bundle.sh.tmpl`**: Provisions formulae, casks, and taps via `brew bundle --global` after configurations are applied (re-runs whenever the rendered `Brewfile` changes).
+4. **`run_once_after_macos.sh`**: Configures curated macOS system preferences, maps Caps Lock to Control on the built-in keyboard, turns off non-essential shortcuts, configures screenshot keybindings, and registers default application handlers (browser, PDF, mail, images, text, archives) using `duti`.
+5. **`run_once_setup-chezmoi-git-identity.sh`**: Configures personal Git identity (`user.name`, `user.email`) and disables commit signing (`commit.gpgsign = false`) locally in the chezmoi source repository so automatic commits do not inherit enterprise or work Git credentials.
+6. **`run_zsh-setup.sh`**: Configures `/etc/zshenv` to point `ZDOTDIR` to `~/.config/zsh`, keeping `$HOME` clean of `.zshrc` and history files, and ensures untracked `~/.config/zsh/.zshrc` and `~/.config/zsh/.zshenv` shims source managed configurations as their first line.
+7. **`run_onchange_after_install-uv-tools.sh.tmpl`**: Installs globally available Python CLI tools listed in `tools.txt` via `uv tool install` (re-runs whenever `tools.txt` changes).
+8. **`run_onchange_after_install-vscode-extensions.sh`**: Declaratively installs VS Code extensions (runs on initial setup and whenever the extension manifest is updated).
+9. **`run_after_install-herdr-integrations.sh`**: Verifies and updates herdr agent integration (Claude).
+10. **`run_once_after_zzz-manual-steps.sh`**: Prompts the user through non-scriptable macOS settings and launches Ghostty.
 
 ---
 
