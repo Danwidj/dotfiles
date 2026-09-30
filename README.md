@@ -84,7 +84,7 @@ Danwidj/dotfiles/
 ├── tests/            # Automated Bats test suite
 ├── .chezmoiroot      # Instructs chezmoi that 'home/' is the target source root
 ├── AGENTS.md         # Durable project memory and instructions for AI agents
-├── justfile          # Convenient command shortcuts (lint, test, apply, diff)
+├── mise.toml         # Convenient command shortcuts (lint, test, check, init, apply, diff)
 └── README.md         # Repository documentation
 ```
 
@@ -115,10 +115,9 @@ chezmoi init --apply Danwidj/dotfiles
 4. **`run_once_after_macos.sh`**: Configures curated macOS system preferences, maps Caps Lock to Control on the built-in keyboard, turns off non-essential shortcuts, configures screenshot keybindings, and registers default application handlers (browser, PDF, mail, images, text, archives) using `duti`.
 5. **`run_once_setup-chezmoi-git-identity.sh`**: Configures personal Git identity (`user.name`, `user.email`) and disables commit signing (`commit.gpgsign = false`) locally in the chezmoi source repository so automatic commits do not inherit enterprise or work Git credentials.
 6. **`run_zsh-setup.sh`**: Configures `/etc/zshenv` to point `ZDOTDIR` to `~/.config/zsh`, keeping `$HOME` clean of `.zshrc` and history files, and ensures untracked `~/.config/zsh/.zshrc` and `~/.config/zsh/.zshenv` shims source managed configurations as their first line.
-7. **`run_onchange_after_install-uv-tools.sh.tmpl`**: Installs globally available Python CLI tools listed in `tools.txt` via `uv tool install` (re-runs whenever `tools.txt` changes).
-8. **`run_onchange_after_install-vscode-extensions.sh`**: Declaratively installs VS Code extensions (runs on initial setup and whenever the extension manifest is updated).
-9. **`run_after_install-herdr-integrations.sh`**: Verifies and updates herdr agent integration (Claude).
-10. **`run_once_after_zzz-manual-steps.sh`**: Prompts the user through non-scriptable macOS settings and launches Ghostty.
+7. **`run_onchange_after_install-vscode-extensions.sh`**: Declaratively installs VS Code extensions (runs on initial setup and whenever the extension manifest is updated).
+8. **`run_after_install-herdr-integrations.sh`**: Verifies and updates herdr agent integration (Claude).
+9. **`run_once_after_zzz-manual-steps.sh`**: Prompts the user through non-scriptable macOS settings and launches Ghostty.
 
 ---
 
@@ -199,10 +198,13 @@ This repository includes a comprehensive local test harness and CI pipeline:
 
 ```sh
 # Run ShellCheck across all scripts
-just lint
+mise run lint
 
 # Run the Bats test suite
-just test
+mise run test
+
+# Run both in parallel
+mise run check
 ```
 
 - **ShellCheck Linting**: Ensures all provisioning shell scripts adhere to strict POSIX / Bash standards and error-handling best practices.

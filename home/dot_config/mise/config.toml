@@ -3,3 +3,6 @@ node = { version = "22", postinstall = "npm config set --location=global cache ~
 uv = "latest"
 go = "1"
 java = "21"
+"pypi:ruff" = "latest"
+"pypi:pre-commit" = "latest"
+"pypi:pyrefly" = "latest"

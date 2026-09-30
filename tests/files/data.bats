@@ -91,40 +91,6 @@ EOF
     assert_output_partial 'brew "zsh-syntax-highlighting"'
 }
 
-@test "run_onchange_after_install-uv-tools.sh.tmpl renders without error and contains tools.txt hash" {
-    cat > "${TEST_HOME}/.config/chezmoi/chezmoi.toml" <<'EOF'
-[data]
-    machine_type = "personal"
-    email = "test@example.com"
-EOF
-
-    run chezmoi execute-template --source="${BATS_TEST_DIRNAME}/../.." -f "${BATS_TEST_DIRNAME}/../../home/.chezmoiscripts/run_onchange_after_install-uv-tools.sh.tmpl" --config="${TEST_HOME}/.config/chezmoi/chezmoi.toml"
-    assert_success
-    assert_output_partial "# tools.txt hash: "
-}
-
-@test "run_onchange_after_install-uv-tools.sh.tmpl hash changes when tools.txt changes" {
-    mkdir -p "${BATS_TEST_TMPDIR}/source"
-    cp -R "${BATS_TEST_DIRNAME}/../../home" "${BATS_TEST_TMPDIR}/source/"
-    cp "${BATS_TEST_DIRNAME}/../../.chezmoiroot" "${BATS_TEST_TMPDIR}/source/"
-
-    cat > "${TEST_HOME}/.config/chezmoi/chezmoi.toml" <<'EOF'
-[data]
-    machine_type = "personal"
-    email = "test@example.com"
-EOF
-
-    run chezmoi execute-template --source="${BATS_TEST_TMPDIR}/source" -f "${BATS_TEST_TMPDIR}/source/home/.chezmoiscripts/run_onchange_after_install-uv-tools.sh.tmpl" --config="${TEST_HOME}/.config/chezmoi/chezmoi.toml"
-    assert_success
-    orig_output="$output"
-
-    echo "extra-cli-tool" >> "${BATS_TEST_TMPDIR}/source/home/dot_config/uv/private_tools.txt"
-
-    run chezmoi execute-template --source="${BATS_TEST_TMPDIR}/source" -f "${BATS_TEST_TMPDIR}/source/home/.chezmoiscripts/run_onchange_after_install-uv-tools.sh.tmpl" --config="${TEST_HOME}/.config/chezmoi/chezmoi.toml"
-    assert_success
-    refute_output "$orig_output"
-}
-
 @test "run_onchange_after_brew-bundle.sh.tmpl renders without error and contains Brewfile hash" {
     cat > "${TEST_HOME}/.config/chezmoi/chezmoi.toml" <<'EOF'
 [data]

@@ -13,5 +13,5 @@ This directory is the source root for chezmoi, defined by the root `.chezmoiroot
 - **`.chezmoiscripts/`**: Lifecycle provisioning scripts executed by chezmoi (which create no target directory in `$HOME`):
   - `run_zsh-setup.sh`: Configures `/etc/zshenv` and ensures `.zshrc` / `.zshenv` shims source managed configurations as their first line.
   - `run_once_*.sh`: One-time provisioning scripts executed on initial `chezmoi apply` (Homebrew bootstrap, macOS system defaults, source repository git identity, and manual checklist prompts).
-  - `run_onchange_*.sh` / `run_onchange_*.sh.tmpl`: Scripts executed whenever their dependent content hashes change (such as `run_onchange_after_install-vscode-extensions.sh`, `run_onchange_after_brew-bundle.sh.tmpl`, and `run_onchange_after_install-uv-tools.sh.tmpl`).
+  - `run_onchange_*.sh` / `run_onchange_*.sh.tmpl`: Scripts executed whenever their dependent content hashes change (such as `run_onchange_after_install-vscode-extensions.sh` and `run_onchange_after_brew-bundle.sh.tmpl`).
   - `run_before_*.sh` / `run_after_*.sh`: Scripts executed before or after configurations have been applied to disk (such as `run_once_before_install-homebrew.sh` and `run_after_install-herdr-integrations.sh`).

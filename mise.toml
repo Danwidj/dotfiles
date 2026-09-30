@@ -1,0 +1,26 @@
+[task_config]
+shell = "bash -euo pipefail -c"
+
+[tasks.test]
+description = "Run test suite"
+run = "bats tests/files/*.bats"
+
+[tasks.lint]
+description = "Lint shell scripts with shellcheck"
+run = "scripts/lint.sh"
+
+[tasks.check]
+description = "Run lint and test checks in parallel"
+depends = ["lint", "test"]
+
+[tasks.init]
+description = "Initialize chezmoi source state"
+run = "chezmoi init Danwidj/dotfiles"
+
+[tasks.apply]
+description = "Apply chezmoi dotfiles to system"
+run = "chezmoi apply"
+
+[tasks.diff]
+description = "Show changes to be applied by chezmoi"
+run = "chezmoi diff"
