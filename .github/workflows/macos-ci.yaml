@@ -23,18 +23,17 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Install chezmoi
-        run: ./scripts/ci-install-chezmoi.sh
+      - name: Set up mise
+        uses: jdx/mise-action@v5
 
-      - name: Install bats-core
-        run: brew install bats-core
+      - name: Trust mise configuration
+        run: mise trust
 
       - name: Create chezmoi config with CI data
-        run: ./scripts/ci-write-chezmoi-config.sh
+        run: mise run ci:write-chezmoi-config
 
       - name: Run chezmoi init --apply (full macOS apply)
-        run: ./scripts/ci-chezmoi-apply.sh
+        run: mise run ci:apply
 
       - name: Run Bats tests (all)
-        run: |
-          bats --print-output-on-failure tests/files/*.bats
+        run: mise run test

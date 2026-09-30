@@ -31,20 +31,23 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Install chezmoi
-        run: ./scripts/ci-install-chezmoi.sh
+      - name: Set up mise
+        uses: jdx/mise-action@v5
 
-      - name: Install bats-core
-        run: sudo apt-get update && sudo apt-get install -y bats zsh
+      - name: Trust mise configuration
+        run: mise trust
+
+      - name: Install zsh
+        run: sudo apt-get update && sudo apt-get install -y zsh
 
       - name: Install Homebrew
         run: |
-          ./scripts/ci-install-homebrew.sh
+          mise run ci:install-homebrew
           echo "/home/linuxbrew/.linuxbrew/bin" >> "$GITHUB_PATH"
           echo "/home/linuxbrew/.linuxbrew/sbin" >> "$GITHUB_PATH"
 
       - name: Create chezmoi config with CI data
-        run: ./scripts/ci-write-chezmoi-config.sh
+        run: mise run ci:write-chezmoi-config
 
       - name: Run chezmoi init --apply (verify templates parse and apply, no scripts)
         run: |
@@ -53,7 +56,7 @@ jobs:
           # macos-ci.yaml for the real full-apply-with-scripts test on the
           # correct OS); running scripts here would execute macOS-only
           # commands (Homebrew, `defaults`, `osascript`, ...) on Linux.
-          ./scripts/ci-chezmoi-apply.sh --exclude=scripts
+          mise run ci:apply --exclude=scripts
 
       - name: Run Bats tests (common + data)
         run: |

@@ -80,11 +80,11 @@ Danwidj/dotfiles/
 │   ├── .chezmoiscripts/ # Lifecycle provisioning scripts
 │   ├── dot_config/   # Mapped to ~/.config/
 │   └── private_Library/ # Mapped to ~/Library/ (macOS)
-├── scripts/          # Standalone CI and repository tooling scripts
+├── mise-tasks/       # Project tasks and CI runner scripts
 ├── tests/            # Automated Bats test suite
 ├── .chezmoiroot      # Instructs chezmoi that 'home/' is the target source root
 ├── AGENTS.md         # Durable project memory and instructions for AI agents
-├── mise.toml         # Convenient command shortcuts (lint, test, check, init, apply, diff)
+├── mise.toml         # Pinned dev tools and task shortcuts (lint, test, check, init, apply, diff)
 └── README.md         # Repository documentation
 ```
 
@@ -92,7 +92,7 @@ Danwidj/dotfiles/
 
 - **[`.github/`](.github/workflows/README.md)**: GitHub Actions workflows validating linting (ShellCheck), Ubuntu cross-platform provisioning, and macOS end-to-end applications.
 - **[`home/`](home/README.md)**: The chezmoi managed source root (configured via `.chezmoiroot`). Everything in this directory targets `$HOME` (e.g. `dot_config/` maps to `~/.config/`, `private_Library/` maps to `~/Library/`). Lifecycle scripts (`.chezmoiscripts/`) and templates also reside here.
-- **[`scripts/`](scripts/README.md)**: Helper scripts for CI runner installation, test configuration generation, and script linting. Kept outside `home/` so they are never copied to `$HOME`.
+- **[`mise-tasks/`](mise-tasks/README.md)**: File tasks for ShellCheck linting and CI runners. Kept outside `home/` so they are never copied to `$HOME`.
 - **[`tests/`](tests/README.md)**: Integration test suite built with Bats (`bats-core`), asserting on template substitution, file generation, idempotency, and script syntax.
 
 > ℹ️ *Each subfolder contains its own localized `README.md` detailing its specific files and purpose.*
