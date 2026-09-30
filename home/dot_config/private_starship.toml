@@ -10,6 +10,7 @@ $directory\
 $git_branch\
 $git_state\
 $git_status\
+$cmd_duration\
 $package\
 $nodejs\
 $python\
@@ -17,14 +18,10 @@ $rust\
 $golang\
 $mise\
 $docker_context\
-$direnv\
 $line_break\
 $character"""
 
-right_format = """
-$status\
-$cmd_duration\
-$time"""
+right_format = "$status$aws$time"
 
 [directory]
 style = "blue"
@@ -101,13 +98,8 @@ format = "[$symbol$context]($style) "
 style = "bright-black"
 only_with_files = true
 
-[direnv]
-disabled = false
-format = "[$symbol$loaded/$allowed]($style) "
-style = "bright-black"
-detect_extensions = []
-
 [aws]
-format = '[$symbol$profile( \($region\))]($style) '
+format = '[$symbol$profile( \($region\))( \[$duration\])]($style) '
 style = "bold yellow"
 symbol = "☁️ "
+expiration_symbol = "X"

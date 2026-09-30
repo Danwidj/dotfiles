@@ -83,6 +83,10 @@ teardown() {
     assert_file_exist "${TEST_HOME}/.config/nvim/init.lua"
 }
 
+@test "~/.config/vim/vimrc exists after apply" {
+    assert_file_exist "${TEST_HOME}/.config/vim/vimrc"
+}
+
 @test "~/.config/tmux/tmux.conf exists after apply" {
     assert_file_exist "${TEST_HOME}/.config/tmux/tmux.conf"
 }
@@ -248,6 +252,70 @@ EOF
     assert_output "${expected_zshrc}"
 }
 
+@test "run_after_setup-ssh.sh exists and is executable" {
+    SCRIPT="${BATS_TEST_DIRNAME}/../../home/.chezmoiscripts/run_after_setup-ssh.sh"
+    assert_file_exist "${SCRIPT}"
+    assert_file_executable "${SCRIPT}"
+}
+
+@test "run_after_setup-ssh.sh is bash parse-clean" {
+    run bash -n "${BATS_TEST_DIRNAME}/../../home/.chezmoiscripts/run_after_setup-ssh.sh"
+    assert_success
+}
+
+@test "run_after_setup-ssh.sh creates ~/.ssh/config with mode 600 and Include directive when missing" {
+    SSH_DIR="${TEST_HOME}/.ssh"
+    SSH_CONFIG="${SSH_DIR}/config"
+    rm -rf "${SSH_DIR}"
+
+    HOME="${TEST_HOME}" run bash "${BATS_TEST_DIRNAME}/../../home/.chezmoiscripts/run_after_setup-ssh.sh"
+    assert_success
+    assert_file_exist "${SSH_CONFIG}"
+
+    run cat "${SSH_CONFIG}"
+    assert_success
+    assert_output "Include ~/.config/ssh/config"
+
+    run python3 -c "import os, stat; print(oct(stat.S_IMODE(os.stat('${SSH_CONFIG}').st_mode)))"
+    assert_success
+    assert_output "0o600"
+}
+
+@test "run_after_setup-ssh.sh appends Include directive without duplicating or overwriting existing config" {
+    SSH_DIR="${TEST_HOME}/.ssh"
+    SSH_CONFIG="${SSH_DIR}/config"
+    mkdir -p "${SSH_DIR}"
+    cat <<'EOF' > "${SSH_CONFIG}"
+Host github.com
+    User git
+EOF
+    chmod 644 "${SSH_CONFIG}"
+
+    HOME="${TEST_HOME}" run bash "${BATS_TEST_DIRNAME}/../../home/.chezmoiscripts/run_after_setup-ssh.sh"
+    assert_success
+
+    run cat "${SSH_CONFIG}"
+    assert_success
+    expected=$(cat <<'EOF'
+Host github.com
+    User git
+Include ~/.config/ssh/config
+EOF
+)
+    assert_output "${expected}"
+
+    run python3 -c "import os, stat; print(oct(stat.S_IMODE(os.stat('${SSH_CONFIG}').st_mode)))"
+    assert_success
+    assert_output "0o600"
+
+    # Re-run to verify idempotency
+    HOME="${TEST_HOME}" run bash "${BATS_TEST_DIRNAME}/../../home/.chezmoiscripts/run_after_setup-ssh.sh"
+    assert_success
+    run cat "${SSH_CONFIG}"
+    assert_success
+    assert_output "${expected}"
+}
+
 @test "run_zsh-setup.sh configures ZDOTDIR in ETC_ZSHENV when missing" {
     TEST_ETC="${TEST_HOME}/etc/zshenv"
     rm -f "${TEST_ETC}"
@@ -329,28 +397,34 @@ EOF
     done
 }
 
-@test "run_once_setup-chezmoi-git-identity.sh exists and is executable" {
-    SCRIPT="${BATS_TEST_DIRNAME}/../../home/.chezmoiscripts/run_once_setup-chezmoi-git-identity.sh"
+@test "run_once_setup-chezmoi-git-identity.sh.tmpl exists and is executable" {
+    SCRIPT="${BATS_TEST_DIRNAME}/../../home/.chezmoiscripts/run_once_setup-chezmoi-git-identity.sh.tmpl"
     assert_file_exist "${SCRIPT}"
     assert_file_executable "${SCRIPT}"
 }
 
-@test "run_once_setup-chezmoi-git-identity.sh is bash parse-clean" {
-    run bash -n "${BATS_TEST_DIRNAME}/../../home/.chezmoiscripts/run_once_setup-chezmoi-git-identity.sh"
+@test "run_once_setup-chezmoi-git-identity.sh.tmpl rendered is bash parse-clean" {
+    RENDERED="${BATS_TEST_TMPDIR}/rendered_git_identity.sh"
+    chezmoi execute-template --source="${BATS_TEST_DIRNAME}/../.." --override-data '{"email": "test@example.com"}' < "${BATS_TEST_DIRNAME}/../../home/.chezmoiscripts/run_once_setup-chezmoi-git-identity.sh.tmpl" > "${RENDERED}"
+    run bash -n "${RENDERED}"
     assert_success
 }
 
-@test "run_once_setup-chezmoi-git-identity.sh fails when CHEZMOI_SOURCE_DIR is unset" {
-    run env -u CHEZMOI_SOURCE_DIR bash "${BATS_TEST_DIRNAME}/../../home/.chezmoiscripts/run_once_setup-chezmoi-git-identity.sh"
+@test "run_once_setup-chezmoi-git-identity.sh.tmpl fails when CHEZMOI_SOURCE_DIR is unset" {
+    RENDERED="${BATS_TEST_TMPDIR}/rendered_git_identity.sh"
+    chezmoi execute-template --source="${BATS_TEST_DIRNAME}/../.." --override-data '{"email": "test@example.com"}' < "${BATS_TEST_DIRNAME}/../../home/.chezmoiscripts/run_once_setup-chezmoi-git-identity.sh.tmpl" > "${RENDERED}"
+    run env -u CHEZMOI_SOURCE_DIR bash "${RENDERED}"
     assert_failure
     assert_output_partial "CHEZMOI_SOURCE_DIR environment variable is not set"
 }
 
-@test "run_once_setup-chezmoi-git-identity.sh configures local git identity on target repo" {
+@test "run_once_setup-chezmoi-git-identity.sh.tmpl configures local git identity on target repo" {
     TMP_REPO="${BATS_TEST_TMPDIR}/throwaway-git-repo"
     git init "${TMP_REPO}"
+    RENDERED="${BATS_TEST_TMPDIR}/rendered_git_identity.sh"
+    chezmoi execute-template --source="${BATS_TEST_DIRNAME}/../.." --override-data '{"email": "custom-dev@example.org"}' < "${BATS_TEST_DIRNAME}/../../home/.chezmoiscripts/run_once_setup-chezmoi-git-identity.sh.tmpl" > "${RENDERED}"
 
-    CHEZMOI_SOURCE_DIR="${TMP_REPO}" run bash "${BATS_TEST_DIRNAME}/../../home/.chezmoiscripts/run_once_setup-chezmoi-git-identity.sh"
+    CHEZMOI_SOURCE_DIR="${TMP_REPO}" run bash "${RENDERED}"
     assert_success
 
     run git -C "${TMP_REPO}" config --local user.name
@@ -359,9 +433,62 @@ EOF
 
     run git -C "${TMP_REPO}" config --local user.email
     assert_success
-    assert_output "daniel.widjaja18@gmail.com"
+    assert_output "custom-dev@example.org"
 
     run git -C "${TMP_REPO}" config --local commit.gpgsign
     assert_success
     assert_output "false"
+}
+
+@test "~/.config/zsh/managed.zshrc does not invoke fastfetch at startup" {
+    run grep "fastfetch" "${TEST_HOME}/.config/zsh/managed.zshrc"
+    assert_failure
+}
+
+@test "~/.config/zsh/managed.zshrc atuin init syntax is valid with single closing parenthesis" {
+    run grep 'atuin init zsh' "${TEST_HOME}/.config/zsh/managed.zshrc"
+    assert_success
+    assert_output_partial 'eval "$(atuin init zsh --disable-up-arrow)"'
+    refute_output_partial '))'
+}
+
+@test "~/.config/git/ignore does not ignore Cargo.lock" {
+    run grep -E "^Cargo\.lock" "${TEST_HOME}/.config/git/ignore"
+    assert_failure
+}
+
+@test "~/.config/zsh/managed.zshenv does not export VIMINIT" {
+    run grep "VIMINIT" "${TEST_HOME}/.config/zsh/managed.zshenv"
+    assert_failure
+}
+
+@test "~/.config/vim/vimrc relocates viminfo to XDG state directory" {
+    run grep "viminfofile" "${TEST_HOME}/.config/vim/vimrc"
+    assert_success
+    assert_output_partial "s:vim_state_dir . '/viminfo'"
+}
+
+@test "~/.config/zsh/managed.zshrc initializes zoxide with --cmd cd" {
+    run grep 'zoxide init zsh' "${TEST_HOME}/.config/zsh/managed.zshrc"
+    assert_success
+    assert_output_partial '--cmd cd'
+}
+
+@test "~/.config/zsh/managed.zshrc does not define find, grep, or cd aliases" {
+    run grep -E "alias cd=" "${TEST_HOME}/.config/zsh/managed.zshrc"
+    assert_failure
+
+    run grep -E "alias find=" "${TEST_HOME}/.config/zsh/managed.zshrc"
+    assert_failure
+
+    run grep -E "alias grep=" "${TEST_HOME}/.config/zsh/managed.zshrc"
+    assert_failure
+}
+
+@test "~/.config/zsh/managed.zshrc preserves cat and ls aliases" {
+    run grep "alias cat='bat'" "${TEST_HOME}/.config/zsh/managed.zshrc"
+    assert_success
+
+    run grep "alias ls=" "${TEST_HOME}/.config/zsh/managed.zshrc"
+    assert_success
 }

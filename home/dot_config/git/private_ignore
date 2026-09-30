@@ -7,11 +7,8 @@ Icon?
 ._*
 .Spotlight-V100
 .Trashes
-ehthumbs.db
-Thumbs.db
 
 # Linux
-*~
 .directory
 .Trash-*
 
@@ -31,10 +28,9 @@ $RECYCLE.BIN/
 .idea/
 *.swp
 *.swo
+.*.swp
+.*.swo
 *~
-.project
-.classpath
-.settings/
 *.sublime-project
 *.sublime-workspace
 .vs/
@@ -53,7 +49,6 @@ __pycache__/
 *$py.class
 .Python
 build/
-develop-eggs/
 dist/
 downloads/
 eggs/
@@ -78,7 +73,6 @@ yarn-error.log*
 
 # Rust
 target/
-Cargo.lock
 
 # Go
 vendor/
@@ -93,22 +87,15 @@ vendor/
 .classpath
 .project
 .settings/
-target/
 
 # General
 *.orig
 *.rej
-.*.swp
-.*.swo
-*~
 *.bak
 *.tmp
 *.temp
-
-# OS generated (additional)
-*.DS_Store
-*.AppleDouble
-*.LSOverride
+.tmp/
+.temp/
 
 # Misc
 *.pid
@@ -116,8 +103,3 @@ target/
 *.pid.lock
 coverage/
 .nyc_output/
-.grunt
-bower_components/
-.lock-wscript
-.tmp/
-.temp/

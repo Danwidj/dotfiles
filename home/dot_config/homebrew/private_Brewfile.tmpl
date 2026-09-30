@@ -37,17 +37,19 @@ brew "lazygit"
 # LazyVim deps
 brew "ripgrep"
 brew "fd"
-brew "node"
+brew "kotlin-language-server"
 
 # ---------------------------------------------------------------------------
 # Dev tools
 # ---------------------------------------------------------------------------
 brew "mise"
-brew "uv"
 brew "jq"
 brew "yq"
 brew "delta"
 brew "serpl"
+{{ if eq .machine_type "personal" -}}
+brew "pi-coding-agent"
+{{ end -}}
 
 # ---------------------------------------------------------------------------
 # Container
@@ -59,8 +61,6 @@ brew "docker-compose"
 # ---------------------------------------------------------------------------
 # Services
 # ---------------------------------------------------------------------------
-brew "nginx"
-brew "redis"
 brew "sqlite"
 brew "openssl@3"
 
@@ -70,6 +70,7 @@ brew "openssl@3"
 brew "bat"
 brew "eza"
 brew "btop"
+brew "fastfetch"
 brew "tlrc"
 brew "ffmpeg"
 brew "sevenzip"
@@ -89,6 +90,7 @@ cask "google-chrome"
 {{ if eq .machine_type "personal" -}}
 cask "claude"
 cask "claude-code@latest"
+cask "homebrew/cask/copilot-cli"
 {{ end -}}
 cask "ngrok"
 {{ if eq .chezmoi.os "darwin" -}}

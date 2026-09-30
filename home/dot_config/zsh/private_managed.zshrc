@@ -1,4 +1,3 @@
-echo
 # ==============================================================================
 # Interactive shell configuration (environment exports live in managed.zshenv)
 # ==============================================================================
@@ -55,22 +54,35 @@ bindkey '^[[B' history-search-forward
 # ==============================================================================
 command -v starship &>/dev/null && eval "$(starship init zsh)"
 command -v mise &>/dev/null && eval "$(mise activate zsh)"
-command -v zoxide &>/dev/null && eval "$(zoxide init zsh)"
-command -v fastfetch &>/dev/null && fastfetch
+command -v zoxide &>/dev/null && eval "$(zoxide init zsh --cmd cd)"
 
 alias vim="nvim"
 alias ls='eza --icons=always --git --grid --all --group-directories-first'
-alias cd='z'
 alias top='btop'
-alias find='fd'
 alias cat='bat'
-alias grep='rg'
 
 # ==============================================================================
 # Completion & Plugins
 # ==============================================================================
+# Cache Homebrew prefix to avoid repeated slow $(brew --prefix) subshells
+if [[ -z "${HOMEBREW_PREFIX:-}" ]]; then
+  if [[ -d "/opt/homebrew" ]]; then
+    HOMEBREW_PREFIX="/opt/homebrew"
+  elif command -v brew >/dev/null 2>&1; then
+    HOMEBREW_PREFIX="$(brew --prefix)"
+  fi
+fi
+
+# Cache compinit dump file under XDG_CACHE_HOME and regenerate at most once a day
+zcompdump="${XDG_CACHE_HOME:-$HOME/.cache}/zsh/zcompdump"
+[[ -d "${zcompdump:h}" ]] || mkdir -p "${zcompdump:h}"
 autoload -Uz compinit
-compinit
+if [[ -n ${zcompdump}(#qN.mh+24) || ! -f "$zcompdump" ]]; then
+  compinit -d "$zcompdump"
+else
+  compinit -C -d "$zcompdump"
+fi
+unset zcompdump
 
 # Completion styling & matching rules (case-insensitive & fuzzy matching)
 zstyle ':completion:*' matcher-list 'm:{a-zA-Z}={A-Za-z}' 'r:|[._-]=* r:|=*' 'l:|=* r:|=*'
@@ -83,30 +95,30 @@ if command -v fzf >/dev/null 2>&1; then
 fi
 
 # fzf-tab
-if [[ -f "$(brew --prefix)/share/fzf-tab/fzf-tab.zsh" ]]; then
+if [[ -n "${HOMEBREW_PREFIX:-}" && -f "${HOMEBREW_PREFIX}/share/fzf-tab/fzf-tab.zsh" ]]; then
   # Make Tab and Shift-Tab cycle through completion candidates
   zstyle ':fzf-tab:*' fzf-bindings 'tab:down' 'btab:up'
   # Continuous directory completion (hitting / or Tab steps into next directory)
   zstyle ':fzf-tab:*' continuous-trigger '/'
   # Preview directories with eza when using cd
   zstyle ':fzf-tab:complete:cd:*' fzf-preview 'eza -1 --color=always $realpath'
-  source "$(brew --prefix)/share/fzf-tab/fzf-tab.zsh"
+  source "${HOMEBREW_PREFIX}/share/fzf-tab/fzf-tab.zsh"
 fi
 
 # zsh-autosuggestions
-if [[ -f "$(brew --prefix)/share/zsh-autosuggestions/zsh-autosuggestions.zsh" ]]; then
-  source "$(brew --prefix)/share/zsh-autosuggestions/zsh-autosuggestions.zsh"
+if [[ -n "${HOMEBREW_PREFIX:-}" && -f "${HOMEBREW_PREFIX}/share/zsh-autosuggestions/zsh-autosuggestions.zsh" ]]; then
+  source "${HOMEBREW_PREFIX}/share/zsh-autosuggestions/zsh-autosuggestions.zsh"
 fi
 
 # atuin
 if command -v atuin >/dev/null 2>&1; then
-  eval "$(atuin init zsh --disable-up-arrow))"
+  eval "$(atuin init zsh --disable-up-arrow)"
 fi
 
 
 # ==============================================================================
 # Syntax highlighting (must be sourced last)
 # ==============================================================================
-if [[ -f "$(brew --prefix)/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh" ]]; then
-  source "$(brew --prefix)/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh"
+if [[ -n "${HOMEBREW_PREFIX:-}" && -f "${HOMEBREW_PREFIX}/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh" ]]; then
+  source "${HOMEBREW_PREFIX}/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh"
 fi

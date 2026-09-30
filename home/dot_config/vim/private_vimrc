@@ -1,0 +1,13 @@
+" ==============================================================================
+" Vim Configuration
+" ==============================================================================
+" Vim 9.1+ natively reads $XDG_CONFIG_HOME/vim/vimrc on Unix systems when
+" ~/.vimrc and ~/.vim/vimrc are absent (patch 9.1.0327).
+"
+" Relocate viminfo to $XDG_STATE_HOME/vim/viminfo to prevent polluting $HOME.
+let s:state_home = !empty($XDG_STATE_HOME) ? $XDG_STATE_HOME : expand('~/.local/state')
+let s:vim_state_dir = s:state_home . '/vim'
+if !isdirectory(s:vim_state_dir)
+  call mkdir(s:vim_state_dir, 'p')
+endif
+let &viminfofile = s:vim_state_dir . '/viminfo'
