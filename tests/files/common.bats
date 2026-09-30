@@ -301,6 +301,25 @@ EOF
     done
 }
 
+@test "repo-root mise.toml pins chezmoi, bats, and shellcheck tools" {
+    MISE_TOML="${BATS_TEST_DIRNAME}/../../mise.toml"
+    assert_file_exist "${MISE_TOML}"
+    for tool in chezmoi bats shellcheck; do
+        run grep -E "^${tool}[[:space:]]*=" "${MISE_TOML}"
+        assert_success
+    done
+}
+
+@test "mise-tasks files exist, are executable, and are bash parse-clean" {
+    for task in lint ci/apply ci/install-homebrew ci/write-chezmoi-config; do
+        TASK_PATH="${BATS_TEST_DIRNAME}/../../mise-tasks/${task}"
+        assert_file_exist "${TASK_PATH}"
+        assert_file_executable "${TASK_PATH}"
+        run bash -n "${TASK_PATH}"
+        assert_success
+    done
+}
+
 @test "global mise config tracks required python cli tools" {
     CONFIG="${BATS_TEST_DIRNAME}/../../home/dot_config/mise/config.toml"
     assert_file_exist "${CONFIG}"

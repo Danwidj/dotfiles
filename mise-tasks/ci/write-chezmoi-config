@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+#MISE description="Write chezmoi config with CI-safe template data"
 # Write a chezmoi config with CI-safe template data, shared by ci.yaml and
 # macos-ci.yaml.
 

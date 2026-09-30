@@ -1,13 +1,17 @@
+[tools]
+bats = "1.14.0"
+chezmoi = "2.73.0"
+shellcheck = "0.11.0"
+
 [task_config]
 shell = "bash -euo pipefail -c"
 
 [tasks.test]
 description = "Run test suite"
-run = "bats tests/files/*.bats"
+run = "bats --print-output-on-failure tests/files/*.bats"
 
 [tasks.lint]
 description = "Lint shell scripts with shellcheck"
-run = "scripts/lint.sh"
 
 [tasks.check]
 description = "Run lint and test checks in parallel"
