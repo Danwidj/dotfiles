@@ -7,8 +7,8 @@ export XDG_DATA_HOME="$HOME/.local/share"
 export XDG_STATE_HOME="$HOME/.local/state"
 export XDG_RUNTIME_DIR="${TMPDIR:-/tmp}/xdg_runtime"
 
-# Ensure XDG_RUNTIME_DIR and Vim state directory exist
-mkdir -p "$XDG_RUNTIME_DIR" "$XDG_STATE_HOME/vim"
+# Ensure XDG_RUNTIME_DIR exists
+mkdir -p "$XDG_RUNTIME_DIR"
 
 # Colorize ls output
 export CLICOLOR=1
@@ -34,7 +34,6 @@ export MPLCONFIGDIR="$XDG_CONFIG_HOME/matplotlib"
 export STREAMLIT_BROWSER_GATHER_USAGE_STATS=false
 export DOCKER_CONFIG="$XDG_CONFIG_HOME/docker"
 export COPILOT_HOME="$XDG_DATA_HOME/copilot"
-export VIMINIT='let $MYVIMRC = (!empty($XDG_CONFIG_HOME) ? $XDG_CONFIG_HOME : $HOME . "/.config") . "/vim/vimrc" | if !filereadable($MYVIMRC) && filereadable($HOME . "/.vimrc") | let $MYVIMRC = $HOME . "/.vimrc" | endif | if !filereadable($MYVIMRC) && filereadable($HOME . "/.vim/vimrc") | let $MYVIMRC = $HOME . "/.vim/vimrc" | endif | if filereadable($MYVIMRC) | source $MYVIMRC | endif | if !isdirectory(expand($XDG_STATE_HOME . "/vim")) | call mkdir(expand($XDG_STATE_HOME . "/vim"), "p") | endif | set viminfofile=$XDG_STATE_HOME/vim/viminfo'
 
 export GOPATH="$XDG_DATA_HOME/go"
 export GOCACHE="$XDG_CACHE_HOME/go-build"

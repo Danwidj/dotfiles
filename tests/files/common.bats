@@ -83,6 +83,10 @@ teardown() {
     assert_file_exist "${TEST_HOME}/.config/nvim/init.lua"
 }
 
+@test "~/.config/vim/vimrc exists after apply" {
+    assert_file_exist "${TEST_HOME}/.config/vim/vimrc"
+}
+
 @test "~/.config/tmux/tmux.conf exists after apply" {
     assert_file_exist "${TEST_HOME}/.config/tmux/tmux.conf"
 }
@@ -389,9 +393,13 @@ EOF
     assert_failure
 }
 
-@test "~/.config/zsh/managed.zshenv exports VIMINIT with XDG state viminfo path and vimrc discovery" {
+@test "~/.config/zsh/managed.zshenv does not export VIMINIT" {
     run grep "VIMINIT" "${TEST_HOME}/.config/zsh/managed.zshenv"
+    assert_failure
+}
+
+@test "~/.config/vim/vimrc relocates viminfo to XDG state directory" {
+    run grep "viminfofile" "${TEST_HOME}/.config/vim/vimrc"
     assert_success
-    assert_output_partial 'set viminfofile=$XDG_STATE_HOME/vim/viminfo'
-    assert_output_partial 'source $MYVIMRC'
+    assert_output_partial "s:vim_state_dir . '/viminfo'"
 }
