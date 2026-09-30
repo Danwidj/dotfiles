@@ -208,3 +208,40 @@ teardown() {
     run grep -Fx "ruff" "${TOOLS}"
     assert_success
 }
+
+@test "run_once_setup-chezmoi-git-identity.sh exists and is executable" {
+    SCRIPT="${BATS_TEST_DIRNAME}/../../home/run_once_setup-chezmoi-git-identity.sh"
+    assert_file_exist "${SCRIPT}"
+    assert_file_executable "${SCRIPT}"
+}
+
+@test "run_once_setup-chezmoi-git-identity.sh is bash parse-clean" {
+    run bash -n "${BATS_TEST_DIRNAME}/../../home/run_once_setup-chezmoi-git-identity.sh"
+    assert_success
+}
+
+@test "run_once_setup-chezmoi-git-identity.sh fails when CHEZMOI_SOURCE_DIR is unset" {
+    run env -u CHEZMOI_SOURCE_DIR bash "${BATS_TEST_DIRNAME}/../../home/run_once_setup-chezmoi-git-identity.sh"
+    assert_failure
+    assert_output_partial "CHEZMOI_SOURCE_DIR environment variable is not set"
+}
+
+@test "run_once_setup-chezmoi-git-identity.sh configures local git identity on target repo" {
+    TMP_REPO="${BATS_TEST_TMPDIR}/throwaway-git-repo"
+    git init "${TMP_REPO}"
+
+    CHEZMOI_SOURCE_DIR="${TMP_REPO}" run bash "${BATS_TEST_DIRNAME}/../../home/run_once_setup-chezmoi-git-identity.sh"
+    assert_success
+
+    run git -C "${TMP_REPO}" config --local user.name
+    assert_success
+    assert_output "Daniel"
+
+    run git -C "${TMP_REPO}" config --local user.email
+    assert_success
+    assert_output "daniel.widjaja18@gmail.com"
+
+    run git -C "${TMP_REPO}" config --local commit.gpgsign
+    assert_success
+    assert_output "false"
+}

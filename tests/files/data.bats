@@ -86,33 +86,3 @@ EOF
     assert_output_partial 'brew "fzf-tab"'
     assert_output_partial 'brew "zsh-syntax-highlighting"'
 }
-
-@test "home/run_once_setup-chezmoi-git-identity.sh.tmpl renders empty for machine_type=personal" {
-    cat > "${TEST_HOME}/.config/chezmoi/chezmoi.toml" <<'EOF'
-[data]
-    machine_type = "personal"
-    email = "test@example.com"
-EOF
-
-    run chezmoi execute-template -f "${BATS_TEST_DIRNAME}/../../home/run_once_setup-chezmoi-git-identity.sh.tmpl" --config="${TEST_HOME}/.config/chezmoi/chezmoi.toml"
-    assert_success
-    assert_output ""
-}
-
-@test "home/run_once_setup-chezmoi-git-identity.sh.tmpl renders git config commands for machine_type=work" {
-    cat > "${TEST_HOME}/.config/chezmoi/chezmoi.toml" <<'EOF'
-[data]
-    machine_type = "work"
-    email = "test@example.com"
-EOF
-
-    run chezmoi execute-template -f "${BATS_TEST_DIRNAME}/../../home/run_once_setup-chezmoi-git-identity.sh.tmpl" --config="${TEST_HOME}/.config/chezmoi/chezmoi.toml"
-    assert_success
-    assert_output_partial 'git -C'
-    assert_output_partial 'config --local user.name "Daniel"'
-    assert_output_partial 'config --local user.email "daniel.widjaja18@gmail.com"'
-    assert_output_partial 'config --local commit.gpgsign false'
-
-    # Verify rendered bash is syntax-clean
-    echo "$output" | bash -n
-}
