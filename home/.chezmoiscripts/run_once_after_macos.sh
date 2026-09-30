@@ -348,7 +348,7 @@ EOF
 
 if ! command -v duti &>/dev/null; then
     echo "duti not found on PATH - it should have been installed via the Brewfile"
-    echo "(see run_once_install-packages.sh). Skipping default-app assignment."
+    echo "(see run_onchange_after_brew-bundle.sh.tmpl). Skipping default-app assignment."
 else
     # `duti -s <bundle_id> <uti|extension|MIME> <role>` (3 args) for UTIs.
     # Silent on success; only warns (real signal, not noise) on failure.
@@ -401,6 +401,14 @@ else
 
     echo "Default app handlers set."
 fi
+
+###############################################################################
+# Keyboard
+###############################################################################
+
+# Map Caps Lock to Control on built-in keyboard [default: no remapping]
+# Note: applies at next login and covers the built-in keyboard only.
+defaults -currentHost write -g com.apple.keyboard.modifiermapping.0-0-0 -array '<dict><key>HIDKeyboardModifierMappingSrc</key><integer>30064771129</integer><key>HIDKeyboardModifierMappingDst</key><integer>30064771300</integer></dict>'
 
 ###############################################################################
 # Keyboard Shortcuts

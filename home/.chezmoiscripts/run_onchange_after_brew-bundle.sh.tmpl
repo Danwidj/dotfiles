@@ -1,17 +1,10 @@
 #!/usr/bin/env bash
-# run_once_install-packages.sh
-# Installs Homebrew + Xcode CLT if missing, then installs all packages from
-# $HOMEBREW_BUNDLE_FILE_GLOBAL (~/.config/homebrew/Brewfile) via brew bundle.
-# Runs after chezmoi applies files (so the Brewfile is already in place).
+# run_onchange_after_brew-bundle.sh.tmpl
+# Installs all packages from $HOMEBREW_BUNDLE_FILE_GLOBAL (~/.config/homebrew/Brewfile) via brew bundle.
+# Re-runs whenever the rendered Brewfile manifest changes.
+# Brewfile hash: {{ includeTemplate "dot_config/homebrew/private_Brewfile.tmpl" . | sha256sum }}
 
 set -euo pipefail
-
-if ! command -v brew &>/dev/null; then
-    echo "Installing Homebrew..."
-    /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
-else
-    echo "Homebrew already installed. Skipping."
-fi
 
 # Ensure brew is on PATH (Apple Silicon; falls back to Intel)
 if [[ -f /opt/homebrew/bin/brew ]]; then
@@ -21,7 +14,7 @@ elif [[ -f /usr/local/bin/brew ]]; then
 fi
 
 if ! command -v brew &>/dev/null; then
-    echo "Error: brew not found. Run chezmoi apply again after Homebrew is installed."
+    echo "Error: brew not found. Run chezmoi apply again after Homebrew is installed." >&2
     exit 1
 fi
 
