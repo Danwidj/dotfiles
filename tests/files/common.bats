@@ -492,3 +492,169 @@ EOF
     run grep "alias ls=" "${TEST_HOME}/.config/zsh/managed.zshrc"
     assert_success
 }
+
+@test "~/.config/agents/AGENTS.md exists with mode 600 and shared comment" {
+    AGENTS_FILE="${TEST_HOME}/.config/agents/AGENTS.md"
+    assert_file_exist "${AGENTS_FILE}"
+
+    run cat "${AGENTS_FILE}"
+    assert_success
+    assert_output '<!-- Shared instructions file read by every agent tool -->'
+
+    run python3 -c "import os, stat; print(oct(stat.S_IMODE(os.stat('${AGENTS_FILE}').st_mode)))"
+    assert_success
+    assert_output "0o600"
+}
+
+@test "~/.config/claude/CLAUDE.md exists and imports shared AGENTS.md" {
+    CLAUDE_FILE="${TEST_HOME}/.config/claude/CLAUDE.md"
+    assert_file_exist "${CLAUDE_FILE}"
+
+    run cat "${CLAUDE_FILE}"
+    assert_success
+    assert_output '@~/.config/agents/AGENTS.md'
+}
+
+@test "all agent harness instructions symlinks point to shared AGENTS.md" {
+    TARGET="${TEST_HOME}/.config/agents/AGENTS.md"
+    assert_file_exist "${TARGET}"
+
+    # opencode
+    OPENCODE_LINK="${TEST_HOME}/.config/opencode/AGENTS.md"
+    [ -L "${OPENCODE_LINK}" ]
+    [ "$(readlink "${OPENCODE_LINK}")" = "../agents/AGENTS.md" ]
+    assert_file_exist "${OPENCODE_LINK}"
+    run cat "${OPENCODE_LINK}"
+    assert_success
+    assert_output '<!-- Shared instructions file read by every agent tool -->'
+
+    # pi
+    PI_LINK="${TEST_HOME}/.config/pi/agent/AGENTS.md"
+    [ -L "${PI_LINK}" ]
+    [ "$(readlink "${PI_LINK}")" = "../../agents/AGENTS.md" ]
+    assert_file_exist "${PI_LINK}"
+    run cat "${PI_LINK}"
+    assert_success
+    assert_output '<!-- Shared instructions file read by every agent tool -->'
+
+    # agy (Antigravity CLI)
+    AGY_LINK="${TEST_HOME}/.gemini/AGENTS.md"
+    [ -L "${AGY_LINK}" ]
+    [ "$(readlink "${AGY_LINK}")" = "../.config/agents/AGENTS.md" ]
+    assert_file_exist "${AGY_LINK}"
+    run cat "${AGY_LINK}"
+    assert_success
+    assert_output '<!-- Shared instructions file read by every agent tool -->'
+
+    # GitHub Copilot CLI
+    COPILOT_LINK="${TEST_HOME}/.local/share/copilot/copilot-instructions.md"
+    [ -L "${COPILOT_LINK}" ]
+    [ "$(readlink "${COPILOT_LINK}")" = "../../../.config/agents/AGENTS.md" ]
+    assert_file_exist "${COPILOT_LINK}"
+    run cat "${COPILOT_LINK}"
+    assert_success
+    assert_output '<!-- Shared instructions file read by every agent tool -->'
+
+    # Verify canonical path resolution
+    run python3 -c "import os; t=os.path.realpath('${TARGET}'); assert all(os.path.realpath(p) == t for p in ['${OPENCODE_LINK}', '${PI_LINK}', '${AGY_LINK}', '${COPILOT_LINK}'])"
+    assert_success
+}
+
+@test "Claude settings modify script updates statusLine and preserves other keys" {
+    SETTINGS_FILE="${TEST_HOME}/.config/claude/settings.json"
+    assert_file_exist "${SETTINGS_FILE}"
+
+    run jq -r '.statusLine.type' "${SETTINGS_FILE}"
+    assert_success
+    assert_output "command"
+
+    run jq -r '.statusLine.command' "${SETTINGS_FILE}"
+    assert_success
+    assert_output "~/.config/statusline/statusline.sh"
+
+    run jq -r '.statusLine.padding' "${SETTINGS_FILE}"
+    assert_success
+    assert_output "0"
+
+    # Test modify script preserves existing keys
+    MOD_SCRIPT="${BATS_TEST_DIRNAME}/../../home/dot_config/claude/modify_private_settings.json"
+    assert_file_exist "${MOD_SCRIPT}"
+    assert_file_executable "${MOD_SCRIPT}"
+
+    TEST_JSON='{"existing_key": "val", "hooks": [1, 2], "statusLine": {"old": true}}'
+    MOD_OUTPUT=$(echo "${TEST_JSON}" | sh "${MOD_SCRIPT}")
+    [ "$(echo "${MOD_OUTPUT}" | jq -r .existing_key)" = "val" ]
+    [ "$(echo "${MOD_OUTPUT}" | jq -r '.hooks | length')" = "2" ]
+    [ "$(echo "${MOD_OUTPUT}" | jq -r .statusLine.command)" = "~/.config/statusline/statusline.sh" ]
+    [ "$(echo "${MOD_OUTPUT}" | jq -r .statusLine.padding)" = "0" ]
+}
+
+@test "~/.config/statusline/statusline.sh exists, is executable, and is bash parse-clean" {
+    STATUS_SCRIPT="${TEST_HOME}/.config/statusline/statusline.sh"
+    assert_file_exist "${STATUS_SCRIPT}"
+    assert_file_executable "${STATUS_SCRIPT}"
+
+    run bash -n "${STATUS_SCRIPT}"
+    assert_success
+}
+
+@test "statusline.sh formats full Claude-shaped input" {
+    STATUS_SCRIPT="${TEST_HOME}/.config/statusline/statusline.sh"
+    INPUT='{"model": {"display_name": "Opus 5.5"}, "context_window": {"total_input_tokens": 400000}, "rate_limits": {"five_hour": {"used_percentage": 62, "resets_at": 1738424400}, "seven_day": {"used_percentage": 14, "resets_at": 1738424400}}}'
+
+    run env TZ=UTC "${STATUS_SCRIPT}" <<< "${INPUT}"
+    assert_success
+    assert_output "Opus 5.5 | ctx 400k | 5h 62% resets 15:40 | week 14% resets Sat 15:40"
+}
+
+@test "statusline.sh handles missing 5h rate limit" {
+    STATUS_SCRIPT="${TEST_HOME}/.config/statusline/statusline.sh"
+    INPUT='{"model": {"display_name": "Opus 5.5"}, "context_window": {"total_input_tokens": 400000}, "rate_limits": {"seven_day": {"used_percentage": 14, "resets_at": 1738424400}}}'
+
+    run env TZ=UTC "${STATUS_SCRIPT}" <<< "${INPUT}"
+    assert_success
+    assert_output "Opus 5.5 | ctx 400k | week 14% resets Sat 15:40"
+}
+
+@test "statusline.sh handles missing week rate limit" {
+    STATUS_SCRIPT="${TEST_HOME}/.config/statusline/statusline.sh"
+    INPUT='{"model": {"display_name": "Opus 5.5"}, "context_window": {"total_input_tokens": 400000}, "rate_limits": {"five_hour": {"used_percentage": 62, "resets_at": 1738424400}}}'
+
+    run env TZ=UTC "${STATUS_SCRIPT}" <<< "${INPUT}"
+    assert_success
+    assert_output "Opus 5.5 | ctx 400k | 5h 62% resets 15:40"
+}
+
+@test "statusline.sh handles missing reset times" {
+    STATUS_SCRIPT="${TEST_HOME}/.config/statusline/statusline.sh"
+    INPUT='{"model": {"display_name": "Opus 5.5"}, "context_window": {"total_input_tokens": 400000}, "rate_limits": {"five_hour": {"used_percentage": 62}, "seven_day": {"used_percentage": 14}}}'
+
+    run env TZ=UTC "${STATUS_SCRIPT}" <<< "${INPUT}"
+    assert_success
+    assert_output "Opus 5.5 | ctx 400k | 5h 62% | week 14%"
+}
+
+@test "statusline.sh handles only model and ctx" {
+    STATUS_SCRIPT="${TEST_HOME}/.config/statusline/statusline.sh"
+    INPUT='{"model": {"display_name": "Opus 5.5"}, "context_window": {"total_input_tokens": 400000}}'
+
+    run env TZ=UTC "${STATUS_SCRIPT}" <<< "${INPUT}"
+    assert_success
+    assert_output "Opus 5.5 | ctx 400k"
+}
+
+@test "statusline.sh formats token counts correctly (0, 400000, 1234567)" {
+    STATUS_SCRIPT="${TEST_HOME}/.config/statusline/statusline.sh"
+
+    run env TZ=UTC "${STATUS_SCRIPT}" <<< '{"model": {"display_name": "Opus 5.5"}, "context_window": {"total_input_tokens": 0}}'
+    assert_success
+    assert_output "Opus 5.5 | ctx 0k"
+
+    run env TZ=UTC "${STATUS_SCRIPT}" <<< '{"model": {"display_name": "Opus 5.5"}, "context_window": {"total_input_tokens": 400000}}'
+    assert_success
+    assert_output "Opus 5.5 | ctx 400k"
+
+    run env TZ=UTC "${STATUS_SCRIPT}" <<< '{"model": {"display_name": "Opus 5.5"}, "context_window": {"total_input_tokens": 1234567}}'
+    assert_success
+    assert_output "Opus 5.5 | ctx 1.2M"
+}
