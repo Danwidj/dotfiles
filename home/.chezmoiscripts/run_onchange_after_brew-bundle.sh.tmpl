@@ -37,6 +37,16 @@ run_bundle_quiet() {
     fi
 }
 
+# Untap or trust untrusted preinstalled taps (e.g. aws/tap on GitHub Actions runners)
+# to avoid formula/cask namespace collision when resolving copilot-cli.
+if brew tap 2>/dev/null | grep -qx "aws/tap"; then
+    if [[ -n "${CI:-}" ]]; then
+        brew untap aws/tap 2>/dev/null || brew trust --tap aws/tap 2>/dev/null || true
+    else
+        brew trust --tap aws/tap 2>/dev/null || true
+    fi
+fi
+
 echo "Installing packages from $HOMEBREW_BUNDLE_FILE_GLOBAL..."
 run_bundle_quiet --global
 

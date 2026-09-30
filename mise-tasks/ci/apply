@@ -7,4 +7,11 @@
 
 set -euo pipefail
 
+# Clean up untrusted third-party taps on CI runners to avoid package name conflicts
+if [[ -n "${CI:-}" ]] && command -v brew >/dev/null 2>&1; then
+    if brew tap 2>/dev/null | grep -qx "aws/tap"; then
+        brew untap aws/tap 2>/dev/null || true
+    fi
+fi
+
 chezmoi init --apply --source=. "$@"
