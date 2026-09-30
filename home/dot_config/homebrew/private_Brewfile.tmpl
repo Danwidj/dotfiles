@@ -88,8 +88,10 @@ cask "raycast"
 cask "obsidian"
 cask "visual-studio-code"
 cask "google-chrome"
+{{ if eq .machine_type "personal" -}}
 cask "claude"
 cask "claude-code@latest"
+{{ end -}}
 cask "ngrok"
 {{ if eq .chezmoi.os "darwin" -}}
 cask "nikitabobko/tap/aerospace"

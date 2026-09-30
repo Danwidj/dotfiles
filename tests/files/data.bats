@@ -41,6 +41,8 @@ EOF
     run chezmoi execute-template -f "${BATS_TEST_DIRNAME}/../../home/dot_config/homebrew/private_Brewfile.tmpl" --config="${TEST_HOME}/.config/chezmoi/chezmoi.toml"
     assert_success
     assert_output_partial 'brew "gh"'
+    assert_output_partial 'cask "claude"'
+    assert_output_partial 'cask "claude-code@latest"'
 }
 
 @test "dot_config/homebrew/private_Brewfile.tmpl renders without error for machine_type=work" {
@@ -53,6 +55,8 @@ EOF
     run chezmoi execute-template -f "${BATS_TEST_DIRNAME}/../../home/dot_config/homebrew/private_Brewfile.tmpl" --config="${TEST_HOME}/.config/chezmoi/chezmoi.toml"
     assert_success
     refute_output_partial 'brew "gh"'
+    refute_output_partial 'cask "claude"'
+    refute_output_partial 'cask "claude-code@latest"'
 }
 
 @test "dot_config/homebrew/private_Brewfile.tmpl always includes core packages regardless of machine_type" {
