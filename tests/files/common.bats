@@ -467,3 +467,28 @@ EOF
     assert_success
     assert_output_partial "s:vim_state_dir . '/viminfo'"
 }
+
+@test "~/.config/zsh/managed.zshrc initializes zoxide with --cmd cd" {
+    run grep 'zoxide init zsh' "${TEST_HOME}/.config/zsh/managed.zshrc"
+    assert_success
+    assert_output_partial '--cmd cd'
+}
+
+@test "~/.config/zsh/managed.zshrc does not define find, grep, or cd aliases" {
+    run grep -E "alias cd=" "${TEST_HOME}/.config/zsh/managed.zshrc"
+    assert_failure
+
+    run grep -E "alias find=" "${TEST_HOME}/.config/zsh/managed.zshrc"
+    assert_failure
+
+    run grep -E "alias grep=" "${TEST_HOME}/.config/zsh/managed.zshrc"
+    assert_failure
+}
+
+@test "~/.config/zsh/managed.zshrc preserves cat and ls aliases" {
+    run grep "alias cat='bat'" "${TEST_HOME}/.config/zsh/managed.zshrc"
+    assert_success
+
+    run grep "alias ls=" "${TEST_HOME}/.config/zsh/managed.zshrc"
+    assert_success
+}
