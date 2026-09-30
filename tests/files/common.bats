@@ -4,6 +4,9 @@ load '../test_helper.bats'
 
 setup() {
     export TEST_HOME="${BATS_TEST_TMPDIR}/home"
+    export ETC_ZSHENV="${TEST_HOME}/etc/zshenv"
+    export XDG_DATA_HOME="${TEST_HOME}/.local/share"
+    export XDG_CONFIG_HOME="${TEST_HOME}/.config"
     mkdir -p "${TEST_HOME}/.config/chezmoi"
     cat > "${TEST_HOME}/.config/chezmoi/chezmoi.toml" <<'EOF'
 [data]
@@ -17,7 +20,7 @@ EOF
     # execute macOS-only commands (Homebrew, `defaults`, `osascript`, ...)
     # for real, on whichever OS this bats file runs on (Ubuntu via ci.yaml,
     # macOS via macos-ci.yaml). Script behavior itself is exercised directly
-    # below (e.g. the run_once_zshrc.sh tests) and, end-to-end on the
+    # below (e.g. the run_zsh-setup.sh tests) and, end-to-end on the
     # correct OS, by macos-ci.yaml's own top-level chezmoi apply step.
     chezmoi init --apply --source="${BATS_TEST_DIRNAME}/../.." --destination="${TEST_HOME}" --config="${TEST_HOME}/.config/chezmoi/chezmoi.toml" --exclude=scripts >/dev/null 2>&1
 }
@@ -111,76 +114,166 @@ teardown() {
     assert_success
 }
 
-@test "run_once_zshrc.sh creates .zshrc shim sourcing managed.zshrc" {
-    ZSHRC="${TEST_HOME}/.config/zsh/.zshrc"
-    MANAGED="${TEST_HOME}/.config/zsh/managed.zshrc"
+@test "run_zsh-setup.sh exists and is executable" {
+    SCRIPT="${BATS_TEST_DIRNAME}/../../home/.chezmoiscripts/run_zsh-setup.sh"
+    assert_file_exist "${SCRIPT}"
+    assert_file_executable "${SCRIPT}"
+}
 
-    echo "source managed content" > "${MANAGED}"
-    HOME="${TEST_HOME}" run bash "${BATS_TEST_DIRNAME}/../../home/run_once_zshrc.sh"
+@test "run_zsh-setup.sh is bash parse-clean" {
+    run bash -n "${BATS_TEST_DIRNAME}/../../home/.chezmoiscripts/run_zsh-setup.sh"
+    assert_success
+}
+
+@test "run_zsh-setup.sh creates .zshrc and .zshenv shims when missing" {
+    ZSHRC="${TEST_HOME}/.config/zsh/.zshrc"
+    ZSHENV="${TEST_HOME}/.config/zsh/.zshenv"
+    rm -f "${ZSHRC}" "${ZSHENV}"
+
+    HOME="${TEST_HOME}" ETC_ZSHENV="${TEST_HOME}/etc/zshenv" run bash "${BATS_TEST_DIRNAME}/../../home/.chezmoiscripts/run_zsh-setup.sh"
     assert_success
 
     assert_file_exist "${ZSHRC}"
-    run grep -F 'source "$ZDOTDIR/managed.zshrc"' "${ZSHRC}"
+    run cat "${ZSHRC}"
     assert_success
-    assert_output_partial 'source "$ZDOTDIR/managed.zshrc"'
-}
-
-@test "run_once_zshrc.sh is idempotent when .zshrc already has source line" {
-    ZSHRC="${TEST_HOME}/.config/zsh/.zshrc"
-    MANAGED="${TEST_HOME}/.config/zsh/managed.zshrc"
-
-    echo "source managed content" > "${MANAGED}"
-    printf '%s\n' 'source "$ZDOTDIR/managed.zshrc"' > "${ZSHRC}"
-
-    HOME="${TEST_HOME}" run bash "${BATS_TEST_DIRNAME}/../../home/run_once_zshrc.sh"
-    assert_success
-
-    run grep -cF 'source "$ZDOTDIR/managed.zshrc"' "${ZSHRC}"
-    assert_success
-    assert_output "1"
-}
-
-@test "run_once_zshrc.sh replaces legacy managed.zsh with managed.zshrc" {
-    ZSHRC="${TEST_HOME}/.config/zsh/.zshrc"
-    MANAGED="${TEST_HOME}/.config/zsh/managed.zshrc"
-
-    echo "source managed content" > "${MANAGED}"
-    printf '%s\n' 'source "$ZDOTDIR/managed.zsh"' > "${ZSHRC}"
-
-    HOME="${TEST_HOME}" run bash "${BATS_TEST_DIRNAME}/../../home/run_once_zshrc.sh"
-    assert_success
-
-    run grep -F 'source "$ZDOTDIR/managed.zshrc"' "${ZSHRC}"
-    assert_success
-    run grep -F 'source "$ZDOTDIR/managed.zsh"' "${ZSHRC}"
-    assert_failure
-}
-
-@test "run_once_zshenv-shim.sh creates .zshenv shim sourcing managed.zshenv" {
-    ZSHENV="${TEST_HOME}/.config/zsh/.zshenv"
-    MANAGED="${TEST_HOME}/.config/zsh/managed.zshenv"
-
-    echo "source managed content" > "${MANAGED}"
-    HOME="${TEST_HOME}" run bash "${BATS_TEST_DIRNAME}/../../home/run_once_zshenv-shim.sh"
-    assert_success
+    assert_output 'source "$ZDOTDIR/managed.zshrc"'
 
     assert_file_exist "${ZSHENV}"
-    run grep -F 'source "$ZDOTDIR/managed.zshenv"' "${ZSHENV}"
+    run cat "${ZSHENV}"
     assert_success
-    assert_output_partial 'source "$ZDOTDIR/managed.zshenv"'
+    assert_output 'source "$ZDOTDIR/managed.zshenv"'
+
+    [ -d "${TEST_HOME}/.local/share/zsh" ]
 }
 
-@test "run_once_zshenv-shim.sh is idempotent when .zshenv already has source line" {
+@test "run_zsh-setup.sh leaves shims untouched when source line is already first line" {
+    ZSHRC="${TEST_HOME}/.config/zsh/.zshrc"
     ZSHENV="${TEST_HOME}/.config/zsh/.zshenv"
-    MANAGED="${TEST_HOME}/.config/zsh/managed.zshenv"
+    mkdir -p "${TEST_HOME}/.config/zsh"
 
-    echo "source managed content" > "${MANAGED}"
-    printf '%s\n' 'source "$ZDOTDIR/managed.zshenv"' > "${ZSHENV}"
+    cat <<'EOF' > "${ZSHRC}"
+source "$ZDOTDIR/managed.zshrc"
+# User config
+export FOO="bar"
+EOF
 
-    HOME="${TEST_HOME}" run bash "${BATS_TEST_DIRNAME}/../../home/run_once_zshenv-shim.sh"
+    cat <<'EOF' > "${ZSHENV}"
+source "$ZDOTDIR/managed.zshenv"
+# User env
+export BAR="baz"
+EOF
+
+    touch -t 202001010000 "${ZSHRC}"
+    touch -t 202001010000 "${ZSHENV}"
+
+    mtime_zshrc_before=$(stat -f "%m" "${ZSHRC}" 2>/dev/null || stat -c "%Y" "${ZSHRC}")
+    mtime_zshenv_before=$(stat -f "%m" "${ZSHENV}" 2>/dev/null || stat -c "%Y" "${ZSHENV}")
+
+    HOME="${TEST_HOME}" ETC_ZSHENV="${TEST_HOME}/etc/zshenv" run bash "${BATS_TEST_DIRNAME}/../../home/.chezmoiscripts/run_zsh-setup.sh"
     assert_success
 
-    run grep -cF 'source "$ZDOTDIR/managed.zshenv"' "${ZSHENV}"
+    mtime_zshrc_after=$(stat -f "%m" "${ZSHRC}" 2>/dev/null || stat -c "%Y" "${ZSHRC}")
+    mtime_zshenv_after=$(stat -f "%m" "${ZSHENV}" 2>/dev/null || stat -c "%Y" "${ZSHENV}")
+
+    [ "${mtime_zshrc_before}" -eq "${mtime_zshrc_after}" ]
+    [ "${mtime_zshenv_before}" -eq "${mtime_zshenv_after}" ]
+}
+
+@test "run_zsh-setup.sh moves source line to line 1, removes duplicates, and preserves other lines in order" {
+    ZSHRC="${TEST_HOME}/.config/zsh/.zshrc"
+    ZSHENV="${TEST_HOME}/.config/zsh/.zshenv"
+    mkdir -p "${TEST_HOME}/.config/zsh"
+
+    cat <<'EOF' > "${ZSHRC}"
+# Header comment
+export BEFORE="1"
+source "$ZDOTDIR/managed.zshrc"
+alias ll="ls -la"
+source "$ZDOTDIR/managed.zshrc"
+export AFTER="2"
+EOF
+
+    cat <<'EOF' > "${ZSHENV}"
+export ENV_FIRST="a"
+source "$ZDOTDIR/managed.zshenv"
+export ENV_SECOND="b"
+EOF
+
+    HOME="${TEST_HOME}" ETC_ZSHENV="${TEST_HOME}/etc/zshenv" run bash "${BATS_TEST_DIRNAME}/../../home/.chezmoiscripts/run_zsh-setup.sh"
+    assert_success
+
+    run cat "${ZSHRC}"
+    assert_success
+    expected_zshrc=$(cat <<'EOF'
+source "$ZDOTDIR/managed.zshrc"
+# Header comment
+export BEFORE="1"
+alias ll="ls -la"
+export AFTER="2"
+EOF
+)
+    assert_output "${expected_zshrc}"
+
+    run cat "${ZSHENV}"
+    assert_success
+    expected_zshenv=$(cat <<'EOF'
+source "$ZDOTDIR/managed.zshenv"
+export ENV_FIRST="a"
+export ENV_SECOND="b"
+EOF
+)
+    assert_output "${expected_zshenv}"
+}
+
+@test "run_zsh-setup.sh does not special-case legacy managed.zsh" {
+    ZSHRC="${TEST_HOME}/.config/zsh/.zshrc"
+    mkdir -p "${TEST_HOME}/.config/zsh"
+
+    cat <<'EOF' > "${ZSHRC}"
+source "$ZDOTDIR/managed.zsh"
+export SOME_VAR="val"
+EOF
+
+    HOME="${TEST_HOME}" ETC_ZSHENV="${TEST_HOME}/etc/zshenv" run bash "${BATS_TEST_DIRNAME}/../../home/.chezmoiscripts/run_zsh-setup.sh"
+    assert_success
+
+    run cat "${ZSHRC}"
+    assert_success
+    expected_zshrc=$(cat <<'EOF'
+source "$ZDOTDIR/managed.zshrc"
+source "$ZDOTDIR/managed.zsh"
+export SOME_VAR="val"
+EOF
+)
+    assert_output "${expected_zshrc}"
+}
+
+@test "run_zsh-setup.sh configures ZDOTDIR in ETC_ZSHENV when missing" {
+    TEST_ETC="${TEST_HOME}/etc/zshenv"
+    rm -f "${TEST_ETC}"
+
+    HOME="${TEST_HOME}" ETC_ZSHENV="${TEST_ETC}" run bash "${BATS_TEST_DIRNAME}/../../home/.chezmoiscripts/run_zsh-setup.sh"
+    assert_success
+
+    assert_file_exist "${TEST_ETC}"
+    run cat "${TEST_ETC}"
+    assert_success
+    assert_output 'export ZDOTDIR="$HOME/.config/zsh"'
+}
+
+@test "run_zsh-setup.sh does not duplicate ZDOTDIR in ETC_ZSHENV if already present" {
+    TEST_ETC="${TEST_HOME}/etc/zshenv"
+    mkdir -p "$(dirname "${TEST_ETC}")"
+    cat <<'EOF' > "${TEST_ETC}"
+# System zshenv
+export ZDOTDIR="$HOME/.config/zsh"
+export FOO=1
+EOF
+
+    HOME="${TEST_HOME}" ETC_ZSHENV="${TEST_ETC}" run bash "${BATS_TEST_DIRNAME}/../../home/.chezmoiscripts/run_zsh-setup.sh"
+    assert_success
+
+    run grep -cF 'export ZDOTDIR="$HOME/.config/zsh"' "${TEST_ETC}"
     assert_success
     assert_output "1"
 }
@@ -210,18 +303,18 @@ teardown() {
 }
 
 @test "run_once_setup-chezmoi-git-identity.sh exists and is executable" {
-    SCRIPT="${BATS_TEST_DIRNAME}/../../home/run_once_setup-chezmoi-git-identity.sh"
+    SCRIPT="${BATS_TEST_DIRNAME}/../../home/.chezmoiscripts/run_once_setup-chezmoi-git-identity.sh"
     assert_file_exist "${SCRIPT}"
     assert_file_executable "${SCRIPT}"
 }
 
 @test "run_once_setup-chezmoi-git-identity.sh is bash parse-clean" {
-    run bash -n "${BATS_TEST_DIRNAME}/../../home/run_once_setup-chezmoi-git-identity.sh"
+    run bash -n "${BATS_TEST_DIRNAME}/../../home/.chezmoiscripts/run_once_setup-chezmoi-git-identity.sh"
     assert_success
 }
 
 @test "run_once_setup-chezmoi-git-identity.sh fails when CHEZMOI_SOURCE_DIR is unset" {
-    run env -u CHEZMOI_SOURCE_DIR bash "${BATS_TEST_DIRNAME}/../../home/run_once_setup-chezmoi-git-identity.sh"
+    run env -u CHEZMOI_SOURCE_DIR bash "${BATS_TEST_DIRNAME}/../../home/.chezmoiscripts/run_once_setup-chezmoi-git-identity.sh"
     assert_failure
     assert_output_partial "CHEZMOI_SOURCE_DIR environment variable is not set"
 }
@@ -230,7 +323,7 @@ teardown() {
     TMP_REPO="${BATS_TEST_TMPDIR}/throwaway-git-repo"
     git init "${TMP_REPO}"
 
-    CHEZMOI_SOURCE_DIR="${TMP_REPO}" run bash "${BATS_TEST_DIRNAME}/../../home/run_once_setup-chezmoi-git-identity.sh"
+    CHEZMOI_SOURCE_DIR="${TMP_REPO}" run bash "${BATS_TEST_DIRNAME}/../../home/.chezmoiscripts/run_once_setup-chezmoi-git-identity.sh"
     assert_success
 
     run git -C "${TMP_REPO}" config --local user.name

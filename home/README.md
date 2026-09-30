@@ -10,6 +10,8 @@ This directory is the source root for chezmoi, defined by the root `.chezmoiroot
 - **`.chezmoiignore.tmpl`**: Patterns for files and directories that chezmoi should not manage or apply.
 - **`dot_config/`**: Maps to `~/.config/`, containing tool and application configurations.
 - **`private_Library/`**: Maps to `~/Library/` on macOS, containing user settings (e.g. VS Code configuration).
-- **`run_once_*.sh`**: One-time provisioning scripts executed on initial `chezmoi apply` (Homebrew packages, macOS system defaults, source repository git identity, Zsh environment setup, and manual checklist prompts).
-- **`run_onchange_*.sh`**: Scripts executed whenever their dependent content hashes change (such as `run_onchange_install-vscode-extensions.sh`).
-- **`run_after_*.sh`**: Scripts executed after configurations have been applied to disk (such as `run_after_install-herdr-integrations.sh`).
+- **`.chezmoiscripts/`**: Lifecycle provisioning scripts executed by chezmoi (which create no target directory in `$HOME`):
+  - `run_zsh-setup.sh`: Configures `/etc/zshenv` and ensures `.zshrc` / `.zshenv` shims source managed configurations as their first line.
+  - `run_once_*.sh`: One-time provisioning scripts executed on initial `chezmoi apply` (Homebrew packages, macOS system defaults, source repository git identity, and manual checklist prompts).
+  - `run_onchange_*.sh`: Scripts executed whenever their dependent content hashes change (such as `run_onchange_install-vscode-extensions.sh` and `run_onchange_install-uv-tools.sh`).
+  - `run_after_*.sh`: Scripts executed after configurations have been applied to disk (such as `run_after_install-herdr-integrations.sh`).
