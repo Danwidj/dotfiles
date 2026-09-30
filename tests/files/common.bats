@@ -510,6 +510,10 @@ EOF
     CLAUDE_FILE="${TEST_HOME}/.config/claude/CLAUDE.md"
     assert_file_exist "${CLAUDE_FILE}"
 
+    run python3 -c "import os, stat; print(oct(stat.S_IMODE(os.stat('${TEST_HOME}/.config/claude').st_mode)))"
+    assert_success
+    assert_output "0o700"
+
     run cat "${CLAUDE_FILE}"
     assert_success
     assert_output '@~/.config/agents/AGENTS.md'
@@ -548,6 +552,9 @@ EOF
 
     # GitHub Copilot CLI
     COPILOT_LINK="${TEST_HOME}/.local/share/copilot/copilot-instructions.md"
+    run python3 -c "import os, stat; print(oct(stat.S_IMODE(os.stat('${TEST_HOME}/.local/share/copilot').st_mode)))"
+    assert_success
+    assert_output "0o700"
     [ -L "${COPILOT_LINK}" ]
     [ "$(readlink "${COPILOT_LINK}")" = "../../../.config/agents/AGENTS.md" ]
     assert_file_exist "${COPILOT_LINK}"
@@ -577,7 +584,7 @@ EOF
     assert_output "0"
 
     # Test modify script preserves existing keys
-    MOD_SCRIPT="${BATS_TEST_DIRNAME}/../../home/dot_config/claude/modify_private_settings.json"
+    MOD_SCRIPT="${BATS_TEST_DIRNAME}/../../home/dot_config/private_claude/modify_private_settings.json"
     assert_file_exist "${MOD_SCRIPT}"
     assert_file_executable "${MOD_SCRIPT}"
 

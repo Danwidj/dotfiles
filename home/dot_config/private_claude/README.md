@@ -1,4 +1,4 @@
-# Claude Code Configuration (`dot_config/claude/`)
+# Claude Code Configuration (`dot_config/private_claude/`)
 
 Houses user-scope configuration and memory instructions for [Claude Code](https://code.claude.com/).
 

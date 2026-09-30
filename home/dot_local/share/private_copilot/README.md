@@ -1,4 +1,4 @@
-# GitHub Copilot CLI Configuration (`dot_local/share/copilot/`)
+# GitHub Copilot CLI Configuration (`dot_local/share/private_copilot/`)
 
 Houses user-scope configuration and custom instructions for GitHub Copilot CLI (routed via `$COPILOT_HOME`).
 
