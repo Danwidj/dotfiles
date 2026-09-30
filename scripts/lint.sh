@@ -4,7 +4,7 @@
 set -euo pipefail
 
 # Find all run_*.sh scripts tracked by git, plus this repo's own CI/tooling scripts
-scripts=$(git ls-files 'home/run_*.sh' 'scripts/*.sh')
+scripts=$(git ls-files 'home/.chezmoiscripts/run_*.sh' 'scripts/*.sh')
 
 if [ -z "$scripts" ]; then
     echo "No run_*.sh scripts found"

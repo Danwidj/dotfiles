@@ -77,6 +77,9 @@ The repository maintains a strict separation between chezmoi-managed configurati
 Danwidj/dotfiles/
 ├── .github/          # CI/CD workflows (multi-platform tests, ShellCheck linting)
 ├── home/             # chezmoi managed source root (defined by .chezmoiroot)
+│   ├── .chezmoiscripts/ # Lifecycle provisioning scripts
+│   ├── dot_config/   # Mapped to ~/.config/
+│   └── private_Library/ # Mapped to ~/Library/ (macOS)
 ├── scripts/          # Standalone CI and repository tooling scripts
 ├── tests/            # Automated Bats test suite
 ├── .chezmoiroot      # Instructs chezmoi that 'home/' is the target source root
@@ -88,7 +91,7 @@ Danwidj/dotfiles/
 ### High-Level Directories
 
 - **[`.github/`](.github/workflows/README.md)**: GitHub Actions workflows validating linting (ShellCheck), Ubuntu cross-platform provisioning, and macOS end-to-end applications.
-- **[`home/`](home/README.md)**: The chezmoi managed source root (configured via `.chezmoiroot`). Everything in this directory targets `$HOME` (e.g. `dot_config/` maps to `~/.config/`, `private_Library/` maps to `~/Library/`). Lifecycle scripts (`run_once_*`, `run_onchange_*`, `run_after_*`) and templates also reside here.
+- **[`home/`](home/README.md)**: The chezmoi managed source root (configured via `.chezmoiroot`). Everything in this directory targets `$HOME` (e.g. `dot_config/` maps to `~/.config/`, `private_Library/` maps to `~/Library/`). Lifecycle scripts (`.chezmoiscripts/`) and templates also reside here.
 - **[`scripts/`](scripts/README.md)**: Helper scripts for CI runner installation, test configuration generation, and script linting. Kept outside `home/` so they are never copied to `$HOME`.
 - **[`tests/`](tests/README.md)**: Integration test suite built with Bats (`bats-core`), asserting on template substitution, file generation, idempotency, and script syntax.
 
@@ -107,13 +110,13 @@ chezmoi init --apply Danwidj/dotfiles
 ### What Happens During First Apply
 
 1. **Interactive Prompt**: Prompts for machine context (`machine_type`: `personal` or `work`) and Git email address. Responses are cached in `~/.config/chezmoi/chezmoi.toml`.
-2. **`run_once_install-packages.sh`**: Installs Xcode Command Line Tools and Homebrew if missing, then provisions formulae and casks via `brew bundle --global`.
-3. **`run_once_macos.sh`**: Configures curated macOS system preferences, turns off non-essential shortcuts, configures screenshot keybindings, and registers default application handlers (browser, PDF, mail, images, text, archives) using `duti`.
+2. **`run_once_after_install-packages.sh`**: Installs Xcode Command Line Tools and Homebrew if missing, then provisions formulae and casks via `brew bundle --global` after configurations are applied.
+3. **`run_once_after_macos.sh`**: Configures curated macOS system preferences, turns off non-essential shortcuts, configures screenshot keybindings, and registers default application handlers (browser, PDF, mail, images, text, archives) using `duti`.
 4. **`run_once_setup-chezmoi-git-identity.sh`**: Configures personal Git identity (`user.name`, `user.email`) and disables commit signing (`commit.gpgsign = false`) locally in the chezmoi source repository so automatic commits do not inherit enterprise or work Git credentials.
-5. **`run_once_zshenv.sh`**: Configures `/etc/zshenv` to point `ZDOTDIR` to `~/.config/zsh`, keeping `$HOME` clean of `.zshrc` and history files.
-6. **`run_onchange_install-vscode-extensions.sh`**: Declaratively installs VS Code extensions (runs on initial setup and whenever the extension manifest is updated).
+5. **`run_zsh-setup.sh`**: Configures `/etc/zshenv` to point `ZDOTDIR` to `~/.config/zsh`, keeping `$HOME` clean of `.zshrc` and history files, and ensures untracked `~/.config/zsh/.zshrc` and `~/.config/zsh/.zshenv` shims source managed configurations as their first line.
+6. **`run_onchange_after_install-vscode-extensions.sh`**: Declaratively installs VS Code extensions (runs on initial setup and whenever the extension manifest is updated).
 7. **`run_after_install-herdr-integrations.sh`**: Verifies and updates herdr agent integration (Claude).
-8. **`run_once_zzz-manual-steps.sh`**: Prompts the user through non-scriptable macOS settings and launches Ghostty.
+8. **`run_once_after_zzz-manual-steps.sh`**: Prompts the user through non-scriptable macOS settings and launches Ghostty.
 
 ---
 
@@ -182,9 +185,9 @@ chezmoi forget ~/.config/foo.conf
 
 ### Untracked Local Overlays
 
-To allow local installer scripts (like `nvm`, `sdkman`, or corporate tooling) to inject shell lines without polluting the tracked dotfiles repository, `~/.config/zsh/.zshrc` is an **untracked shim**. It is created by `run_once_zshrc.sh` on fresh installs and simply sources `managed.zshrc`. External tools can append to `.zshrc` without causing Git merge conflicts with chezmoi.
+To allow local installer scripts (like `nvm`, `sdkman`, or corporate tooling) to inject shell lines without polluting the tracked dotfiles repository, `~/.config/zsh/.zshrc` is an **untracked shim**. It is maintained by `run_zsh-setup.sh` to ensure `source "$ZDOTDIR/managed.zshrc"` always stays at line 1. External tools can append to `.zshrc` without causing Git merge conflicts with chezmoi.
 
-Similarly, `~/.config/zsh/.zshenv` is an **untracked shim** created by `run_once_zshenv-shim.sh` that sources `managed.zshenv`, keeping machine-local/agent environment exports outside the tracked repository.
+Similarly, `~/.config/zsh/.zshenv` is an **untracked shim** maintained by `run_zsh-setup.sh` that ensures `source "$ZDOTDIR/managed.zshenv"` always stays at line 1, keeping machine-local/agent environment exports outside the tracked repository.
 
 ---
 

@@ -14,7 +14,7 @@ The `fzf/` directory contains fzf appearance and picker options sourced by the
 Zsh configuration.
 
 The `uv/` directory contains the tracked manifest for globally installed Python
-CLI tools. `run_onchange_install-uv-tools.sh` installs these tools whenever the
+CLI tools. `home/.chezmoiscripts/run_onchange_after_install-uv-tools.sh` installs these tools whenever the
 manifest changes.
 
 Common package-manager caches use `~/.cache` through XDG defaults or explicit

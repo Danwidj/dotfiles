@@ -8,7 +8,7 @@ on:
       - 'home/dot_config/aerospace/**'
       - 'home/dot_config/raycast/**'
       - 'home/private_Library/**'
-      - 'home/run_once_macos.sh'
+      - 'home/.chezmoiscripts/run_once_after_macos.sh'
       - 'tests/files/macos.bats'
   pull_request:
     branches: [main]
@@ -17,7 +17,7 @@ on:
       - 'home/dot_config/aerospace/**'
       - 'home/dot_config/raycast/**'
       - 'home/private_Library/**'
-      - 'home/run_once_macos.sh'
+      - 'home/.chezmoiscripts/run_once_after_macos.sh'
       - 'tests/files/macos.bats'
 
 permissions:
