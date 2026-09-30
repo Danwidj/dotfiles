@@ -204,5 +204,5 @@ commands by purpose, so it is usually faster than searching documentation.
 - **`private_lazy-lock.json`**: exact plugin commits for reproducible installs.
 - **`private_stylua.toml`**: Lua formatting rules.
 - **`private_dot_neoconf.json`**: project-local LSP and formatting settings.
-- **`lua/config/`**: core options, keymaps, autocmds, and Lazy setup.
+- **`lua/config/`**: core options and Lazy setup.
 - **`lua/plugins/`**: custom plugin specifications and LazyVim overrides.
