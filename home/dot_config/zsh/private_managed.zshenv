@@ -8,7 +8,7 @@ export XDG_STATE_HOME="$HOME/.local/state"
 export XDG_RUNTIME_DIR="${TMPDIR:-/tmp}/xdg_runtime"
 
 # Ensure XDG_RUNTIME_DIR exists
-mkdir -p "$XDG_RUNTIME_DIR"
+[[ -d "$XDG_RUNTIME_DIR" ]] || mkdir -p "$XDG_RUNTIME_DIR"
 
 # Colorize ls output
 export CLICOLOR=1
