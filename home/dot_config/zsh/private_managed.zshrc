@@ -56,7 +56,6 @@ bindkey '^[[B' history-search-forward
 command -v starship &>/dev/null && eval "$(starship init zsh)"
 command -v mise &>/dev/null && eval "$(mise activate zsh)"
 command -v zoxide &>/dev/null && eval "$(zoxide init zsh)"
-command -v fastfetch &>/dev/null && fastfetch
 
 alias vim="nvim"
 alias ls='eza --icons=always --git --grid --all --group-directories-first'
@@ -100,7 +99,7 @@ fi
 
 # atuin
 if command -v atuin >/dev/null 2>&1; then
-  eval "$(atuin init zsh --disable-up-arrow))"
+  eval "$(atuin init zsh --disable-up-arrow)"
 fi
 
 

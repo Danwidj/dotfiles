@@ -78,7 +78,6 @@ yarn-error.log*
 
 # Rust
 target/
-Cargo.lock
 
 # Go
 vendor/
