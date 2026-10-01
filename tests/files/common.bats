@@ -849,6 +849,9 @@ EOF
 }
 
 @test "starship prompt renders AWS SSO countdown right after aws module" {
+    if ! command -v starship >/dev/null 2>&1; then
+        skip "starship is not installed in this environment"
+    fi
     STARSHIP_CONFIG="${TEST_HOME}/.config/starship.toml"
     assert_file_exist "${STARSHIP_CONFIG}"
 
@@ -872,6 +875,9 @@ EOF
 }
 
 @test "starship prompt renders expired marker when past expiry" {
+    if ! command -v starship >/dev/null 2>&1; then
+        skip "starship is not installed in this environment"
+    fi
     STARSHIP_CONFIG="${TEST_HOME}/.config/starship.toml"
     assert_file_exist "${STARSHIP_CONFIG}"
 
@@ -895,6 +901,9 @@ EOF
 }
 
 @test "starship prompt renders nothing extra when no SSO cache exists" {
+    if ! command -v starship >/dev/null 2>&1; then
+        skip "starship is not installed in this environment"
+    fi
     STARSHIP_CONFIG="${TEST_HOME}/.config/starship.toml"
     assert_file_exist "${STARSHIP_CONFIG}"
 
