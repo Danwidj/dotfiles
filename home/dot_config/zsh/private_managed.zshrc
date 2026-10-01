@@ -73,6 +73,11 @@ if [[ -z "${HOMEBREW_PREFIX:-}" ]]; then
   fi
 fi
 
+# zsh-completions: extra completion definitions (must be on fpath before compinit)
+if [[ -n "${HOMEBREW_PREFIX:-}" && -d "${HOMEBREW_PREFIX}/share/zsh-completions" ]]; then
+  fpath=("${HOMEBREW_PREFIX}/share/zsh-completions" $fpath)
+fi
+
 # Cache compinit dump file under XDG_CACHE_HOME and regenerate at most once a day
 zcompdump="${XDG_CACHE_HOME:-$HOME/.cache}/zsh/zcompdump"
 [[ -d "${zcompdump:h}" ]] || mkdir -p "${zcompdump:h}"
@@ -88,6 +93,15 @@ unset zcompdump
 zstyle ':completion:*' matcher-list 'm:{a-zA-Z}={A-Za-z}' 'r:|[._-]=* r:|=*' 'l:|=* r:|=*'
 zstyle ':completion:*' menu no
 zstyle ':completion:*:descriptions' format '[%d]'
+
+# zsh-vi-mode: initialise on source (not lazily) so the fzf, atuin and autopair
+# bindings loaded after it are not reset
+if [[ -n "${HOMEBREW_PREFIX:-}" && -f "${HOMEBREW_PREFIX}/share/zsh-vi-mode/zsh-vi-mode.plugin.zsh" ]]; then
+  ZVM_INIT_MODE=sourcing
+  source "${HOMEBREW_PREFIX}/share/zsh-vi-mode/zsh-vi-mode.plugin.zsh"
+  bindkey '^[[A' history-search-backward
+  bindkey '^[[B' history-search-forward
+fi
 
 if command -v fzf >/dev/null 2>&1; then
   eval "$(fzf --zsh)"
@@ -113,6 +127,11 @@ fi
 # atuin
 if command -v atuin >/dev/null 2>&1; then
   eval "$(atuin init zsh --disable-up-arrow)"
+fi
+
+# zsh-autopair: auto-close brackets and quotes
+if [[ -n "${HOMEBREW_PREFIX:-}" && -f "${HOMEBREW_PREFIX}/share/zsh-autopair/autopair.zsh" ]]; then
+  source "${HOMEBREW_PREFIX}/share/zsh-autopair/autopair.zsh"
 fi
 
 
