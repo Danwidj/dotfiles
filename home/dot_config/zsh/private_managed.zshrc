@@ -45,7 +45,7 @@ setopt NO_CLOBBER
 # ==============================================================================
 # Key bindings
 # ==============================================================================
-bindkey -e
+bindkey -v
 bindkey '^[[A' history-search-backward
 bindkey '^[[B' history-search-forward
 
