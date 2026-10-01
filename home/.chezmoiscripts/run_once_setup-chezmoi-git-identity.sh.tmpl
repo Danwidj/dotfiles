@@ -19,8 +19,8 @@ if [[ -z "${CHEZMOI_SOURCE_DIR:-}" ]]; then
     exit 1
 fi
 
-git -C "$CHEZMOI_SOURCE_DIR" config --local user.name "Daniel"
-git -C "$CHEZMOI_SOURCE_DIR" config --local user.email {{ .email | quote }}
+git -C "$CHEZMOI_SOURCE_DIR" config --local user.name "Danwidj"
+git -C "$CHEZMOI_SOURCE_DIR" config --local user.email "daniel.widjaja18@gmail.com"
 git -C "$CHEZMOI_SOURCE_DIR" config --local commit.gpgsign false
 
 echo "Configured personal git identity for chezmoi source repo ($CHEZMOI_SOURCE_DIR)."

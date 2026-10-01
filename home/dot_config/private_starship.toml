@@ -1,6 +1,6 @@
 "$schema" = 'https://starship.rs/config-schema.json'
 
-add_newline = true
+add_newline = false
 command_timeout = 1000
 
 format = """
@@ -24,14 +24,17 @@ $character"""
 right_format = "$status$aws$time"
 
 [directory]
+truncation_length = 10
+truncation_symbol = "…/"
 style = "blue"
 
 [character]
 success_symbol = "[❯](purple)"
 error_symbol = "[❯](red)"
-vimcmd_symbol = "[❮](green)"
+vicmd_symbol = "[❮](green)"
 
 [cmd_duration]
+min_time = 2_000
 format = "[$duration]($style) "
 style = "yellow"
 
