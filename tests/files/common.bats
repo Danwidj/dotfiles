@@ -665,3 +665,260 @@ EOF
     assert_success
     assert_output "Opus 5.5 | ctx 1.2M"
 }
+
+@test "~/.config/starship/aws-sso-expiry.sh exists, is executable, and is bash parse-clean" {
+    EXPIRY_SCRIPT="${TEST_HOME}/.config/starship/aws-sso-expiry.sh"
+    assert_file_exist "${EXPIRY_SCRIPT}"
+    assert_file_executable "${EXPIRY_SCRIPT}"
+
+    run bash -n "${EXPIRY_SCRIPT}"
+    assert_success
+}
+
+@test "aws-sso-expiry.sh passes shellcheck" {
+    EXPIRY_SCRIPT="${TEST_HOME}/.config/starship/aws-sso-expiry.sh"
+    run shellcheck "${EXPIRY_SCRIPT}"
+    assert_success
+}
+
+@test "aws-sso-expiry.sh outputs nothing when no profile is active" {
+    EXPIRY_SCRIPT="${TEST_HOME}/.config/starship/aws-sso-expiry.sh"
+    CACHE_DIR="${TEST_HOME}/.aws/sso/cache"
+    mkdir -p "${CACHE_DIR}"
+    cat <<'EOF' > "${CACHE_DIR}/token.json"
+{"startUrl": "https://corp.awsapps.com/start", "accessToken": "secret", "expiresAt": "2026-10-01T20:00:00Z"}
+EOF
+
+    run env -u AWS_PROFILE -u AWS_DEFAULT_PROFILE -u AWS_VAULT -u AWS_SSO_PROFILE \
+        HOME="${TEST_HOME}" AWS_SSO_NOW=1790865000 "${EXPIRY_SCRIPT}"
+    assert_success
+    assert_output ""
+}
+
+@test "aws-sso-expiry.sh outputs nothing when no SSO cache exists" {
+    EXPIRY_SCRIPT="${TEST_HOME}/.config/starship/aws-sso-expiry.sh"
+    mkdir -p "${TEST_HOME}/.aws"
+    cat <<'EOF' > "${TEST_HOME}/.aws/config"
+[profile work]
+sso_start_url = https://corp.awsapps.com/start
+region = ap-southeast-1
+EOF
+    rm -rf "${TEST_HOME}/.aws/sso/cache"
+
+    run env AWS_PROFILE=work HOME="${TEST_HOME}" "${EXPIRY_SCRIPT}"
+    assert_success
+    assert_output ""
+}
+
+@test "aws-sso-expiry.sh formats active session remaining time as XhYm" {
+    EXPIRY_SCRIPT="${TEST_HOME}/.config/starship/aws-sso-expiry.sh"
+    CACHE_DIR="${TEST_HOME}/.aws/sso/cache"
+    mkdir -p "${CACHE_DIR}"
+    cat <<'EOF' > "${CACHE_DIR}/token.json"
+{"startUrl": "https://corp.awsapps.com/start", "accessToken": "secret", "expiresAt": "2026-10-01T19:42:00Z"}
+EOF
+
+    # 1790865000 is 2026-10-01T14:30:00Z -> diff is 5h12m
+    run env AWS_PROFILE=work HOME="${TEST_HOME}" AWS_SSO_NOW=1790865000 "${EXPIRY_SCRIPT}"
+    assert_success
+    assert_output "5h12m"
+}
+
+@test "aws-sso-expiry.sh formats active session under one hour as Ym" {
+    EXPIRY_SCRIPT="${TEST_HOME}/.config/starship/aws-sso-expiry.sh"
+    CACHE_DIR="${TEST_HOME}/.aws/sso/cache"
+    mkdir -p "${CACHE_DIR}"
+    cat <<'EOF' > "${CACHE_DIR}/token.json"
+{"startUrl": "https://corp.awsapps.com/start", "accessToken": "secret", "expiresAt": "2026-10-01T15:15:00Z"}
+EOF
+
+    # 1790865000 is 2026-10-01T14:30:00Z -> diff is 45m
+    run env AWS_PROFILE=work HOME="${TEST_HOME}" AWS_SSO_NOW=1790865000 "${EXPIRY_SCRIPT}"
+    assert_success
+    assert_output "45m"
+}
+
+@test "aws-sso-expiry.sh outputs expired marker when session is past expiry" {
+    EXPIRY_SCRIPT="${TEST_HOME}/.config/starship/aws-sso-expiry.sh"
+    CACHE_DIR="${TEST_HOME}/.aws/sso/cache"
+    mkdir -p "${CACHE_DIR}"
+    cat <<'EOF' > "${CACHE_DIR}/token.json"
+{"startUrl": "https://corp.awsapps.com/start", "accessToken": "secret", "expiresAt": "2026-10-01T14:00:00Z"}
+EOF
+
+    run env AWS_PROFILE=work HOME="${TEST_HOME}" AWS_SSO_NOW=1790865000 "${EXPIRY_SCRIPT}"
+    assert_success
+    assert_output "expired"
+}
+
+@test "aws-sso-expiry.sh selects matching startUrl over newer non-matching cache file" {
+    EXPIRY_SCRIPT="${TEST_HOME}/.config/starship/aws-sso-expiry.sh"
+    mkdir -p "${TEST_HOME}/.aws"
+    cat <<'EOF' > "${TEST_HOME}/.aws/config"
+[profile work]
+sso_start_url = https://work.awsapps.com/start
+region = ap-southeast-1
+EOF
+
+    CACHE_DIR="${TEST_HOME}/.aws/sso/cache"
+    mkdir -p "${CACHE_DIR}"
+    cat <<'EOF' > "${CACHE_DIR}/work.json"
+{"startUrl": "https://work.awsapps.com/start", "accessToken": "work-tok", "expiresAt": "2026-10-01T16:30:00Z"}
+EOF
+    cat <<'EOF' > "${CACHE_DIR}/other.json"
+{"startUrl": "https://other.awsapps.com/start", "accessToken": "other-tok", "expiresAt": "2026-10-01T20:00:00Z"}
+EOF
+    touch -t 202601010000 "${CACHE_DIR}/work.json"
+    touch -t 202601020000 "${CACHE_DIR}/other.json"
+
+    # diff for work.json is 2h0m (16:30 - 14:30)
+    run env AWS_PROFILE=work HOME="${TEST_HOME}" AWS_SSO_NOW=1790865000 "${EXPIRY_SCRIPT}"
+    assert_success
+    assert_output "2h0m"
+}
+
+@test "aws-sso-expiry.sh falls back to newest cache file when startUrl does not match" {
+    EXPIRY_SCRIPT="${TEST_HOME}/.config/starship/aws-sso-expiry.sh"
+    mkdir -p "${TEST_HOME}/.aws"
+    cat <<'EOF' > "${TEST_HOME}/.aws/config"
+[profile work]
+sso_start_url = https://unmatched.awsapps.com/start
+region = ap-southeast-1
+EOF
+
+    CACHE_DIR="${TEST_HOME}/.aws/sso/cache"
+    mkdir -p "${CACHE_DIR}"
+    cat <<'EOF' > "${CACHE_DIR}/old.json"
+{"startUrl": "https://sso1.awsapps.com/start", "accessToken": "old-tok", "expiresAt": "2026-10-01T15:30:00Z"}
+EOF
+    cat <<'EOF' > "${CACHE_DIR}/new.json"
+{"startUrl": "https://sso2.awsapps.com/start", "accessToken": "new-tok", "expiresAt": "2026-10-01T18:30:00Z"}
+EOF
+    touch -t 202601010000 "${CACHE_DIR}/old.json"
+    touch -t 202601020000 "${CACHE_DIR}/new.json"
+
+    # Fallback to new.json: 18:30 - 14:30 = 4h0m
+    run env AWS_PROFILE=work HOME="${TEST_HOME}" AWS_SSO_NOW=1790865000 "${EXPIRY_SCRIPT}"
+    assert_success
+    assert_output "4h0m"
+}
+
+@test "aws-sso-expiry.sh resolves startUrl through sso_session section" {
+    EXPIRY_SCRIPT="${TEST_HOME}/.config/starship/aws-sso-expiry.sh"
+    mkdir -p "${TEST_HOME}/.aws"
+    cat <<'EOF' > "${TEST_HOME}/.aws/config"
+[profile work]
+sso_session = corp-session
+region = ap-southeast-1
+
+[sso-session corp-session]
+sso_start_url = https://corp.awsapps.com/start
+sso_region = ap-southeast-1
+EOF
+
+    CACHE_DIR="${TEST_HOME}/.aws/sso/cache"
+    mkdir -p "${CACHE_DIR}"
+    cat <<'EOF' > "${CACHE_DIR}/corp.json"
+{"startUrl": "https://corp.awsapps.com/start", "accessToken": "corp-tok", "expiresAt": "2026-10-01T17:30:00Z"}
+EOF
+
+    # 17:30 - 14:30 = 3h0m
+    run env AWS_PROFILE=work HOME="${TEST_HOME}" AWS_SSO_NOW=1790865000 "${EXPIRY_SCRIPT}"
+    assert_success
+    assert_output "3h0m"
+}
+
+@test "aws-sso-expiry.sh honours custom AWS_CONFIG_FILE" {
+    EXPIRY_SCRIPT="${TEST_HOME}/.config/starship/aws-sso-expiry.sh"
+    CUSTOM_CFG="${BATS_TEST_TMPDIR}/custom_aws_config"
+    cat <<'EOF' > "${CUSTOM_CFG}"
+[profile custom]
+sso_start_url = https://custom.awsapps.com/start
+EOF
+
+    CACHE_DIR="${TEST_HOME}/.aws/sso/cache"
+    mkdir -p "${CACHE_DIR}"
+    cat <<'EOF' > "${CACHE_DIR}/custom.json"
+{"startUrl": "https://custom.awsapps.com/start", "accessToken": "custom-tok", "expiresAt": "2026-10-01T15:00:00Z"}
+EOF
+
+    # 15:00 - 14:30 = 30m
+    run env AWS_CONFIG_FILE="${CUSTOM_CFG}" AWS_PROFILE=custom HOME="${TEST_HOME}" AWS_SSO_NOW=1790865000 "${EXPIRY_SCRIPT}"
+    assert_success
+    assert_output "30m"
+}
+
+@test "starship prompt renders AWS SSO countdown right after aws module" {
+    if ! command -v starship >/dev/null 2>&1; then
+        skip "starship is not installed in this environment"
+    fi
+    STARSHIP_CONFIG="${TEST_HOME}/.config/starship.toml"
+    assert_file_exist "${STARSHIP_CONFIG}"
+
+    mkdir -p "${TEST_HOME}/.aws"
+    cat <<'EOF' > "${TEST_HOME}/.aws/config"
+[profile work]
+sso_start_url = https://corp.awsapps.com/start
+region = ap-southeast-1
+EOF
+
+    CACHE_DIR="${TEST_HOME}/.aws/sso/cache"
+    mkdir -p "${CACHE_DIR}"
+    cat <<'EOF' > "${CACHE_DIR}/token.json"
+{"startUrl": "https://corp.awsapps.com/start", "accessToken": "secret", "expiresAt": "2026-10-01T19:42:00Z"}
+EOF
+
+    run env TERM=xterm-256color AWS_PROFILE=work HOME="${TEST_HOME}" AWS_SSO_NOW=1790865000 starship prompt --right
+    assert_success
+    assert_output_partial "☁️ work (ap-southeast-1)"
+    assert_output_partial "[5h12m]"
+}
+
+@test "starship prompt renders expired marker when past expiry" {
+    if ! command -v starship >/dev/null 2>&1; then
+        skip "starship is not installed in this environment"
+    fi
+    STARSHIP_CONFIG="${TEST_HOME}/.config/starship.toml"
+    assert_file_exist "${STARSHIP_CONFIG}"
+
+    mkdir -p "${TEST_HOME}/.aws"
+    cat <<'EOF' > "${TEST_HOME}/.aws/config"
+[profile work]
+sso_start_url = https://corp.awsapps.com/start
+region = ap-southeast-1
+EOF
+
+    CACHE_DIR="${TEST_HOME}/.aws/sso/cache"
+    mkdir -p "${CACHE_DIR}"
+    cat <<'EOF' > "${CACHE_DIR}/token.json"
+{"startUrl": "https://corp.awsapps.com/start", "accessToken": "secret", "expiresAt": "2026-10-01T14:00:00Z"}
+EOF
+
+    run env TERM=xterm-256color AWS_PROFILE=work HOME="${TEST_HOME}" AWS_SSO_NOW=1790865000 starship prompt --right
+    assert_success
+    assert_output_partial "☁️ work (ap-southeast-1)"
+    assert_output_partial "[expired]"
+}
+
+@test "starship prompt renders nothing extra when no SSO cache exists" {
+    if ! command -v starship >/dev/null 2>&1; then
+        skip "starship is not installed in this environment"
+    fi
+    STARSHIP_CONFIG="${TEST_HOME}/.config/starship.toml"
+    assert_file_exist "${STARSHIP_CONFIG}"
+
+    mkdir -p "${TEST_HOME}/.aws"
+    cat <<'EOF' > "${TEST_HOME}/.aws/config"
+[profile work]
+sso_start_url = https://corp.awsapps.com/start
+region = ap-southeast-1
+EOF
+    rm -rf "${TEST_HOME}/.aws/sso/cache"
+
+    run env TERM=xterm-256color AWS_PROFILE=work HOME="${TEST_HOME}" AWS_SSO_NOW=1790865000 starship prompt --right
+    assert_success
+    assert_output_partial "☁️ work (ap-southeast-1)"
+    refute_output_partial "[expired]"
+    refute_output_partial "[5h"
+}
+
