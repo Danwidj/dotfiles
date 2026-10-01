@@ -21,7 +21,7 @@ $docker_context\
 $line_break\
 $character"""
 
-right_format = "$status$aws$time"
+right_format = "$status$aws${custom.aws_sso_expiry}$time"
 
 [directory]
 style = "blue"
@@ -103,3 +103,10 @@ format = '[$symbol$profile( \($region\))( \[$duration\])]($style) '
 style = "bold yellow"
 symbol = "☁️ "
 expiration_symbol = "X"
+
+[custom.aws_sso_expiry]
+command = "~/.config/starship/aws-sso-expiry.sh"
+when = 'test -n "$AWS_PROFILE" || test -n "$AWS_DEFAULT_PROFILE" || test -n "$AWS_VAULT" || test -n "$AWS_SSO_PROFILE"'
+format = '([\[$output\]]($style) )'
+style = "bold yellow"
+description = "AWS SSO session expiry countdown"
