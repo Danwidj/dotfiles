@@ -1,12 +1,13 @@
 "$schema" = 'https://starship.rs/config-schema.json'
 
 add_newline = false
-command_timeout = 1000
 
 format = """
+[░▒▓](#a3aed2)\
 $username\
 $hostname\
 $directory\
+[ ](fg:#a3aed2)\
 $git_branch\
 $git_state\
 $git_status\
@@ -16,7 +17,6 @@ $nodejs\
 $python\
 $rust\
 $golang\
-$mise\
 $docker_context\
 $line_break\
 $character"""
@@ -24,9 +24,8 @@ $character"""
 right_format = "$status$aws$time"
 
 [directory]
-truncation_length = 10
-truncation_symbol = "…/"
-style = "blue"
+format= "[$path]($style)"
+style = "bg:#a3aed2 fg:#090c0c"
 
 [character]
 success_symbol = "[❯](purple)"
