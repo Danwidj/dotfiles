@@ -1,3 +1,10 @@
+Remove this when its done: Use this for importing zshenv insdie etc file:
+
+# Set fallback only if empty, then export ZDOTDIR if directory exists
+
+export XDG_CONFIG_HOME="${XDG_CONFIG_HOME:-$HOME/.config}"
+[[ -d "$XDG_CONFIG_HOME/zsh" ]] && export ZDOTDIR="$XDG_CONFIG_HOME/zsh"
+
 # Project agent memory
 
 This file is the project's committed home for project-intrinsic agent knowledge: build, test, release, architecture, and sharp-edge notes that should travel with the code.
