@@ -1,139 +1,126 @@
 "$schema" = 'https://starship.rs/config-schema.json'
 
-add_newline = true
-palette = "mine"
+# Pure-style prompt (https://starship.rs/presets/pure-preset) with dev modules and a right prompt
+add_newline = false
 
 format = """
-[ ](bg:color1)\
 $username\
 $hostname\
-[ ](fg:color1 bg:color2)\
 $directory\
-[ ](fg:color2 bg:color3)\
 $git_branch\
 $git_state\
 $git_status\
-[ ](fg:color3 bg:color4)\
 $package\
-[ ](fg:color4 bg:color5)\
 $nodejs\
 $python\
 $rust\
 $golang\
 $docker_context\
-[ ](fg:color5)\
+$cmd_duration\
 $line_break\
 ${env_var.VIRTUAL_ENV_PROMPT}\
 $character"""
 
-right_format = "$status$cmd_duration$jobs$aws${custom.aws_sso_expiry}$time"
-
-[palettes.mine]
-color1 = "#445167"
-color2 = "#7D8BAD"
-color3 = "#9CAAD0"
-color4 = "#689DF1"
-color5 = "#364362"
-color6 = "#252E3C"
-light = "#e3e5e5"
-dark = "#090c0c"
-staged = "#1B5E20"
-unstaged = "#8B0000"
+right_format = "$status$jobs$aws${custom.aws_sso_expiry}$time"
 
 [username]
-style_user = "bg:color1 fg:light"
-style_root = "bg:color1 fg:light"
+style_user = "bright-black"
+style_root = "red"
 format = "[$user]($style)"
 
 [hostname]
-style = "bg:color1 fg:light"
-format = "[@$hostname ]($style)"
+style = "bright-black"
+format = "[@$hostname]($style) "
 
 [directory]
-style = "bg:color2 fg:dark"
-format = "[$path]($style)"
+style = "blue"
+format = "[$path]($style)[$read_only]($read_only_style) "
 
 [git_branch]
-style = "bg:color3 fg:dark"
-symbol = ""
-format = "[$symbol $branch ]($style)"
+style = "bright-black"
+format = "[$branch]($style) "
 
 [git_state]
-style = "bg:color3 fg:dark"
-format = '[\($state( $progress_current/$progress_total)\) ]($style)'
+style = "bright-black"
+format = '\([$state( $progress_current/$progress_total)]($style)\) '
 
 [git_status]
-style = "bg:color3 fg:dark"
+style = "cyan"
 format = '[($conflicted$untracked$index_added$index_modified$index_deleted$renamed$worktree_modified$worktree_deleted)($ahead_behind$stashed)]($style)'
-conflicted = "[UU$count ](bg:color3 fg:unstaged)"
-untracked = "[??$count ](bg:color3 fg:unstaged)"
-index_added = "[A$count ](bg:color3 fg:staged)"
-index_modified = "[M$count ](bg:color3 fg:staged)"
-index_deleted = "[D$count ](bg:color3 fg:staged)"
-renamed = "[R$count ](bg:color3 fg:staged)"
-worktree_modified = "[M$count ](bg:color3 fg:unstaged)"
-worktree_deleted = "[D$count ](bg:color3 fg:unstaged)"
+conflicted = "[UU$count ](red)"
+untracked = "[??$count ](red)"
+index_added = "[A$count ](green)"
+index_modified = "[M$count ](green)"
+index_deleted = "[D$count ](green)"
+renamed = "[R$count ](green)"
+worktree_modified = "[M$count ](red)"
+worktree_deleted = "[D$count ](red)"
 ahead = "↑$count "
 behind = "↓$count "
 diverged = "↑${ahead_count}↓${behind_count} "
 stashed = "≡$count "
 
 [package]
-style = "bg:color4 fg:dark"
-format = "[$symbol$version ]($style)"
+style = "bright-black"
+format = "[$symbol$version]($style) "
 
 [nodejs]
-style = "bg:color5 fg:light"
-format = "[$symbol($version) ]($style)"
+style = "bright-black"
+format = "[$symbol($version )]($style)"
 
 [python]
-style = "bg:color5 fg:light"
-format = '[$symbol$pyenv_prefix($version )]($style)'
+style = "bright-black"
+format = "[$symbol$pyenv_prefix($version )]($style)"
 
 [rust]
-style = "bg:color5 fg:light"
-format = "[$symbol($version) ]($style)"
+style = "bright-black"
+format = "[$symbol($version )]($style)"
 
 [golang]
-style = "bg:color5 fg:light"
-format = "[$symbol($version) ]($style)"
+style = "bright-black"
+format = "[$symbol($version )]($style)"
 
 [docker_context]
-style = "bg:color5 fg:light"
-format = "[$symbol$context ]($style)"
+style = "bright-black"
+format = "[$symbol$context]($style) "
 only_with_files = true
+
+[cmd_duration]
+min_time = 2_000
+style = "yellow"
+format = "[$duration]($style) "
+
+[env_var.VIRTUAL_ENV_PROMPT]
+style = "bright-black"
+format = "[\\($env_value\\) ]($style)"
 
 [character]
 success_symbol = "[❯](purple)"
 error_symbol = "[❯](red)"
 vimcmd_symbol = "[❮](green)"
 
-# Right side - to be settled later
-[cmd_duration]
-min_time = 2_000
-format = "[$duration]($style) "
-style = "yellow"
-
+# Right prompt
 [status]
 disabled = false
-format = "[$status]($style) "
 style = "red"
+success_style = "green"
+symbol = ""
+success_symbol = "✓"
+format = "[$symbol$common_meaning$signal_name$maybe_int]($style) "
+pipestatus = true
+pipestatus_segment_format = "[$symbol$common_meaning$signal_name$maybe_int]($style)"
 
 [time]
 disabled = false
 time_format = "%R"
-format = "[$time](bright-black) "
 style = "bright-black"
+format = "[$time]($style) "
 
 [aws]
-format = '[$symbol$profile( \($region\))( \[$duration\])]($style) '
 style = "bold yellow"
 symbol = "☁️ "
 expiration_symbol = "X"
-
-[env_var.VIRTUAL_ENV_PROMPT]
-format = "[\\($env_value\\) ]($style)"
-style = "fg:color4"
+format = '[$symbol$profile( \($region\))( \[$duration\])]($style) '
 
 [custom.aws_sso_expiry]
 command = "~/.config/starship/aws-sso-expiry.sh"
