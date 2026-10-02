@@ -3,11 +3,11 @@
 # ==============================================================================
 
 # ==============================================================================
-# PATH
+# PATH & FPATH
 # ==============================================================================
-# Kept in managed.zshrc: macOS /etc/zprofile path_helper reorders PATH set in .zshenv
-# Deduplicate PATH entries (drops duplicates added by macOS path_helper via /etc/paths.d)
+# Deduplicate arrays to prevent redundant paths on shell reloads
 typeset -U path PATH
+typeset -U fpath FPATH
 export PATH="$HOME/.local/bin:/opt/homebrew/bin:$PATH"
 
 # ==============================================================================
@@ -17,13 +17,11 @@ export PATH="$HOME/.local/bin:/opt/homebrew/bin:$PATH"
 export HISTFILE="${XDG_DATA_HOME:-$HOME/.local/share}/zsh/history"
 export HISTSIZE=10000
 export SAVEHIST=10000
-export HISTDUP=erase
 setopt APPEND_HISTORY
 setopt SHARE_HISTORY
 setopt HIST_IGNORE_SPACE
 setopt HIST_IGNORE_ALL_DUPS
 setopt HIST_SAVE_NO_DUPS
-setopt HIST_IGNORE_DUPS
 setopt HIST_FIND_NO_DUPS
 setopt HIST_REDUCE_BLANKS
 setopt HIST_VERIFY
@@ -41,13 +39,6 @@ setopt PUSHD_IGNORE_DUPS
 # Correction
 setopt CORRECT
 setopt NO_CLOBBER
-
-# ==============================================================================
-# Key bindings
-# ==============================================================================
-bindkey -v
-bindkey '^[[A' history-search-backward
-bindkey '^[[B' history-search-forward
 
 # ==============================================================================
 # Shell tools
@@ -73,12 +64,12 @@ if [[ -z "${HOMEBREW_PREFIX:-}" ]]; then
   fi
 fi
 
-# zsh-completions: extra completion definitions (must be on fpath before compinit)
+# zsh-completions
 if [[ -n "${HOMEBREW_PREFIX:-}" && -d "${HOMEBREW_PREFIX}/share/zsh-completions" ]]; then
   fpath=("${HOMEBREW_PREFIX}/share/zsh-completions" $fpath)
 fi
 
-# Cache compinit dump file under XDG_CACHE_HOME and regenerate at most once a day
+# compinit caching
 zcompdump="${XDG_CACHE_HOME:-$HOME/.cache}/zsh/zcompdump"
 [[ -d "${zcompdump:h}" ]] || mkdir -p "${zcompdump:h}"
 autoload -Uz compinit
@@ -89,19 +80,32 @@ else
 fi
 unset zcompdump
 
-# Completion styling & matching rules (case-insensitive & fuzzy matching)
+# Define default LS_COLORS for macOS so fzf-tab can colorize the left menu
+export LS_COLORS="di=1;36:ln=35:so=32:pi=33:ex=31:bd=34;46:cd=34;43:su=30;41:sg=30;43:tw=30;42:ow=34;42"
+
+# Completion styling & matching rules
+zstyle ':completion:*' use-cache on
+zstyle ':completion:*' cache-path "${XDG_CACHE_HOME:-$HOME/.cache}/zsh/.zcompcache"
 zstyle ':completion:*' matcher-list 'm:{a-zA-Z}={A-Za-z}' 'r:|[._-]=* r:|=*' 'l:|=* r:|=*'
 zstyle ':completion:*' menu no
+zstyle ':completion:*' list-colors "${(s.:.)LS_COLORS}"
 zstyle ':completion:*:descriptions' format '[%d]'
 
-# zsh-vi-mode: initialise on source (not lazily) so the fzf, atuin and autopair
-# bindings loaded after it are not reset
+# Group completion candidates so directories sort before files
+zstyle ':completion:*' group-name ''
+zstyle ':completion:*:*:-command-:*' group-order aliases builtins functions commands
+zstyle ':completion:*:*:*:*:*' group-order directories files
+
+# zsh-vi-mode (Must load before custom bindings and fzf)
 if [[ -n "${HOMEBREW_PREFIX:-}" && -f "${HOMEBREW_PREFIX}/share/zsh-vi-mode/zsh-vi-mode.plugin.zsh" ]]; then
   ZVM_INIT_MODE=sourcing
   source "${HOMEBREW_PREFIX}/share/zsh-vi-mode/zsh-vi-mode.plugin.zsh"
-  bindkey '^[[A' history-search-backward
-  bindkey '^[[B' history-search-forward
 fi
+
+# Keybindings (Applied after ZVM to ensure persistence)
+bindkey -v
+bindkey '^[[A' history-search-backward
+bindkey '^[[B' history-search-forward
 
 if command -v fzf >/dev/null 2>&1; then
   eval "$(fzf --zsh)"
@@ -110,14 +114,20 @@ fi
 
 # fzf-tab
 if [[ -n "${HOMEBREW_PREFIX:-}" && -f "${HOMEBREW_PREFIX}/share/fzf-tab/fzf-tab.zsh" ]]; then
-  # Make Tab and Shift-Tab cycle through completion candidates
   zstyle ':fzf-tab:*' fzf-bindings 'tab:down' 'btab:up'
-  # Continuous directory completion (hitting / or Tab steps into next directory)
   zstyle ':fzf-tab:*' continuous-trigger '/'
-  # Preview directories with eza when using cd
-  zstyle ':fzf-tab:complete:cd:*' fzf-preview 'eza -1 --color=always $realpath'
+
+  # Preserve Zsh completion ordering (directories first) on the left list
+  zstyle ':fzf-tab:*' sort false
+
+  # Clean directory previews using eza for directory-based commands
+  zstyle ':fzf-tab:complete:cd:*' fzf-preview 'eza --icons=always --git --grid --all --group-directories-first --color=always $realpath'
+  zstyle ':fzf-tab:complete:__zoxide_z:*' fzf-preview 'eza --icons=always --git --grid --all --group-directories-first --color=always $realpath'
+
   source "${HOMEBREW_PREFIX}/share/fzf-tab/fzf-tab.zsh"
 fi
+
+
 
 # zsh-autosuggestions
 if [[ -n "${HOMEBREW_PREFIX:-}" && -f "${HOMEBREW_PREFIX}/share/zsh-autosuggestions/zsh-autosuggestions.zsh" ]]; then
@@ -129,11 +139,10 @@ if command -v atuin >/dev/null 2>&1; then
   eval "$(atuin init zsh --disable-up-arrow)"
 fi
 
-# zsh-autopair: auto-close brackets and quotes
+# zsh-autopair
 if [[ -n "${HOMEBREW_PREFIX:-}" && -f "${HOMEBREW_PREFIX}/share/zsh-autopair/autopair.zsh" ]]; then
   source "${HOMEBREW_PREFIX}/share/zsh-autopair/autopair.zsh"
 fi
-
 
 # ==============================================================================
 # Syntax highlighting (must be sourced last)
