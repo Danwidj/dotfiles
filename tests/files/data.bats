@@ -141,7 +141,7 @@ EOF
     refute_output "$personal_output"
 }
 
-@test "run_once_setup-chezmoi-git-identity.sh.tmpl renders with email substitution" {
+@test "run_once_setup-chezmoi-git-identity.sh.tmpl renders personal git identity" {
     cat > "${TEST_HOME}/.config/chezmoi/chezmoi.toml" <<'EOF'
 [data]
     machine_type = "personal"
@@ -150,5 +150,6 @@ EOF
 
     run chezmoi execute-template -f "${BATS_TEST_DIRNAME}/../../home/.chezmoiscripts/run_once_setup-chezmoi-git-identity.sh.tmpl" --config="${TEST_HOME}/.config/chezmoi/chezmoi.toml"
     assert_success
-    assert_output_partial 'user.email "templated-author@domain.com"'
+    assert_output_partial 'user.name "Danwidj"'
+    assert_output_partial 'user.email "daniel.widjaja18@gmail.com"'
 }
