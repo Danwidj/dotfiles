@@ -62,12 +62,12 @@ teardown() {
     done
 }
 
-@test "~/.config/zsh/managed.zshrc enforces plugin load order: compinit -> fzf-tab -> autosuggestions -> syntax-highlighting" {
-    MANAGED="${TEST_HOME}/.config/zsh/managed.zshrc"
-    compinit_line=$(grep -n "compinit" "${MANAGED}" | head -n 1 | cut -d: -f1)
-    fzftab_line=$(grep -n "fzf-tab.zsh" "${MANAGED}" | head -n 1 | cut -d: -f1)
-    autosuggest_line=$(grep -n "zsh-autosuggestions.zsh" "${MANAGED}" | head -n 1 | cut -d: -f1)
-    syntax_line=$(grep -n "zsh-syntax-highlighting.zsh" "${MANAGED}" | head -n 1 | cut -d: -f1)
+@test "~/.config/zsh/conf.d/00-plugins.zsh enforces plugin load order: compinit -> fzf-tab -> autosuggestions -> syntax-highlighting" {
+    PLUGINS="${TEST_HOME}/.config/zsh/conf.d/00-plugins.zsh"
+    compinit_line=$(grep -n "compinit" "${PLUGINS}" | head -n 1 | cut -d: -f1)
+    fzftab_line=$(grep -n "Aloxaf/fzf-tab" "${PLUGINS}" | head -n 1 | cut -d: -f1)
+    autosuggest_line=$(grep -n "zsh-users/zsh-autosuggestions" "${PLUGINS}" | head -n 1 | cut -d: -f1)
+    syntax_line=$(grep -n "zsh-users/zsh-syntax-highlighting" "${PLUGINS}" | head -n 1 | cut -d: -f1)
 
     [ -n "$compinit_line" ]
     [ -n "$fzftab_line" ]
@@ -77,6 +77,14 @@ teardown() {
     [ "$compinit_line" -lt "$fzftab_line" ]
     [ "$fzftab_line" -lt "$autosuggest_line" ]
     [ "$autosuggest_line" -lt "$syntax_line" ]
+}
+
+@test "~/.config/zsh/conf.d modular files exist and are zsh parse-clean" {
+    for file in 00-plugins.zsh 01-aliases.zsh 02-fzf.zsh 03-atuin.zsh; do
+        assert_file_exist "${TEST_HOME}/.config/zsh/conf.d/${file}"
+        run zsh -n "${TEST_HOME}/.config/zsh/conf.d/${file}"
+        assert_success
+    done
 }
 
 @test "~/.config/nvim/init.lua exists after apply" {
@@ -455,8 +463,8 @@ EOF
     assert_failure
 }
 
-@test "~/.config/zsh/managed.zshrc atuin init syntax is valid with single closing parenthesis" {
-    run grep 'atuin init zsh' "${TEST_HOME}/.config/zsh/managed.zshrc"
+@test "~/.config/zsh/conf.d/03-atuin.zsh atuin init syntax is valid with single closing parenthesis" {
+    run grep 'atuin init zsh' "${TEST_HOME}/.config/zsh/conf.d/03-atuin.zsh"
     assert_success
     assert_output_partial 'eval "$(atuin init zsh --disable-up-arrow)"'
     refute_output_partial '))'
@@ -484,22 +492,22 @@ EOF
     assert_output_partial '--cmd cd'
 }
 
-@test "~/.config/zsh/managed.zshrc does not define find, grep, or cd aliases" {
-    run grep -E "alias cd=" "${TEST_HOME}/.config/zsh/managed.zshrc"
+@test "~/.config/zsh does not define find, grep, or cd aliases" {
+    run grep -E "alias cd=" "${TEST_HOME}/.config/zsh/managed.zshrc" "${TEST_HOME}/.config/zsh/conf.d/01-aliases.zsh"
     assert_failure
 
-    run grep -E "alias find=" "${TEST_HOME}/.config/zsh/managed.zshrc"
+    run grep -E "alias find=" "${TEST_HOME}/.config/zsh/managed.zshrc" "${TEST_HOME}/.config/zsh/conf.d/01-aliases.zsh"
     assert_failure
 
-    run grep -E "alias grep=" "${TEST_HOME}/.config/zsh/managed.zshrc"
+    run grep -E "alias grep=" "${TEST_HOME}/.config/zsh/managed.zshrc" "${TEST_HOME}/.config/zsh/conf.d/01-aliases.zsh"
     assert_failure
 }
 
-@test "~/.config/zsh/managed.zshrc preserves cat and ls aliases" {
-    run grep "alias cat='bat'" "${TEST_HOME}/.config/zsh/managed.zshrc"
+@test "~/.config/zsh/conf.d/01-aliases.zsh preserves cat and ls aliases" {
+    run grep "alias cat='bat'" "${TEST_HOME}/.config/zsh/conf.d/01-aliases.zsh"
     assert_success
 
-    run grep "alias ls=" "${TEST_HOME}/.config/zsh/managed.zshrc"
+    run grep "alias ls=" "${TEST_HOME}/.config/zsh/conf.d/01-aliases.zsh"
     assert_success
 }
 
