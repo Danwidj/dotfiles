@@ -326,7 +326,13 @@ EOF
     assert_file_exist "${TEST_ETC}"
     run cat "${TEST_ETC}"
     assert_success
-    assert_output 'export ZDOTDIR="$HOME/.config/zsh"'
+    expected_etc=$(cat <<'EOF'
+# Set fallback only if empty, then export ZDOTDIR if directory exists
+export XDG_CONFIG_HOME="${XDG_CONFIG_HOME:-$HOME/.config}"
+[[ -d "$XDG_CONFIG_HOME/zsh" ]] && export ZDOTDIR="$XDG_CONFIG_HOME/zsh"
+EOF
+)
+    assert_output "${expected_etc}"
 }
 
 @test "run_zsh-setup.sh does not duplicate ZDOTDIR in ETC_ZSHENV if already present" {
