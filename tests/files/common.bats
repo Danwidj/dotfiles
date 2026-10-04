@@ -54,7 +54,7 @@ teardown() {
 
 @test "~/.config/zsh/managed.zshrc sets expected quality-of-life setopts" {
     MANAGED="${TEST_HOME}/.config/zsh/managed.zshrc"
-    for opt in HIST_IGNORE_DUPS HIST_IGNORE_ALL_DUPS HIST_REDUCE_BLANKS SHARE_HISTORY HIST_VERIFY \
+    for opt in HIST_IGNORE_ALL_DUPS HIST_SAVE_NO_DUPS HIST_FIND_NO_DUPS HIST_REDUCE_BLANKS SHARE_HISTORY HIST_VERIFY \
                EXTENDED_GLOB GLOB_DOTS NUMERIC_GLOB_SORT AUTO_CD AUTO_PUSHD PUSHD_IGNORE_DUPS \
                CORRECT NO_CLOBBER; do
         run grep -E "^setopt[[:space:]]+$opt" "${MANAGED}"
@@ -429,11 +429,11 @@ EOF
 
     run git -C "${TMP_REPO}" config --local user.name
     assert_success
-    assert_output "Daniel"
+    assert_output "Danwidj"
 
     run git -C "${TMP_REPO}" config --local user.email
     assert_success
-    assert_output "custom-dev@example.org"
+    assert_output "daniel.widjaja18@gmail.com"
 
     run git -C "${TMP_REPO}" config --local commit.gpgsign
     assert_success
