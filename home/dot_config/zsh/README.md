@@ -8,10 +8,13 @@ Houses the interactive Zsh configuration with relocated `$ZDOTDIR`.
 - **`private_managed.zshrc`**: Maps to `~/.config/zsh/managed.zshrc`. Fully tracked interactive shell configuration managing:
   - `PATH` export (kept here because macOS `/etc/zprofile` `path_helper` reorders `PATH` set in `.zshenv`).
   - Sensible Zsh options (history control, globbing, directory navigation).
-  - Strict plugin loading order: `compinit` → `fzf-tab` → `zsh-autosuggestions` → `zsh-syntax-highlighting`.
-  - Prompt initialization via [Starship](https://starship.rs/).
-  - Shell history sync via [Atuin](https://atuin.sh/).
-  - [fzf](https://github.com/junegunn/fzf) keybindings and Catppuccin Mocha/Latte color themes.
+  - Activation of prompt ([Starship](https://starship.rs/)), runtime manager ([mise](https://mise.jdx.dev/)), and directory jumper ([zoxide](https://github.com/ajeetdsouza/zoxide)).
+  - Modular sourcing loop loading `conf.d/*.zsh` in numerical order.
+- **`conf.d/`**: Maps to `~/.config/zsh/conf.d/`. Modular configuration snippets loaded in order:
+  - **`private_00-plugins.zsh`**: Zinit self-bootstrapping, completion system caching (`compinit`), strict plugin load ordering (`zsh-completions` → `zsh-vi-mode` → `fzf-tab` → `zinit cdreplay` → `zsh-autopair` → turbo-loaded `zsh-autosuggestions` & `zsh-syntax-highlighting`).
+  - **`private_01-aliases.zsh`**: Interactive shell aliases (`vim`, `ls`, `top`, `cat`).
+  - **`private_02-fzf.zsh`**: fzf shell integration and full-screen reverse layout, fzf-tab options and contextual previews (`eza` for directories, `bat --theme=ansi` for files).
+  - **`private_03-atuin.zsh`**: SQLite-backed history sync and full-screen search via [Atuin](https://atuin.sh/).
 
 ### Untracked Shims
 
