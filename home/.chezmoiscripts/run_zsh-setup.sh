@@ -13,12 +13,17 @@ set -euo pipefail
 ETC_ZSHENV="${ETC_ZSHENV:-/etc/zshenv}"
 if ! grep -q "ZDOTDIR" "$ETC_ZSHENV" 2>/dev/null; then
     # shellcheck disable=SC2016  # literal string with variable ref intended for file
-    line='export ZDOTDIR="$HOME/.config/zsh"'
+    snippet=$(cat <<'EOF'
+# Set fallback only if empty, then export ZDOTDIR if directory exists
+export XDG_CONFIG_HOME="${XDG_CONFIG_HOME:-$HOME/.config}"
+[[ -d "$XDG_CONFIG_HOME/zsh" ]] && export ZDOTDIR="$XDG_CONFIG_HOME/zsh"
+EOF
+)
     if [ "$ETC_ZSHENV" = "/etc/zshenv" ]; then
-        echo "$line" | sudo tee -a "$ETC_ZSHENV" >/dev/null
+        echo "$snippet" | sudo tee -a "$ETC_ZSHENV" >/dev/null
     else
         mkdir -p "$(dirname "$ETC_ZSHENV")"
-        echo "$line" >> "$ETC_ZSHENV"
+        echo "$snippet" >> "$ETC_ZSHENV"
     fi
 fi
 
