@@ -83,6 +83,10 @@ teardown() {
     assert_file_exist "${TEST_HOME}/.config/nvim/init.lua"
 }
 
+@test "~/.config/nvim/lua/config/keymaps.lua exists after apply" {
+    assert_file_exist "${TEST_HOME}/.config/nvim/lua/config/keymaps.lua"
+}
+
 @test "~/.config/vim/vimrc exists after apply" {
     assert_file_exist "${TEST_HOME}/.config/vim/vimrc"
 }

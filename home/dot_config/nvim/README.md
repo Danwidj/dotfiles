@@ -133,8 +133,11 @@ files, then save the Oil buffer to apply the batch of filesystem changes.
 | `gcc` | Toggle a line comment |
 | `gc` in Visual mode | Toggle comments on the selection |
 | `<` / `>` in Visual mode | Indent and keep the selection active |
+| `<D-a>` (Cmd+A) | Select all text in buffer (normal, visual, insert) |
 | `<leader>cf` | Format the current buffer or selection |
 | `<leader>cr` | Rename the symbol under the cursor |
+
+Clipboard behaviour: deletes (`d`, `D`, `dd`), changes (`c`, `C`, `cc`), character deletes (`x`, `X`), substitutes (`s`, `S`), and visual paste (`p`) do not overwrite the system clipboard (`"_` black hole register). Only explicit yanks (`y`) modify the clipboard.
 
 Completion is intentionally quiet: buffer suggestions start after three
 characters and are limited/ranked below LSP suggestions.
@@ -204,5 +207,5 @@ commands by purpose, so it is usually faster than searching documentation.
 - **`private_lazy-lock.json`**: exact plugin commits for reproducible installs.
 - **`private_stylua.toml`**: Lua formatting rules.
 - **`private_dot_neoconf.json`**: project-local LSP and formatting settings.
-- **`lua/config/`**: core options and Lazy setup.
+- **`lua/config/`**: core options, custom keymaps, and Lazy setup.
 - **`lua/plugins/`**: custom plugin specifications and LazyVim overrides.
