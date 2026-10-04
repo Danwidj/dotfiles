@@ -137,7 +137,7 @@ files, then save the Oil buffer to apply the batch of filesystem changes.
 | `<leader>cf` | Format the current buffer or selection |
 | `<leader>cr` | Rename the symbol under the cursor |
 
-Clipboard behaviour: deletes (`d`, `D`, `dd`), changes (`c`, `C`, `cc`), character deletes (`x`, `X`), substitutes (`s`, `S`), and visual paste (`p`) do not overwrite the system clipboard (`"_` black hole register). Only explicit yanks (`y`) modify the clipboard.
+Clipboard behaviour: deletes (`d`, `D`), changes (`c`, `C`), character deletes (`x`, `X`), and visual paste (`p`) do not overwrite the system clipboard (`"_` black hole register). Only explicit yanks (`y`) modify the clipboard. Quick jump navigation (`s`, `S`) is handled by Flash.nvim.
 
 Completion is intentionally quiet: buffer suggestions start after three
 characters and are limited/ranked below LSP suggestions.
