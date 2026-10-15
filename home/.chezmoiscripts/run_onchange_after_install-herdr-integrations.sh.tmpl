@@ -4,9 +4,14 @@
 # in .config/herdr). Pi was dropped on purpose; re-add to the loop if needed.
 # Only claude is integrated; the rest stay untouched (see `herdr integration status`).
 #
-# Runs on every apply and no-ops quietly when already current, so a
-# fresh machine converges as soon as the agent config dirs exist (Claude
-# creates ~/.claude on first run; `herdr integration install` requires them).
+# Runs when this script changes or the installed herdr version changes (the
+# version line below is rendered into the script, so an upgrade changes its
+# content), and no-ops quietly when already current. On a fresh machine the
+# install needs the agent config dir (Claude creates it on first run); if it
+# was missing, force a rerun after launching Claude with
+# `chezmoi state delete-bucket --bucket=entryState` then `chezmoi apply`.
+#
+# herdr version: {{ if lookPath "herdr" }}{{ output "herdr" "--version" | trim }}{{ else }}none{{ end }}
 # Installed files are herdr-managed and version-stamped, so they are deliberately
 # NOT vendored into chezmoi — reinstalling via the CLI always yields the
 # current bundled version instead of a stale copy.

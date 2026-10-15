@@ -1,7 +1,8 @@
 #!/usr/bin/env bash
-# run_after_setup-ssh.sh
+# run_onchange_after_setup-ssh.sh
 # Ensures ~/.ssh/config exists with permissions 0600 and includes
 # ~/.config/ssh/config without overwriting any existing configuration.
+# Runs only when this script changes (run_onchange_).
 
 set -euo pipefail
 

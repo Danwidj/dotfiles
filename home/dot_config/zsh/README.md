@@ -18,5 +18,5 @@ Houses the interactive Zsh configuration with relocated `$ZDOTDIR`.
 
 ### Untracked Shims
 
-- **`~/.config/zsh/.zshenv`**: An untracked shim sourcing `managed.zshenv`, maintained by `run_zsh-setup.sh` so `source "$ZDOTDIR/managed.zshenv"` always remains on line 1. This pattern allows machine-local / agent tooling exports to live outside tracked dotfiles.
-- **`~/.config/zsh/.zshrc`**: An untracked shim sourcing `managed.zshrc`, maintained by `run_zsh-setup.sh` so `source "$ZDOTDIR/managed.zshrc"` always remains on line 1. This pattern prevents external installers (e.g. tool managers appending `export PATH=...`) from conflicting with chezmoi's tracked configuration.
+- **`~/.config/zsh/.zshenv`**: An untracked shim sourcing `managed.zshenv`, maintained by `run_onchange_zsh-setup.sh` so `source "$ZDOTDIR/managed.zshenv"` always remains on line 1. This pattern allows machine-local / agent tooling exports to live outside tracked dotfiles.
+- **`~/.config/zsh/.zshrc`**: An untracked shim sourcing `managed.zshrc`, maintained by `run_onchange_zsh-setup.sh` so `source "$ZDOTDIR/managed.zshrc"` always remains on line 1. This pattern prevents external installers (e.g. tool managers appending `export PATH=...`) from conflicting with chezmoi's tracked configuration.
