@@ -116,10 +116,10 @@ chezmoi init --apply Danwidj/dotfiles
 3. **`run_onchange_after_brew-bundle.sh.tmpl`**: Provisions formulae, casks, and taps via `brew bundle --global` after configurations are applied (re-runs whenever the rendered `Brewfile` changes).
 4. **`run_once_after_macos.sh`**: Configures curated macOS system preferences, maps Caps Lock to Control on the built-in keyboard, turns off non-essential shortcuts, configures screenshot keybindings, and registers default application handlers (browser, PDF, mail, images, text, archives) using `duti`.
 5. **`run_once_setup-chezmoi-git-identity.sh.tmpl`**: Configures personal Git identity (`user.name`, `user.email`) and disables commit signing (`commit.gpgsign = false`) locally in the chezmoi source repository so automatic commits do not inherit enterprise or work Git credentials.
-6. **`run_zsh-setup.sh`**: Configures `/etc/zshenv` to point `ZDOTDIR` to `~/.config/zsh`, keeping `$HOME` clean of `.zshrc` and history files, and ensures untracked `~/.config/zsh/.zshrc` and `~/.config/zsh/.zshenv` shims source managed configurations as their first line.
+6. **`run_onchange_zsh-setup.sh`**: Configures `/etc/zshenv` to point `ZDOTDIR` to `~/.config/zsh`, keeping `$HOME` clean of `.zshrc` and history files, and ensures untracked `~/.config/zsh/.zshrc` and `~/.config/zsh/.zshenv` shims source managed configurations as their first line.
 7. **`run_onchange_after_install-vscode-extensions.sh`**: Declaratively installs VS Code extensions (runs on initial setup and whenever the extension manifest is updated).
-8. **`run_after_install-herdr-integrations.sh`**: Verifies and updates herdr agent integration (Claude).
-9. **`run_after_setup-ssh.sh`**: Ensures `~/.ssh/config` exists with mode `0600` and includes `~/.config/ssh/config` without overwriting existing host configurations.
+8. **`run_onchange_after_install-herdr-integrations.sh.tmpl`**: Verifies and updates herdr agent integration (Claude); re-runs whenever the installed herdr version changes.
+9. **`run_onchange_after_setup-ssh.sh`**: Ensures `~/.ssh/config` exists with mode `0600` and includes `~/.config/ssh/config` without overwriting existing host configurations.
 10. **`run_once_after_zzz-manual-steps.sh`**: Prompts the user through non-scriptable macOS settings and launches Ghostty.
 
 ---
@@ -189,9 +189,9 @@ chezmoi forget ~/.config/foo.conf
 
 ### Untracked Local Overlays
 
-To allow local installer scripts (like `nvm`, `sdkman`, or corporate tooling) to inject shell lines without polluting the tracked dotfiles repository, `~/.config/zsh/.zshrc` is an **untracked shim**. It is maintained by `run_zsh-setup.sh` to ensure `source "$ZDOTDIR/managed.zshrc"` always stays at line 1. External tools can append to `.zshrc` without causing Git merge conflicts with chezmoi.
+To allow local installer scripts (like `nvm`, `sdkman`, or corporate tooling) to inject shell lines without polluting the tracked dotfiles repository, `~/.config/zsh/.zshrc` is an **untracked shim**. It is maintained by `run_onchange_zsh-setup.sh` to ensure `source "$ZDOTDIR/managed.zshrc"` always stays at line 1. External tools can append to `.zshrc` without causing Git merge conflicts with chezmoi.
 
-Similarly, `~/.config/zsh/.zshenv` is an **untracked shim** maintained by `run_zsh-setup.sh` that ensures `source "$ZDOTDIR/managed.zshenv"` always stays at line 1, keeping machine-local/agent environment exports outside the tracked repository.
+Similarly, `~/.config/zsh/.zshenv` is an **untracked shim** maintained by `run_onchange_zsh-setup.sh` that ensures `source "$ZDOTDIR/managed.zshenv"` always stays at line 1, keeping machine-local/agent environment exports outside the tracked repository.
 
 ---
 

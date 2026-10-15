@@ -20,7 +20,7 @@ EOF
     # execute macOS-only commands (Homebrew, `defaults`, `osascript`, ...)
     # for real, on whichever OS this bats file runs on (Ubuntu via ci.yaml,
     # macOS via macos-ci.yaml). Script behavior itself is exercised directly
-    # below (e.g. the run_zsh-setup.sh tests) and, end-to-end on the
+    # below (e.g. the run_onchange_zsh-setup.sh tests) and, end-to-end on the
     # correct OS, by macos-ci.yaml's own top-level chezmoi apply step.
     chezmoi init --apply --source="${BATS_TEST_DIRNAME}/../.." --destination="${TEST_HOME}" --config="${TEST_HOME}/.config/chezmoi/chezmoi.toml" --exclude=scripts >/dev/null 2>&1
 }
@@ -130,23 +130,23 @@ teardown() {
     assert_success
 }
 
-@test "run_zsh-setup.sh exists and is executable" {
-    SCRIPT="${BATS_TEST_DIRNAME}/../../home/.chezmoiscripts/run_zsh-setup.sh"
+@test "run_onchange_zsh-setup.sh exists and is executable" {
+    SCRIPT="${BATS_TEST_DIRNAME}/../../home/.chezmoiscripts/run_onchange_zsh-setup.sh"
     assert_file_exist "${SCRIPT}"
     assert_file_executable "${SCRIPT}"
 }
 
-@test "run_zsh-setup.sh is bash parse-clean" {
-    run bash -n "${BATS_TEST_DIRNAME}/../../home/.chezmoiscripts/run_zsh-setup.sh"
+@test "run_onchange_zsh-setup.sh is bash parse-clean" {
+    run bash -n "${BATS_TEST_DIRNAME}/../../home/.chezmoiscripts/run_onchange_zsh-setup.sh"
     assert_success
 }
 
-@test "run_zsh-setup.sh creates .zshrc and .zshenv shims when missing" {
+@test "run_onchange_zsh-setup.sh creates .zshrc and .zshenv shims when missing" {
     ZSHRC="${TEST_HOME}/.config/zsh/.zshrc"
     ZSHENV="${TEST_HOME}/.config/zsh/.zshenv"
     rm -f "${ZSHRC}" "${ZSHENV}"
 
-    HOME="${TEST_HOME}" ETC_ZSHENV="${TEST_HOME}/etc/zshenv" run bash "${BATS_TEST_DIRNAME}/../../home/.chezmoiscripts/run_zsh-setup.sh"
+    HOME="${TEST_HOME}" ETC_ZSHENV="${TEST_HOME}/etc/zshenv" run bash "${BATS_TEST_DIRNAME}/../../home/.chezmoiscripts/run_onchange_zsh-setup.sh"
     assert_success
 
     assert_file_exist "${ZSHRC}"
@@ -162,7 +162,7 @@ teardown() {
     [ -d "${TEST_HOME}/.local/share/zsh" ]
 }
 
-@test "run_zsh-setup.sh leaves shims untouched when source line is already first line" {
+@test "run_onchange_zsh-setup.sh leaves shims untouched when source line is already first line" {
     ZSHRC="${TEST_HOME}/.config/zsh/.zshrc"
     ZSHENV="${TEST_HOME}/.config/zsh/.zshenv"
     mkdir -p "${TEST_HOME}/.config/zsh"
@@ -185,7 +185,7 @@ EOF
     mtime_zshrc_before=$(stat -c "%Y" "${ZSHRC}" 2>/dev/null || stat -f "%m" "${ZSHRC}")
     mtime_zshenv_before=$(stat -c "%Y" "${ZSHENV}" 2>/dev/null || stat -f "%m" "${ZSHENV}")
 
-    HOME="${TEST_HOME}" ETC_ZSHENV="${TEST_HOME}/etc/zshenv" run bash "${BATS_TEST_DIRNAME}/../../home/.chezmoiscripts/run_zsh-setup.sh"
+    HOME="${TEST_HOME}" ETC_ZSHENV="${TEST_HOME}/etc/zshenv" run bash "${BATS_TEST_DIRNAME}/../../home/.chezmoiscripts/run_onchange_zsh-setup.sh"
     assert_success
 
     mtime_zshrc_after=$(stat -c "%Y" "${ZSHRC}" 2>/dev/null || stat -f "%m" "${ZSHRC}")
@@ -195,7 +195,7 @@ EOF
     [ "${mtime_zshenv_before}" -eq "${mtime_zshenv_after}" ]
 }
 
-@test "run_zsh-setup.sh moves source line to line 1, removes duplicates, and preserves other lines in order" {
+@test "run_onchange_zsh-setup.sh moves source line to line 1, removes duplicates, and preserves other lines in order" {
     ZSHRC="${TEST_HOME}/.config/zsh/.zshrc"
     ZSHENV="${TEST_HOME}/.config/zsh/.zshenv"
     mkdir -p "${TEST_HOME}/.config/zsh"
@@ -215,7 +215,7 @@ source "$ZDOTDIR/managed.zshenv"
 export ENV_SECOND="b"
 EOF
 
-    HOME="${TEST_HOME}" ETC_ZSHENV="${TEST_HOME}/etc/zshenv" run bash "${BATS_TEST_DIRNAME}/../../home/.chezmoiscripts/run_zsh-setup.sh"
+    HOME="${TEST_HOME}" ETC_ZSHENV="${TEST_HOME}/etc/zshenv" run bash "${BATS_TEST_DIRNAME}/../../home/.chezmoiscripts/run_onchange_zsh-setup.sh"
     assert_success
 
     run cat "${ZSHRC}"
@@ -241,7 +241,7 @@ EOF
     assert_output "${expected_zshenv}"
 }
 
-@test "run_zsh-setup.sh does not special-case legacy managed.zsh" {
+@test "run_onchange_zsh-setup.sh does not special-case legacy managed.zsh" {
     ZSHRC="${TEST_HOME}/.config/zsh/.zshrc"
     mkdir -p "${TEST_HOME}/.config/zsh"
 
@@ -250,7 +250,7 @@ source "$ZDOTDIR/managed.zsh"
 export SOME_VAR="val"
 EOF
 
-    HOME="${TEST_HOME}" ETC_ZSHENV="${TEST_HOME}/etc/zshenv" run bash "${BATS_TEST_DIRNAME}/../../home/.chezmoiscripts/run_zsh-setup.sh"
+    HOME="${TEST_HOME}" ETC_ZSHENV="${TEST_HOME}/etc/zshenv" run bash "${BATS_TEST_DIRNAME}/../../home/.chezmoiscripts/run_onchange_zsh-setup.sh"
     assert_success
 
     run cat "${ZSHRC}"
@@ -264,23 +264,23 @@ EOF
     assert_output "${expected_zshrc}"
 }
 
-@test "run_after_setup-ssh.sh exists and is executable" {
-    SCRIPT="${BATS_TEST_DIRNAME}/../../home/.chezmoiscripts/run_after_setup-ssh.sh"
+@test "run_onchange_after_setup-ssh.sh exists and is executable" {
+    SCRIPT="${BATS_TEST_DIRNAME}/../../home/.chezmoiscripts/run_onchange_after_setup-ssh.sh"
     assert_file_exist "${SCRIPT}"
     assert_file_executable "${SCRIPT}"
 }
 
-@test "run_after_setup-ssh.sh is bash parse-clean" {
-    run bash -n "${BATS_TEST_DIRNAME}/../../home/.chezmoiscripts/run_after_setup-ssh.sh"
+@test "run_onchange_after_setup-ssh.sh is bash parse-clean" {
+    run bash -n "${BATS_TEST_DIRNAME}/../../home/.chezmoiscripts/run_onchange_after_setup-ssh.sh"
     assert_success
 }
 
-@test "run_after_setup-ssh.sh creates ~/.ssh/config with mode 600 and Include directive when missing" {
+@test "run_onchange_after_setup-ssh.sh creates ~/.ssh/config with mode 600 and Include directive when missing" {
     SSH_DIR="${TEST_HOME}/.ssh"
     SSH_CONFIG="${SSH_DIR}/config"
     rm -rf "${SSH_DIR}"
 
-    HOME="${TEST_HOME}" run bash "${BATS_TEST_DIRNAME}/../../home/.chezmoiscripts/run_after_setup-ssh.sh"
+    HOME="${TEST_HOME}" run bash "${BATS_TEST_DIRNAME}/../../home/.chezmoiscripts/run_onchange_after_setup-ssh.sh"
     assert_success
     assert_file_exist "${SSH_CONFIG}"
 
@@ -293,7 +293,7 @@ EOF
     assert_output "0o600"
 }
 
-@test "run_after_setup-ssh.sh appends Include directive without duplicating or overwriting existing config" {
+@test "run_onchange_after_setup-ssh.sh appends Include directive without duplicating or overwriting existing config" {
     SSH_DIR="${TEST_HOME}/.ssh"
     SSH_CONFIG="${SSH_DIR}/config"
     mkdir -p "${SSH_DIR}"
@@ -303,7 +303,7 @@ Host github.com
 EOF
     chmod 644 "${SSH_CONFIG}"
 
-    HOME="${TEST_HOME}" run bash "${BATS_TEST_DIRNAME}/../../home/.chezmoiscripts/run_after_setup-ssh.sh"
+    HOME="${TEST_HOME}" run bash "${BATS_TEST_DIRNAME}/../../home/.chezmoiscripts/run_onchange_after_setup-ssh.sh"
     assert_success
 
     run cat "${SSH_CONFIG}"
@@ -321,18 +321,18 @@ EOF
     assert_output "0o600"
 
     # Re-run to verify idempotency
-    HOME="${TEST_HOME}" run bash "${BATS_TEST_DIRNAME}/../../home/.chezmoiscripts/run_after_setup-ssh.sh"
+    HOME="${TEST_HOME}" run bash "${BATS_TEST_DIRNAME}/../../home/.chezmoiscripts/run_onchange_after_setup-ssh.sh"
     assert_success
     run cat "${SSH_CONFIG}"
     assert_success
     assert_output "${expected}"
 }
 
-@test "run_zsh-setup.sh configures ZDOTDIR in ETC_ZSHENV when missing" {
+@test "run_onchange_zsh-setup.sh configures ZDOTDIR in ETC_ZSHENV when missing" {
     TEST_ETC="${TEST_HOME}/etc/zshenv"
     rm -f "${TEST_ETC}"
 
-    HOME="${TEST_HOME}" ETC_ZSHENV="${TEST_ETC}" run bash "${BATS_TEST_DIRNAME}/../../home/.chezmoiscripts/run_zsh-setup.sh"
+    HOME="${TEST_HOME}" ETC_ZSHENV="${TEST_ETC}" run bash "${BATS_TEST_DIRNAME}/../../home/.chezmoiscripts/run_onchange_zsh-setup.sh"
     assert_success
 
     assert_file_exist "${TEST_ETC}"
@@ -347,7 +347,7 @@ EOF
     assert_output "${expected_etc}"
 }
 
-@test "run_zsh-setup.sh does not duplicate ZDOTDIR in ETC_ZSHENV if already present" {
+@test "run_onchange_zsh-setup.sh does not duplicate ZDOTDIR in ETC_ZSHENV if already present" {
     TEST_ETC="${TEST_HOME}/etc/zshenv"
     mkdir -p "$(dirname "${TEST_ETC}")"
     cat <<'EOF' > "${TEST_ETC}"
@@ -356,7 +356,7 @@ export ZDOTDIR="$HOME/.config/zsh"
 export FOO=1
 EOF
 
-    HOME="${TEST_HOME}" ETC_ZSHENV="${TEST_ETC}" run bash "${BATS_TEST_DIRNAME}/../../home/.chezmoiscripts/run_zsh-setup.sh"
+    HOME="${TEST_HOME}" ETC_ZSHENV="${TEST_ETC}" run bash "${BATS_TEST_DIRNAME}/../../home/.chezmoiscripts/run_onchange_zsh-setup.sh"
     assert_success
 
     run grep -cF 'export ZDOTDIR="$HOME/.config/zsh"' "${TEST_ETC}"

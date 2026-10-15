@@ -1,11 +1,12 @@
 #!/usr/bin/env bash
-# run_zsh-setup.sh
+# run_onchange_zsh-setup.sh
 # Sets up ZDOTDIR in /etc/zshenv, ensures untracked ~/.config/zsh/.zshenv and
 # ~/.config/zsh/.zshrc shims source managed configs as their first line, and
 # ensures the XDG-compliant zsh directory exists.
 #
-# Runs on every chezmoi apply to guarantee the source lines stay at line 1 even
-# if external installers append content.
+# Runs only when this script changes (run_onchange_), so a line an installer
+# later inserts above the source line stays until the next change; to force a
+# rerun, `chezmoi state delete-bucket --bucket=entryState` then `chezmoi apply`.
 
 set -euo pipefail
 
