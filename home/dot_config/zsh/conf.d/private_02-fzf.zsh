@@ -26,3 +26,5 @@ zstyle ':fzf-tab:complete:vim:*' fzf-preview 'bat --theme=ansi --style=numbers -
 zstyle ':fzf-tab:complete:nvim:*' fzf-preview 'bat --theme=ansi --style=numbers --color=always --line-range :500 $realpath'
 zstyle ':fzf-tab:complete:cat:*' fzf-preview 'bat --theme=ansi --style=numbers --color=always --line-range :500 $realpath'
 zstyle ':fzf-tab:complete:bat:*' fzf-preview 'bat --theme=ansi --style=numbers --color=always --line-range :500 $realpath'
+
+zstyle ':fzf-tab:complete:*:*' fzf-preview '[[ -d $realpath ]] && eza --icons=always --git --grid --all --group-directories-first --color=always $realpath || bat --theme=ansi --style=numbers --color=always --line-range :500 $realpath'
