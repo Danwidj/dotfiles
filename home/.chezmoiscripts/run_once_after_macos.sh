@@ -491,6 +491,19 @@ set_hotkey 184 53 23 1179648   # Screenshot and recording options           - Sh
 # machine's original, pre-sweep configuration)
 set_hotkey 27 96 50 1048576    # Move focus to next window in application   - Cmd+`
 
+# App-specific menu shortcuts (NSUserKeyEquivalents; "@" = Cmd). Menu items
+# that toggle their title need both titles mapped. Apps pick these up on
+# next launch.
+# Cmd+B: Calendar - Show/Hide Calendar List
+defaults write com.apple.iCal NSUserKeyEquivalents -dict-add "Show Calendar List" '@b'
+defaults write com.apple.iCal NSUserKeyEquivalents -dict-add "Hide Calendar List" '@b'
+# Cmd+B: Reminders - Show/Hide Sidebar. Reminders' prefs live in a protected
+# container that `defaults` cannot write (fails even with Full Disk Access
+# not granted), so this is set globally and applies to every app with a menu
+# item of that name.
+defaults write -globalDomain NSUserKeyEquivalents -dict-add "Show Sidebar" '@b'
+defaults write -globalDomain NSUserKeyEquivalents -dict-add "Hide Sidebar" '@b'
+
 ###############################################################################
 # Apply
 ###############################################################################
