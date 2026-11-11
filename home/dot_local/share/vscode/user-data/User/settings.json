@@ -55,7 +55,7 @@
   "workbench.startupEditor": "none",
   "workbench.editor.enablePreviewFromQuickOpen": false,
   "workbench.editorAssociations": {
-    "*.md": "vscode.markdown.preview.editor",
+    "*.md": "vscode.markdown.editor",
   },
   "workbench.secondarySideBar.defaultVisibility": "hidden",
   "workbench.tree.indent": 20,
@@ -64,7 +64,7 @@
   "workbench.tree.enableStickyScroll": true,
 
   //--- Explorer ---
-  "explorer.compactFolders": false,
+  "explorer.compactFolders": true,
   "explorer.confirmDelete": false,
 
   // --- Title Bar ---
@@ -120,4 +120,9 @@
   "terminal.external.osxExec": "Ghostty.app",
   "terminal.integrated.allowMnemonics": true,
   "window.confirmSaveUntitledWorkspace": false,
+  "intellij.region": "apac",
+  "intellij.dataSharing": "none",
+  "jetbrains.kotlin.hints.call.chains": true,
+  "jetbrains.kotlin.hints.parameters.compiled": true,
+  "jetbrains.kotlin.hints.parameters.excluded": true,
 }
