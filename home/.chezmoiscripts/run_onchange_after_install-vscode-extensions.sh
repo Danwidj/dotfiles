@@ -28,6 +28,7 @@ esbenp.prettier-vscode
 mechatroner.rainbow-csv
 redhat.vscode-yaml
 typescriptteam.native-preview
+JetBrains.intellij-server
 "
 
 for ext in $extensions; do
