@@ -1,0 +1,78 @@
+#!/usr/bin/env bash
+# run_onchange_after_apply-loop-keybinds.sh.tmpl
+# Writes ~/.config/loop/loop-keybinds.json into Loop's preferences, so the
+# keybinds apply without the manual Settings > Keybinds > Import step.
+# Re-runs whenever the keybinds file changes.
+# Keybinds hash: {{ include "dot_config/loop/loop-keybinds.json" | sha256sum }}
+
+set -euo pipefail
+
+DOMAIN="com.MrKai77.Loop"
+KEYBINDS_FILE="$HOME/.config/loop/loop-keybinds.json"
+
+if [[ "$(uname)" != "Darwin" ]] || [[ ! -d /Applications/Loop.app ]]; then
+    echo "Loop not installed. Skipping keybind apply."
+    exit 0
+fi
+
+# Loop only reads its preferences at launch and rewrites them while running,
+# so quit it first and reopen it afterwards.
+was_running=0
+if pgrep -xq Loop; then
+    was_running=1
+    osascript -e 'quit app "Loop"'
+    for _ in $(seq 1 50); do
+        pgrep -xq Loop || break
+        sleep 0.1
+    done
+    if pgrep -xq Loop; then
+        echo "Loop did not quit. Skipping keybind apply; import the file by hand."
+        exit 1
+    fi
+fi
+
+# Loop stores each action as one compact JSON string carrying its own id
+# (the export format has no ids), and the trigger key as a separate array.
+# The timestamps mark the values as newer than any iCloud-synced copy.
+/usr/bin/python3 - "$DOMAIN" "$KEYBINDS_FILE" <<'PY'
+import datetime
+import json
+import plistlib
+import subprocess
+import sys
+import uuid
+
+domain, path = sys.argv[1], sys.argv[2]
+with open(path) as f:
+    data = json.load(f)
+
+
+def with_ids(action):
+    action = dict(action)
+    action["id"] = str(uuid.uuid4()).upper()
+    action.setdefault("keybind", [])
+    if "cycle" in action:
+        action["cycle"] = [with_ids(c) for c in action["cycle"]]
+    return action
+
+
+values = {
+    "keybinds": [
+        json.dumps(with_ids(a), sort_keys=True, separators=(",", ":"))
+        for a in data["actions"]
+    ],
+    "trigger": list(data["triggerKey"]),
+}
+now = datetime.datetime.utcnow()
+for key, value in values.items():
+    for name, v in ((key, value), (key + "__DEFAULTS__synchronizeTimestamp", now)):
+        subprocess.run(
+            ["defaults", "write", domain, name, plistlib.dumps(v).decode()],
+            check=True,
+        )
+print("Loop keybinds applied: %d actions" % len(values["keybinds"]))
+PY
+
+if [[ "$was_running" == 1 ]]; then
+    open -a Loop
+fi
