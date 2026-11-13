@@ -512,7 +512,7 @@ defaults write -globalDomain NSUserKeyEquivalents -dict-add "Hide Sidebar" '@b'
 # removed this way, only reassigned, so it goes to Ctrl+Opt+Shift+Cmd+I
 # ("^" = Ctrl, "~" = Opt, "$" = Shift). Safari's prefs live in a protected
 # container too, so this is also set globally.
-defaults write -globalDomain NSUserKeyEquivalents -dict-add "Email This Page" '@~^$i'
+defaults write -globalDomain NSUserKeyEquivalents -dict-add "Email This Page" "@~^\$i"
 
 ###############################################################################
 # Apply
