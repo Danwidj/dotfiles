@@ -62,6 +62,9 @@ values = {
         for a in data["actions"]
     ],
     "trigger": list(data["triggerKey"]),
+    # Loop sizes every window itself. With this on, macOS remembers a
+    # maximised window as tiled and snaps it back to full size later.
+    "useSystemWindowManagerWhenAvailable": False,
 }
 now = datetime.datetime.utcnow()
 for key, value in values.items():
