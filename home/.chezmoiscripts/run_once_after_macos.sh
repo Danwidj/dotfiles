@@ -56,6 +56,10 @@ defaults write -globalDomain WebAutomaticSpellingCorrectionEnabled -bool false
 defaults write com.apple.HIToolbox AppleCurrentKeyboardLayoutInputSourceID \
   -string com.apple.keylayout.ABC
 
+# Fn/Globe key alone: do nothing [default: emoji picker (2)]
+# Values: 0=nothing, 1=change input source, 2=emoji & symbols, 3=dictation
+defaults write com.apple.HIToolbox AppleFnUsageType -int 0
+
 # Open/save panel: list view [default: column]
 defaults write -globalDomain NSNavPanelFileLastListModeForOpenModeKey -int 1
 defaults write -globalDomain NSNavPanelFileListModeForOpenMode2 -int 1
