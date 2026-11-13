@@ -507,6 +507,12 @@ defaults write com.apple.iCal NSUserKeyEquivalents -dict-add "Hide Calendar List
 # item of that name.
 defaults write -globalDomain NSUserKeyEquivalents -dict-add "Show Sidebar" '@b'
 defaults write -globalDomain NSUserKeyEquivalents -dict-add "Hide Sidebar" '@b'
+# Safari - Email This Page: move off Cmd+I, which opens Mail by accident (it
+# fires when a Loop Fn+Cmd+I chord reaches Safari). A menu shortcut cannot be
+# removed this way, only reassigned, so it goes to Ctrl+Opt+Shift+Cmd+I
+# ("^" = Ctrl, "~" = Opt, "$" = Shift). Safari's prefs live in a protected
+# container too, so this is also set globally.
+defaults write -globalDomain NSUserKeyEquivalents -dict-add "Email This Page" '@~^$i'
 
 ###############################################################################
 # Apply
