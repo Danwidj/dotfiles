@@ -32,6 +32,10 @@ Raycast:
     Raycast now covers window management (was Rectangle) and
     keep-awake/menu-bar utilities (was Vorssaint) - both removed.
 
+Loop:
+  - Settings > Keybinds > Import > select ~/.config/loop/loop-keybinds.json
+    > Erase (replaces existing keybinds; trigger key stays Ctrl+Opt)
+
 ===============================================================================
 EOF
 

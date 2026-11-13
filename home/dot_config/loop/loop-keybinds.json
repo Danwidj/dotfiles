@@ -1,0 +1,197 @@
+[
+  {
+    "bypassTriggerKey": false,
+    "direction": "NoAction",
+    "id": "98CAD6D6-B050-428E-BE8B-2A48AE8DBD10",
+    "keybind": []
+  },
+  {
+    "direction": "Maximize",
+    "id": "3438EA7C-98EB-4039-9ACD-DDE11913E539",
+    "keybind": [
+      49
+    ]
+  },
+  {
+    "direction": "TopLeftQuarter",
+    "id": "40A8F290-29B9-4783-ACD7-F943CAC97308",
+    "keybind": [
+      126,
+      123
+    ]
+  },
+  {
+    "direction": "TopRightQuarter",
+    "id": "13E5E196-B065-471C-883D-BB31237C282C",
+    "keybind": [
+      124,
+      126
+    ]
+  },
+  {
+    "direction": "BottomRightQuarter",
+    "id": "3B802543-9691-4EA0-8D66-3976EE6EDA24",
+    "keybind": [
+      125,
+      124
+    ]
+  },
+  {
+    "direction": "BottomLeftQuarter",
+    "id": "1C335FA9-BC13-427D-921C-2A81FA673EB4",
+    "keybind": [
+      123,
+      125
+    ]
+  },
+  {
+    "direction": "AlmostMaximize",
+    "id": "093091EA-8363-4BD0-BA46-823E5C65D2B5",
+    "keybind": [
+      36
+    ]
+  },
+  {
+    "direction": "BottomHalf",
+    "id": "0CAE1DB7-AB70-4813-B1CF-65B853D3D378",
+    "keybind": [
+      125
+    ]
+  },
+  {
+    "direction": "BottomLeftQuarter",
+    "id": "E5F97284-23BC-4337-AF72-7FCBCC820DA0",
+    "keybind": [
+      38
+    ]
+  },
+  {
+    "direction": "BottomRightQuarter",
+    "id": "D60B2FAD-82E1-461B-B5FB-512BAE8898C2",
+    "keybind": [
+      40
+    ]
+  },
+  {
+    "direction": "Center",
+    "id": "DECBDD4E-AD40-47C7-A92D-2B8255E5A9A7",
+    "keybind": [
+      8
+    ]
+  },
+  {
+    "direction": "HorizontalCenterThird",
+    "id": "9D1720E3-FE2E-41A3-A725-18C7846067E9",
+    "keybind": [
+      3
+    ]
+  },
+  {
+    "direction": "LeftThird",
+    "id": "1F6140C1-029A-45CB-9D5E-2A4B8F34A58D",
+    "keybind": [
+      2
+    ]
+  },
+  {
+    "direction": "LeftTwoThirds",
+    "id": "D5D73115-6F94-4399-A36E-67FE6C6FAF0F",
+    "keybind": [
+      14
+    ]
+  },
+  {
+    "direction": "Larger",
+    "id": "FEC154DF-EB4F-41AD-A63F-16578876A359",
+    "keybind": [
+      24
+    ]
+  },
+  {
+    "direction": "RightThird",
+    "id": "7F400020-6AA0-48C9-A0B4-FCDC8B83922E",
+    "keybind": [
+      5
+    ]
+  },
+  {
+    "direction": "RightTwoThirds",
+    "id": "67E12DF7-7E64-461A-8E6C-F6171FE00673",
+    "keybind": [
+      17
+    ]
+  },
+  {
+    "direction": "LeftHalf",
+    "id": "0BADB511-8851-45C9-ABBC-693BA31CC10F",
+    "keybind": [
+      123
+    ]
+  },
+  {
+    "direction": "Maximize",
+    "id": "AB0B5271-C979-45C5-AA4F-A15E634D643C",
+    "keybind": [
+      55,
+      36
+    ]
+  },
+  {
+    "direction": "NextScreen",
+    "id": "16C76529-9BED-4F76-9722-67B3074C7427",
+    "keybind": [
+      55,
+      124
+    ]
+  },
+  {
+    "direction": "PreviousScreen",
+    "id": "DAF24FAD-8969-44AC-BFFE-484AC7120F06",
+    "keybind": [
+      55,
+      123
+    ]
+  },
+  {
+    "direction": "Undo",
+    "id": "2746F7C9-581C-43DA-ABBF-862769F9C88B",
+    "keybind": [
+      51
+    ]
+  },
+  {
+    "direction": "RightHalf",
+    "id": "540AD792-90CC-45BA-B34A-B4D24135A061",
+    "keybind": [
+      124
+    ]
+  },
+  {
+    "direction": "Smaller",
+    "id": "60D886D7-EEAA-4980-BD00-E963C1B179AA",
+    "keybind": [
+      27
+    ]
+  },
+  {
+    "direction": "TopHalf",
+    "id": "55BC69EB-5082-4B1B-B7C7-011542FBABC5",
+    "keybind": [
+      126
+    ]
+  },
+  {
+    "direction": "TopLeftQuarter",
+    "id": "0F364E93-676D-443B-9837-E4B6C7309561",
+    "keybind": [
+      32
+    ]
+  },
+  {
+    "direction": "TopRightQuarter",
+    "id": "8BCE0D65-4FE4-4DA2-BE3C-99B2331B69F1",
+    "keybind": [
+      34
+    ]
+  }
+]
