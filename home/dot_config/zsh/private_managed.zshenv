@@ -23,6 +23,8 @@ export PI_CODING_AGENT_DIR="$XDG_CONFIG_HOME/pi/agent"
 export COPILOT_HOME="$XDG_DATA_HOME/copilot"
 export VSCODE_PORTABLE="$XDG_DATA_HOME/vscode"
 export VSCODE_CLI_DATA_DIR="$XDG_STATE_HOME/vscode-cli"
+# treehouse hard-codes its update check to ~/.treehouse; switch it off.
+export TREEHOUSE_NO_UPDATE_CHECK=1
 
 # Package Managers & Build Tools
 export HOMEBREW_BUNDLE_FILE_GLOBAL="$XDG_CONFIG_HOME/homebrew/Brewfile"
