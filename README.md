@@ -31,7 +31,7 @@ This repository contains my personal dotfiles and machine provisioning state. Th
 - **Declarative & Reproducible**: A fresh machine should reach an identical, ready-to-code state with a single bootstrap command.
 - **Fast & Minimal Friction**: Relocated `$ZDOTDIR` to keep `$HOME` clean, strict plugin load ordering for instant shell startup, and zero visual lag.
 - **Work vs. Personal Coexistence**: Seamless configuration parameterization (different git emails, scoped packages, and excluded configs) without maintaining separate branches.
-- **Keyboard-Centric Navigation**: Consistent keybindings across AeroSpace tiling window management, tmux session multiplexing, Neovim, and terminal workflows.
+- **Keyboard-Centric Navigation**: Consistent keybindings across tmux session multiplexing, Neovim, and terminal workflows.
 - **OS-Agnostic Vision**: While these dotfiles are **currently tailored and tested daily for macOS (Apple Silicon)**, the repository is actively designed to become fully OS-agnostic (supporting Linux and containerized dev environments). The cross-platform CI suite already tests non-macOS application on Ubuntu runners.
 
 ---
@@ -60,7 +60,6 @@ Managing dotfiles with plain Git symlink trees or GNU Stow quickly runs into lim
 | **History & Search** | [Atuin](https://atuin.sh/) & [fzf](https://github.com/junegunn/fzf) | SQLite-backed shell history search + interactive fuzzy completion | `~/.config/zsh/conf.d/` |
 | **Editor** | [Neovim](https://neovim.io/) | [LazyVim](https://lazyvim.github.io/)-based IDE configuration with Python/Bash LSPs, Oil, and Snacks | `~/.config/nvim/` |
 | **GUI Editor** | [VS Code](https://code.visualstudio.com/) | Synchronized user settings, keybindings, and declarative extension bundle (portable mode) | `~/.local/share/vscode/user-data/User/` |
-| **Window Manager** | [AeroSpace](https://github.com/nikitabobko/AeroSpace) | i3-like tiling window manager for macOS | `~/.config/aerospace/aerospace.toml` |
 | **Launcher** | [Raycast](https://www.raycast.com/) | Extensible launcher & productivity platform (replaces Spotlight) | `~/.config/raycast/` |
 | **Package Manager** | [Homebrew](https://brew.sh/) | Declarative `Brewfile` bundle, daily automated updates, `brew.env` settings | `~/.config/homebrew/` |
 | **Runtime Manager** | [mise](https://mise.jdx.dev/) | Polyglot runtime version manager (Node, Python, Go, etc.) | `~/.config/mise/config.toml` |
