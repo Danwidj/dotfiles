@@ -1,0 +1,54 @@
+#!/bin/sh
+# Keeps the axi tools (chrome-devtools-axi, gh-axi, lavish-axi, ...) out of ~.
+# They hard-code home-folder paths with no setting to move them, so this
+# rewrites those lines in every installed copy:
+#   - chrome-devtools-axi state: ~/.chrome-devtools-axi ->
+#     $XDG_STATE_HOME/chrome-devtools-axi (falling back to ~/.local/state).
+#   - `setup hooks` (shared axi-sdk-js): Claude hooks go to
+#     $CLAUDE_CONFIG_DIR/settings.json instead of ~/.claude, and the Codex
+#     hooks (~/.codex) are not installed at all, as Codex is not used here.
+#
+# Runs when this script changes or an installed copy needs patching: an npm
+# update of a tool restores the original lines, which changes the count
+# rendered below. Already-patched copies are skipped.
+#
+# unpatched copies: {{ output "sh" "-c" `find "$HOME/.local/share/firstmate-tools" "$HOME/.local/share/mise/installs/node" -type f \( -path '*/chrome-devtools-axi/dist/src/sessions.js' -o -path '*/axi-sdk-js/dist/hooks.js' \) 2>/dev/null | xargs grep -lF -e 'const base = join(homedir(), STATE_DIR_NAME);' -e 'claudeSettingsPath: join(root, ".claude", "settings.json"),' 2>/dev/null | wc -l` | trim }}
+
+# patch <file> <old line> <new line>
+patch() {
+    if grep -qF "$2" "$1"; then
+        OLD="$2" NEW="$3" perl -pi -e 's/\Q$ENV{OLD}\E/$ENV{NEW}/' "$1"
+        echo "axi patched: $1"
+    elif ! grep -qF "$3" "$1"; then
+        echo "axi: expected line not found, patch needs updating: $1" >&2
+    fi
+}
+
+roots=""
+for root in "$HOME/.local/share/firstmate-tools" "$HOME/.local/share/mise/installs/node"; do
+    [ -d "$root" ] && roots="$roots $root"
+done
+[ -n "$roots" ] || exit 0
+
+# shellcheck disable=SC2086 # roots is a deliberate word list
+find $roots -type f \( -path '*/chrome-devtools-axi/dist/src/sessions.js' -o -path '*/axi-sdk-js/dist/hooks.js' \) 2>/dev/null |
+    while IFS= read -r file; do
+        case "$file" in
+        */sessions.js)
+            patch "$file" \
+                'const base = join(homedir(), STATE_DIR_NAME);' \
+                'const base = join(process.env.XDG_STATE_HOME || join(homedir(), ".local", "state"), "chrome-devtools-axi");'
+            ;;
+        */hooks.js)
+            patch "$file" \
+                'claudeSettingsPath: join(root, ".claude", "settings.json"),' \
+                'claudeSettingsPath: scope === "project" ? join(root, ".claude", "settings.json") : join(process.env.CLAUDE_CONFIG_DIR || join(home, ".claude"), "settings.json"),'
+            patch "$file" \
+                'const jsonTargets = [targets.claudeSettingsPath, targets.codexHooksPath];' \
+                'const jsonTargets = [targets.claudeSettingsPath];'
+            patch "$file" \
+                'mkdirSync(dirname(codexConfigPath), { recursive: true });' \
+                'return; /* Codex hooks are not installed here */'
+            ;;
+        esac
+    done
