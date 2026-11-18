@@ -42,7 +42,7 @@ EOF
     assert_success
     assert_output_partial 'brew "gh"'
     assert_output_partial 'cask "claude"'
-    assert_output_partial 'cask "claude-code@latest"'
+    assert_output_partial 'cask "claude-code"'
     assert_output_partial 'brew "pi-coding-agent"'
     assert_output_partial 'cask "homebrew/cask/copilot-cli"'
 }
@@ -58,7 +58,7 @@ EOF
     assert_success
     refute_output_partial 'brew "gh"'
     refute_output_partial 'cask "claude"'
-    refute_output_partial 'cask "claude-code@latest"'
+    refute_output_partial 'cask "claude-code"'
     refute_output_partial 'brew "pi-coding-agent"'
     refute_output_partial 'cask "homebrew/cask/copilot-cli"'
 }
