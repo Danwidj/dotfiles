@@ -519,6 +519,14 @@ defaults write com.apple.Safari NSUserKeyEquivalents -dict-add "Hide Sidebar" '@
 defaults write -globalDomain NSUserKeyEquivalents -dict-add "Email This Page" "@~^\$i"
 
 ###############################################################################
+# Docker socket
+###############################################################################
+
+# Symlink the standard Docker socket path to colima's, for tools that
+# hardcode /var/run/docker.sock instead of respecting $DOCKER_HOST.
+sudo ln -sf ~/.config/colima/default/docker.sock /var/run/docker.sock
+
+###############################################################################
 # Apply
 ###############################################################################
 
