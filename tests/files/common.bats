@@ -559,15 +559,6 @@ EOF
     assert_success
     assert_output '# Personal instructions for coding agents'
 
-    # agy (Antigravity CLI)
-    AGY_LINK="${TEST_HOME}/.gemini/AGENTS.md"
-    [ -L "${AGY_LINK}" ]
-    [ "$(readlink "${AGY_LINK}")" = "../.config/agents/AGENTS.md" ]
-    assert_file_exist "${AGY_LINK}"
-    run head -n 1 "${AGY_LINK}"
-    assert_success
-    assert_output '# Personal instructions for coding agents'
-
     # GitHub Copilot CLI
     COPILOT_LINK="${TEST_HOME}/.local/share/copilot/copilot-instructions.md"
     run python3 -c "import os, stat; print(oct(stat.S_IMODE(os.stat('${TEST_HOME}/.local/share/copilot').st_mode)))"
@@ -581,7 +572,7 @@ EOF
     assert_output '# Personal instructions for coding agents'
 
     # Verify canonical path resolution
-    run python3 -c "import os; t=os.path.realpath('${TARGET}'); assert all(os.path.realpath(p) == t for p in ['${OPENCODE_LINK}', '${PI_LINK}', '${AGY_LINK}', '${COPILOT_LINK}'])"
+    run python3 -c "import os; t=os.path.realpath('${TARGET}'); assert all(os.path.realpath(p) == t for p in ['${OPENCODE_LINK}', '${PI_LINK}', '${COPILOT_LINK}'])"
     assert_success
 }
 

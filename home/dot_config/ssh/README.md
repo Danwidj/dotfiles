@@ -10,4 +10,4 @@ OpenSSH natively reads configuration from `~/.ssh/config`. To adhere to the XDG 
   ```ssh
   Include ~/.config/ssh/config
   ```
-- **`private_config`**: Maps to `~/.config/ssh/config` (mode 0600). Contains deliberate `Host` definitions and tool-managed include paths (`colima`, `brev`).
+- **`private_config`**: Maps to `~/.config/ssh/config` (mode 0600). Contains deliberate `Host` definitions and tool-managed include paths (`colima`).
