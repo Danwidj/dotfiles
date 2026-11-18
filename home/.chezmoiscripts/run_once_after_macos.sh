@@ -507,6 +507,10 @@ defaults write com.apple.iCal NSUserKeyEquivalents -dict-add "Hide Calendar List
 # item of that name.
 defaults write -globalDomain NSUserKeyEquivalents -dict-add "Show Sidebar" '@b'
 defaults write -globalDomain NSUserKeyEquivalents -dict-add "Hide Sidebar" '@b'
+# Cmd+B: Safari - Show/Hide Sidebar. Safari is sandboxed, so it doesn't pick
+# up the global NSUserKeyEquivalents above and needs its own explicit entry.
+defaults write com.apple.Safari NSUserKeyEquivalents -dict-add "Show Sidebar" '@b'
+defaults write com.apple.Safari NSUserKeyEquivalents -dict-add "Hide Sidebar" '@b'
 # Safari - Email This Page: move off Cmd+I, which opens Mail by accident (it
 # fires when a Loop Fn+Cmd+I chord reaches Safari). A menu shortcut cannot be
 # removed this way, only reassigned, so it goes to Ctrl+Opt+Shift+Cmd+I
