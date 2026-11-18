@@ -31,6 +31,8 @@ Raycast:
     passphrase (in password manager, never tracked in this repo).
     Raycast now covers window management (was Rectangle) and
     keep-awake/menu-bar utilities (was Vorssaint) - both removed.
+  - Script commands: Settings > Extensions > + > Add Script Directory >
+    select ~/.config/raycast/scripts
 
 Loop:
   - Settings > Keybinds > Import > select ~/.config/loop/loop-keybinds.json
