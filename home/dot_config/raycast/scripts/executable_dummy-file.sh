@@ -20,8 +20,9 @@ if [ ! -d "$dir" ]; then
 fi
 
 # Open the folder predictably: always one window (reused if already open),
-# the same size, centred on the screen in use, in large icon view so the files
-# are easy to drag. Finder saves the view for this folder only.
+# the same size, in the top right corner of the screen in use, in large icon
+# view so the files are easy to drag. Finder saves the view for this folder
+# only.
 osascript - "$dir" <<'APPLESCRIPT' >/dev/null
 use framework "AppKit"
 use scripting additions
@@ -43,8 +44,8 @@ on run argv
     set screenY to item 2 of item 1 of screenFrame
     set screenWidth to item 1 of item 2 of screenFrame
     set screenHeight to item 2 of item 2 of screenFrame
-    set leftEdge to (screenX + (screenWidth - windowWidth) / 2) as integer
-    set topEdge to (primaryHeight - (screenY + screenHeight) + (screenHeight - windowHeight) / 2) as integer
+    set leftEdge to (screenX + screenWidth - windowWidth) as integer
+    set topEdge to (primaryHeight - (screenY + screenHeight)) as integer
 
     tell application "Finder"
         set theWindow to missing value
