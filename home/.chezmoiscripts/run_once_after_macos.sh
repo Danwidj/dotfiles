@@ -327,9 +327,12 @@ launchctl disable "gui/$(id -u)/com.apple.tipsd" 2>/dev/null || true
 osascript <<'EOF'
 tell application "System Events"
     set loginItemNames to name of every login item
-    repeat with appName in {"Raycast", "Calendar", "Reminders"}
+    set appPaths to {{"Raycast", "/Applications/Raycast.app"}, {"Calendar", "/System/Applications/Calendar.app"}, {"Reminders", "/System/Applications/Reminders.app"}}
+    repeat with appPair in appPaths
+        set appName to item 1 of appPair
+        set appPath to item 2 of appPair
         if loginItemNames does not contain appName then
-            make login item at end with properties {path:"/Applications/" & appName & ".app", hidden:false}
+            make login item at end with properties {path:appPath, hidden:false}
         end if
     end repeat
 end tell
