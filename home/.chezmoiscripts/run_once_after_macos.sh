@@ -501,16 +501,12 @@ set_hotkey 27 96 50 1048576    # Move focus to next window in application   - Cm
 # Cmd+B: Calendar - Show/Hide Calendar List
 defaults write com.apple.iCal NSUserKeyEquivalents -dict-add "Show Calendar List" '@b'
 defaults write com.apple.iCal NSUserKeyEquivalents -dict-add "Hide Calendar List" '@b'
-# Cmd+B: Reminders - Show/Hide Sidebar. Reminders' prefs live in a protected
-# container that `defaults` cannot write (fails even with Full Disk Access
-# not granted), so this is set globally and applies to every app with a menu
-# item of that name.
+# Cmd+B: Reminders/Safari - Show/Hide Sidebar. Both apps' prefs live in a
+# protected container that `defaults` cannot write directly (fails even with
+# Full Disk Access not granted), so this is set globally and applies to every
+# app with a menu item of that name - confirmed Safari reads this too.
 defaults write -globalDomain NSUserKeyEquivalents -dict-add "Show Sidebar" '@b'
 defaults write -globalDomain NSUserKeyEquivalents -dict-add "Hide Sidebar" '@b'
-# Cmd+B: Safari - Show/Hide Sidebar. Safari is sandboxed, so it doesn't pick
-# up the global NSUserKeyEquivalents above and needs its own explicit entry.
-defaults write com.apple.Safari NSUserKeyEquivalents -dict-add "Show Sidebar" '@b'
-defaults write com.apple.Safari NSUserKeyEquivalents -dict-add "Hide Sidebar" '@b'
 # Safari - Email This Page: move off Cmd+I, which opens Mail by accident (it
 # fires when a Loop Fn+Cmd+I chord reaches Safari). A menu shortcut cannot be
 # removed this way, only reassigned, so it goes to Ctrl+Opt+Shift+Cmd+I
