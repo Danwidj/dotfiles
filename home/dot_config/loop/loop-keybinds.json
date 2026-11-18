@@ -1,6 +1,90 @@
 {
   "actions": [
     {
+      "anchor": 0,
+      "direction": "Stash",
+      "height": 40,
+      "keybind": [
+        32,
+        55
+      ],
+      "name": "Stash Top Left",
+      "positionMode": 0,
+      "sizeMode": 0,
+      "unit": 1,
+      "width": 50
+    },
+    {
+      "anchor": 2,
+      "direction": "Stash",
+      "height": 40,
+      "keybind": [
+        34,
+        55
+      ],
+      "name": "Stash Top Right",
+      "positionMode": 0,
+      "sizeMode": 0,
+      "unit": 1,
+      "width": 50
+    },
+    {
+      "anchor": 6,
+      "direction": "Stash",
+      "height": 40,
+      "keybind": [
+        38,
+        55
+      ],
+      "name": "Stash Bottom Left",
+      "positionMode": 0,
+      "sizeMode": 0,
+      "unit": 1,
+      "width": 50
+    },
+    {
+      "anchor": 4,
+      "direction": "Stash",
+      "height": 40,
+      "keybind": [
+        40,
+        55
+      ],
+      "name": "Stash Bottom Right",
+      "positionMode": 0,
+      "sizeMode": 0,
+      "unit": 1,
+      "width": 50
+    },
+    {
+      "anchor": 7,
+      "direction": "Stash",
+      "height": 80,
+      "keybind": [
+        45,
+        55
+      ],
+      "name": "Stash Left",
+      "positionMode": 0,
+      "sizeMode": 0,
+      "unit": 1,
+      "width": 80
+    },
+    {
+      "anchor": 3,
+      "direction": "Stash",
+      "height": 80,
+      "keybind": [
+        46,
+        55
+      ],
+      "name": "Stash Right",
+      "positionMode": 0,
+      "sizeMode": 0,
+      "unit": 1,
+      "width": 80
+    },
+    {
       "direction": "Maximize",
       "keybind": [
         49
@@ -33,64 +117,10 @@
       ]
     },
     {
-      "direction": "Undo",
-      "keybind": [
-        51
-      ]
-    },
-    {
       "direction": "Smaller",
       "keybind": [
         27
       ]
-    },
-    {
-      "anchor": 0,
-      "direction": "Stash",
-      "keybind": [
-        32,
-        55
-      ],
-      "name": "Stash Top Left",
-      "positionMode": 0,
-      "sizeMode": 1,
-      "unit": 1
-    },
-    {
-      "anchor": 2,
-      "direction": "Stash",
-      "keybind": [
-        34,
-        55
-      ],
-      "name": "Stash Top Right",
-      "positionMode": 0,
-      "sizeMode": 1,
-      "unit": 1
-    },
-    {
-      "anchor": 6,
-      "direction": "Stash",
-      "keybind": [
-        38,
-        55
-      ],
-      "name": "Stash Bottom Left",
-      "positionMode": 0,
-      "sizeMode": 1,
-      "unit": 1
-    },
-    {
-      "anchor": 4,
-      "direction": "Stash",
-      "keybind": [
-        40,
-        55
-      ],
-      "name": "Stash Bottom Right",
-      "positionMode": 0,
-      "sizeMode": 1,
-      "unit": 1
     },
     {
       "cycle": [

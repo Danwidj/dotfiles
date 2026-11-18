@@ -42,3 +42,19 @@ load '../test_helper.bats'
     assert_output_partial "30064771129"
     assert_output_partial "30064771300"
 }
+
+@test "Loop keybinds and settings are valid JSON and settings carry no state" {
+    LOOP_DIR="${BATS_TEST_DIRNAME}/../../home/dot_config/loop"
+    assert_file_exist "${LOOP_DIR}/loop-keybinds.json"
+    assert_file_exist "${LOOP_DIR}/loop-settings.json"
+    run python3 -c '
+import json, sys
+keybinds = json.load(open(sys.argv[1] + "/loop-keybinds.json"))
+settings = json.load(open(sys.argv[1] + "/loop-settings.json"))
+assert keybinds["actions"] and keybinds["triggerKey"]
+state = {"keybinds", "trigger", "stashManagerStashed", "timesLooped"}
+bad = [k for k in settings if k in state or k.startswith("NS") or k.endswith("synchronizeTimestamp")]
+assert not bad, bad
+' "${LOOP_DIR}"
+    assert_success
+}
