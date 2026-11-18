@@ -1,0 +1,84 @@
+#!/usr/bin/env bash
+#MISE description="Save Loop's live keybinds and settings into the chezmoi source"
+# Reads Loop's preferences (com.MrKai77.Loop) and rewrites
+# home/dot_config/loop/loop-keybinds.json and loop-settings.json, so changes
+# made in Loop's settings window are tracked without Loop's manual Export.
+# Review the result with `git diff`, then commit it.
+
+set -euo pipefail
+
+ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+DOMAIN="${LOOP_DOMAIN:-com.MrKai77.Loop}"
+OUT_DIR="${LOOP_SAVE_DIR:-$ROOT_DIR/home/dot_config/loop}"
+
+if [[ "$(uname)" != "Darwin" ]]; then
+    echo "Loop only runs on macOS. Nothing to save."
+    exit 0
+fi
+
+version=""
+if [[ -d /Applications/Loop.app ]]; then
+    version=$(defaults read /Applications/Loop.app/Contents/Info.plist CFBundleShortVersionString 2>/dev/null || true)
+fi
+
+# Export through defaults so values Loop has not flushed to disk yet are included.
+defaults export "$DOMAIN" - | /usr/bin/python3 -c '
+import json
+import plistlib
+import sys
+
+out_dir, version = sys.argv[1], sys.argv[2]
+prefs = plistlib.loads(sys.stdin.buffer.read())
+if "keybinds" not in prefs:
+    sys.exit("Loop has no keybinds in its preferences. Nothing saved.")
+
+# Not settings: state Loop or macOS rewrites by itself. Everything else is
+# saved, so a setting added by a Loop update is tracked automatically.
+STATE_KEYS = {
+    "keybinds",  # saved to loop-keybinds.json
+    "trigger",  # saved to loop-keybinds.json
+    "stashManagerStashed",
+    "stashManagerRevealed",
+    "timesLooped",
+    "patchesApplied",
+    "lastMigratorURL",
+    "lastUsedAccentColor1",
+    "lastUsedAccentColor2",
+}
+
+
+def is_setting(key):
+    return not (
+        key in STATE_KEYS
+        or key.startswith("NS")
+        or key.endswith("__DEFAULTS__synchronizeTimestamp")
+    )
+
+
+def export_action(action):
+    # The export format has no ids; apply mints new ones.
+    action = {k: v for k, v in action.items() if k != "id"}
+    action["keybind"] = sorted(action.get("keybind", []))
+    if "cycle" in action:
+        action["cycle"] = [export_action(c) for c in action["cycle"]]
+    return action
+
+
+def write(name, data):
+    with open(out_dir + "/" + name, "w") as f:
+        json.dump(data, f, indent=2, sort_keys=True)
+        f.write("\n")
+
+
+keybinds = {
+    "actions": [export_action(json.loads(a)) for a in prefs["keybinds"]],
+    "triggerKey": list(prefs.get("trigger", [])),
+}
+if version:
+    keybinds["version"] = version
+settings = {k: v for k, v in prefs.items() if is_setting(k)}
+
+write("loop-keybinds.json", keybinds)
+write("loop-settings.json", settings)
+print("Loop saved: %d actions, %d settings -> %s" % (len(keybinds["actions"]), len(settings), out_dir))
+' "$OUT_DIR" "$version"

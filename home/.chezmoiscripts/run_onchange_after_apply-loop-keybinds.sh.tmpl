@@ -1,14 +1,17 @@
 #!/usr/bin/env bash
 # run_onchange_after_apply-loop-keybinds.sh.tmpl
-# Writes ~/.config/loop/loop-keybinds.json into Loop's preferences, so the
-# keybinds apply without the manual Settings > Keybinds > Import step.
-# Re-runs whenever the keybinds file changes.
+# Writes ~/.config/loop/loop-keybinds.json and loop-settings.json into Loop's
+# preferences, so keybinds and settings apply without the manual
+# Settings > Keybinds > Import step. Re-runs whenever either file changes.
+# `mise run loop-save` writes both files from Loop's live preferences.
 # Keybinds hash: {{ include "dot_config/loop/loop-keybinds.json" | sha256sum }}
+# Settings hash: {{ include "dot_config/loop/loop-settings.json" | sha256sum }}
 
 set -euo pipefail
 
 DOMAIN="com.MrKai77.Loop"
 KEYBINDS_FILE="$HOME/.config/loop/loop-keybinds.json"
+SETTINGS_FILE="$HOME/.config/loop/loop-settings.json"
 
 if [[ "$(uname)" != "Darwin" ]] || [[ ! -d /Applications/Loop.app ]]; then
     echo "Loop not installed. Skipping keybind apply."
@@ -34,7 +37,7 @@ fi
 # Loop stores each action as one compact JSON string carrying its own id
 # (the export format has no ids), and the trigger key as a separate array.
 # The timestamps mark the values as newer than any iCloud-synced copy.
-/usr/bin/python3 - "$DOMAIN" "$KEYBINDS_FILE" <<'PY'
+/usr/bin/python3 - "$DOMAIN" "$KEYBINDS_FILE" "$SETTINGS_FILE" <<'PY'
 import datetime
 import json
 import plistlib
@@ -42,9 +45,12 @@ import subprocess
 import sys
 import uuid
 
-domain, path = sys.argv[1], sys.argv[2]
+domain, path, settings_path = sys.argv[1], sys.argv[2], sys.argv[3]
 with open(path) as f:
     data = json.load(f)
+# Every other Loop setting, as saved by `mise run loop-save`.
+with open(settings_path) as f:
+    settings = json.load(f)
 
 
 def with_ids(action):
@@ -56,7 +62,8 @@ def with_ids(action):
     return action
 
 
-values = {
+values = dict(settings)
+values.update({
     "keybinds": [
         json.dumps(with_ids(a), sort_keys=True, separators=(",", ":"))
         for a in data["actions"]
@@ -65,7 +72,7 @@ values = {
     # Loop sizes every window itself. With this on, macOS remembers a
     # maximised window as tiled and snaps it back to full size later.
     "useSystemWindowManagerWhenAvailable": False,
-}
+})
 now = datetime.datetime.utcnow()
 for key, value in values.items():
     for name, v in ((key, value), (key + "__DEFAULTS__synchronizeTimestamp", now)):
@@ -73,7 +80,7 @@ for key, value in values.items():
             ["defaults", "write", domain, name, plistlib.dumps(v).decode()],
             check=True,
         )
-print("Loop keybinds applied: %d actions" % len(values["keybinds"]))
+print("Loop applied: %d actions, %d settings" % (len(values["keybinds"]), len(settings)))
 PY
 
 if [[ "$was_running" == 1 ]]; then

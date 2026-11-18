@@ -397,7 +397,7 @@ EOF
 }
 
 @test "mise-tasks files exist, are executable, and are bash parse-clean" {
-    for task in lint ci/apply ci/install-homebrew ci/write-chezmoi-config; do
+    for task in lint loop-save ci/apply ci/install-homebrew ci/write-chezmoi-config; do
         TASK_PATH="${BATS_TEST_DIRNAME}/../../mise-tasks/${task}"
         assert_file_exist "${TASK_PATH}"
         assert_file_executable "${TASK_PATH}"
