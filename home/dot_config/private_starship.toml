@@ -89,7 +89,7 @@ format = "[$time]($style) "
 style = "bold yellow"
 symbol = "☁️ "
 expiration_symbol = "X"
-format = '[$symbol$profile( \($region\))( \[$duration\])]($style) '
+format = '[$symbol$profile( \($region\))]($style) '
 
 [custom.aws_sso_expiry]
 command = "~/.config/starship/aws-sso-expiry.sh"
