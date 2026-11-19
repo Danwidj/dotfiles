@@ -1,6 +1,26 @@
 // Place your key bindings in this file to override the defaults
-// All entries below are DISABLED defaults (negations only — no custom bindings)
+// Mostly DISABLED defaults (negations), plus a few custom remaps noted inline
 [
+  // Cmd+0: zoom reset, both browser and view (was Cmd+Numpad0 only)
+  {
+    "key": "cmd+0",
+    "command": "workbench.action.browser.resetZoom",
+    "when": "browserFocused && browserHasUrl && !browserHasError && activeEditor == 'workbench.editor.browser'"
+  },
+  {
+    "key": "cmd+numpad0",
+    "command": "-workbench.action.browser.resetZoom",
+    "when": "browserFocused && browserHasUrl && !browserHasError && activeEditor == 'workbench.editor.browser'"
+  },
+  {
+    "key": "cmd+0",
+    "command": "workbench.action.zoomReset"
+  },
+  {
+    "key": "cmd+numpad0",
+    "command": "-workbench.action.zoomReset"
+  },
+
   // ─── Copilot Chat Panel ──────────────────────────────────────────────────
 
   {

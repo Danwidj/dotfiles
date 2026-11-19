@@ -19,6 +19,8 @@ export LSCOLORS="ExFxBxDxCxegedabagacad"
 # ==============================================================================
 # AI & Editors
 export CLAUDE_CONFIG_DIR="$XDG_CONFIG_HOME/claude"
+export CLAUDE_CODE_DEBUG_LOGS_DIR="$XDG_CONFIG_HOME/claude/debug"
+export CLAUDE_CODE_TMPDIR="/tmp"
 export PI_CODING_AGENT_DIR="$XDG_CONFIG_HOME/pi/agent"
 export COPILOT_HOME="$XDG_DATA_HOME/copilot"
 export VSCODE_PORTABLE="$XDG_DATA_HOME/vscode"
